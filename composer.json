@@ -1,0 +1,17 @@
+{
+    "name": "jsolsvik/urgewww",
+    "authors": [
+        {
+            "name": "Jonas Johan solsvik",
+            "email": "jonasjso@stud.ntnu.no"
+        }
+    ],
+    "require": {
+        "twig/twig": "^2.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6",
+        "behat/mink": "^1.7",
+        "behat/mink-goutte-driver": "^1.2"
+    }
+}
