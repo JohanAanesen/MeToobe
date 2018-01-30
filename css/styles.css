@@ -51,3 +51,8 @@
 .form-line{
     border-right: 1px solid #ffffff;
 }
+
+#jumbo{
+    padding-top: 1%;
+    padding-bottom: 1%;
+}
