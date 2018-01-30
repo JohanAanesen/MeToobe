@@ -11,14 +11,9 @@
 
     <title>MeTube</title>
 
-    <!-- Bootstrap core CSS -->
-    <link href="../vendor/twbs/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
-
-    <!-- Custom CSS :) -->
-    <link href="../css/styles.css" rel="stylesheet">
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Oleo+Script:400,700" rel="stylesheet">
+    <?php
+    include_once("head.htm");
+    ?>
 
 </head>
 

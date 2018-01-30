@@ -43,7 +43,7 @@
     <div class="container">
         <h1>Holy fucking shit you need to register mate!</h1>
         <p>Smash this button and get to it.</p>
-        <p><a class="btn btn-success btn-lg" href="login.html" role="button">Register »</a></p>
+        <p><a class="btn btn-success btn-lg" href="login.php" role="button">Register »</a></p>
     </div>
 </div>
 
