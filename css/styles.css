@@ -56,3 +56,25 @@
     padding-top: 1%;
     padding-bottom: 1%;
 }
+
+.comment{
+    width: 100%;
+    border-bottom: 1px solid #dddddd;
+    margin-bottom: 3%;
+}
+
+.comment-name{
+    font-size: 14px;
+    color: #666666;
+    margin-bottom: 1%;
+}
+
+.comment-text{
+    margin-top: 1%;
+}
+
+.other-title{
+    font-size: 30px;
+    font-family: 'Oleo Script', cursive;
+    color: #999999;
+}

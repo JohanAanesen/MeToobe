@@ -49,42 +49,56 @@
 
 <div class="container">
 
-    <div class="col-12 ml-lg-0">
-        <h1 class="display-4">New Videos</h1>
-    </div>
+    <div class="row">
+        <div class="col-md-9 col-xs-12">
+            <div class="col-12 ml-lg-0">
+                <h1 class="display-4">Comments</h1>
+            </div>
 
-    <!-- Example row of columns -->
-    <div class="row my-md-1">
-        <div class="col-md-4">
-            <h2 class="lead text-limit">1234567890123456789012345678901234567890</h2>
-            <img src="../thumbnail/test.jpg" class="img-thumbnail border-success">
+
+            <div class="comment">
+                <p class="comment-name">Ola Normann</p>
+                <p class="comment-text">This is the shittiest fucking video I've ever fucking seen, kill yourself!</p>
+            </div>
+            <div class="comment">
+                <p class="comment-name">Ola Normann</p>
+                <p class="comment-text">This is the shittiest fucking video I've ever fucking seen, kill yourself!</p>
+            </div>
+            <div class="comment">
+                <p class="comment-name">Ola Normann</p>
+                <p class="comment-text">This is the shittiest fucking video I've ever fucking seen, kill yourself!</p>
+            </div>
+            <div class="comment">
+                <p class="comment-name">Ola Normann</p>
+                <p class="comment-text">This is the shittiest fucking video I've ever fucking seen, kill yourself!</p>
+            </div>
         </div>
-        <div class="col-md-4">
-            <h2 class="lead text-limit">Video 2</h2>
-            <img src="../thumbnail/test.jpg" class="img-thumbnail border-success">
-        </div>
-        <div class="col-md-4">
-            <h2 class="lead text-limit">Video 3</h2>
-            <img src="../thumbnail/test.jpg" class="img-thumbnail border-success">
-        </div>
-        <div class="col-md-4">
-            <h2 class="lead text-limit">Video 4</h2>
-            <img src="../thumbnail/test.jpg" class="img-thumbnail border-success">
-        </div>
-        <div class="col-md-4">
-            <h2 class="lead text-limit">Video 5</h2>
-            <img src="../thumbnail/test.jpg" class="img-thumbnail border-success">
-        </div>
-        <div class="col-md-4">
-            <h2 class="lead text-limit">Video 6</h2>
-            <img src="../thumbnail/test.jpg" class="img-thumbnail border-success">
+        <div class="col-md-3 col-xs-12">
+            <div class="col-12 ml-lg-0">
+                <h2 class="other-title">Other videos</h2>
+            </div>
+            <!-- Example row of columns -->
+            <div class="row my-md-1">
+                <div class="col-md-12">
+                    <h2 class="lead text-limit">1234567890123456789012345678901234567890</h2>
+                    <img src="../thumbnail/test.jpg" class="img-thumbnail border-success">
+                </div>
+                <div class="col-md-12">
+                    <h2 class="lead text-limit">Video 2</h2>
+                    <img src="../thumbnail/test.jpg" class="img-thumbnail border-success">
+                </div>
+                <div class="col-md-12">
+                    <h2 class="lead text-limit">Video 3</h2>
+                    <img src="../thumbnail/test.jpg" class="img-thumbnail border-success">
+                </div>
+            </div>
         </div>
     </div>
 
     <hr>
 
     <footer>
-        <p>© UrgeWWW 2017</p>
+        <p>© UrgeWWW 2018</p>
     </footer>
 </div> <!-- /container -->
 
