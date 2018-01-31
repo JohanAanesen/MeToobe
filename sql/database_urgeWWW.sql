@@ -1,3 +1,11 @@
+
+DROP SCHEMA
+
+IF EXISTS urgewww;
+	CREATE SCHEMA urgewww COLLATE = utf8_general_ci;
+
+USE urgewww;
+
 CREATE TABLE `Users` (
   `userid` VARCHAR(32),
   `email` VARCHAR(64),
@@ -22,7 +30,7 @@ CREATE TABLE `UserLike` (
   `user` VARCHAR(64),
   `video` BIGINT,
   FOREIGN KEY (`user`) REFERENCES Users(userid),
-  FOREIGN KEY (`video`) REFERENCES video(videoid)
+  FOREIGN KEY (`video`) REFERENCES Video(videoid)
 );
 
 CREATE TABLE `Playlist` (
