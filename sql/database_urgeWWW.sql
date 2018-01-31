@@ -1,3 +1,11 @@
+
+DROP SCHEMA
+
+IF EXISTS urgewww;
+	CREATE SCHEMA urgewww COLLATE = utf8_general_ci;
+
+USE urgewww;
+
 CREATE TABLE `Users` (
   `userid` VARCHAR(32),
   `email` VARCHAR(64),
