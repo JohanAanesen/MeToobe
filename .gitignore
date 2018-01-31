@@ -3,3 +3,9 @@ vendor/
 *.iml
 //*bootstrap*
 *.mp4
+
+# Twig
+cache/
+
+# Mac
+.DS_Store
