@@ -2,33 +2,26 @@
 <html lang="en">
     
     {% block head %} 
-        {% include "_head.html" with { title: block('title') } %}
+    {% include "_head.html" with { title: block('title') } %}
     {% endblock %}
 
 <body>
     
     {% block nav %} 
-        {% include "_nav.html" %}
+    {% include "_nav.html" %}
     {% endblock %}
 
     {% block content %}
-
-        <p> !!! PAGE CONTENT INSERTED HERE !!! </p>
-        
+    <p> !!! PAGE CONTENT INSERTED HERE !!! </p>    
     {% endblock %}
 
     {% block footer %}
-    <footer>
-        <p>© UrgeWWW 2018</p>
-    </footer>
+    {% include "_footer.html" %}
+    {% endblock %}
+
+    {% block foot %}
+    {% include "_foot.html" %}
     {% endblock %}
 
 </body>
-
-<!-- Bootstrap JavaScript
-    ================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="/vendor/twbs/bootstrap/dist/js/bootstrap.js"></script>
-
 </html>
