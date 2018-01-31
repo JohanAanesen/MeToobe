@@ -19,10 +19,10 @@ CREATE TABLE `Video` (
 );
 
 CREATE TABLE `UserLike` (
-  `user` VARCHAR(64),
+  `user` VARCHAR(32),
   `video` BIGINT,
   FOREIGN KEY (`user`) REFERENCES Users(userid),
-  FOREIGN KEY (`video`) REFERENCES video(videoid)
+  FOREIGN KEY (`video`) REFERENCES Video(videoid)
 );
 
 CREATE TABLE `Playlist` (
