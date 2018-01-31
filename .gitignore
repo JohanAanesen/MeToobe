@@ -4,8 +4,9 @@ vendor/
 .idea/*
 *.iml
 
-//*bootstrap*
+# Movie
 *.mp4
+*.avi
 
 # Twig
 cache/

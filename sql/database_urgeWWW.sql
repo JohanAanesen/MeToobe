@@ -1,9 +1,10 @@
 CREATE TABLE `Users` (
-  `username` VARCHAR(64),
+  `userid` VARCHAR(32),
+  `email` VARCHAR(64),
   `password` VARCHAR(64),
-  `brukertype` ENUM("admin","student", "teacher"),
+  `brukertype` ENUM("admin","teacher", "student"),
   `wannabe` BOOLEAN,
-  PRIMARY KEY (`username`)
+  PRIMARY KEY (`userid`)
 );
 
 CREATE TABLE `Video` (
@@ -14,7 +15,14 @@ CREATE TABLE `Video` (
   `views` BIGINT,
   `time` TIMESTAMP,
   PRIMARY KEY (`videoid`),
-  FOREIGN KEY (`user`) REFERENCES Users(username)
+  FOREIGN KEY (`user`) REFERENCES Users(userid)
+);
+
+CREATE TABLE `UserLike` (
+  `user` VARCHAR(64),
+  `video` BIGINT,
+  FOREIGN KEY (`user`) REFERENCES Users(userid),
+  FOREIGN KEY (`video`) REFERENCES video(videoid)
 );
 
 CREATE TABLE `Playlist` (
@@ -23,13 +31,13 @@ CREATE TABLE `Playlist` (
   `title` VARCHAR(64),
   `desc` VARCHAR(512),
   PRIMARY KEY (`playlistid`),
-  FOREIGN KEY (`user`) REFERENCES Users(username)
+  FOREIGN KEY (`user`) REFERENCES Users(userid)
 );
 
 CREATE TABLE `UserSubscribe` (
-  `username` VARCHAR(64),
+  `userid` VARCHAR(64),
   `playlistid` BIGINT,
-  FOREIGN KEY (`username`) REFERENCES Users(username),
+  FOREIGN KEY (`userid`) REFERENCES Users(userid),
   FOREIGN KEY (`playlistid`) REFERENCES Playlist(playlistid)
 );
 
@@ -38,10 +46,9 @@ CREATE TABLE `Comments` (
   `user` VARCHAR(64),
   `video` BIGINT,
   `comment` VARCHAR(64),
-  `rating` ENUM("neutral","like","dislike"),
   `time` TIMESTAMP,
   PRIMARY KEY (`commentid`),
-  FOREIGN KEY (`user`) REFERENCES Users(username),
+  FOREIGN KEY (`user`) REFERENCES Users(userid),
   FOREIGN KEY (`video`) REFERENCES Video(videoid)
 );
 
