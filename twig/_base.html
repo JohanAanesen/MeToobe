@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        {% include "_head.html" %}
+        {% block head %} {% endblock %}
+
+        <title> MeToobe - {% block title %} Page {% endblock %}</title>
+    </head>
+
+
+<body> <!-- style="font-family: sans-serif; "> -->
+
+    {% block nav %} 
+        {% include "_nav.html" %}
+    {% endblock %}
+
+
+    {% block content %}
+
+        <p> !!! PAGE CONTENT INSERTED HERE !!! </p>
+        
+    {% endblock %}
+
+
+    {% block footer %}
+    <footer>
+        <p>© UrgeWWW 2018</p>
+    </footer>
+    {% endblock %}
+
+</body>
+
+<!-- Bootstrap JavaScript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="/vendor/twbs/bootstrap/dist/js/bootstrap.js"></script>
+
+</html>
