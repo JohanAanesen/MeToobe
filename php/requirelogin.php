@@ -1,6 +1,6 @@
 <?php
 
-$logged_in = false;
+$logged_in = true;
 
 if ($logged_in == false) {
     header("Location: /view/login");
