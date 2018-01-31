@@ -1,6 +1,9 @@
 vendor/
+
+# IntelliJ
 .idea/*
 *.iml
+
 //*bootstrap*
 *.mp4
 
