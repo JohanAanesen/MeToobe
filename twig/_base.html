@@ -5,20 +5,17 @@
         {% include "_head.html" with { title: block('title') } %}
     {% endblock %}
 
-
-<body> <!-- style="font-family: sans-serif; "> -->
-
+<body>
+    
     {% block nav %} 
         {% include "_nav.html" %}
     {% endblock %}
-
 
     {% block content %}
 
         <p> !!! PAGE CONTENT INSERTED HERE !!! </p>
         
     {% endblock %}
-
 
     {% block footer %}
     <footer>
