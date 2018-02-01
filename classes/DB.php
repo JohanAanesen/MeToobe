@@ -2,7 +2,7 @@
 
 class DB {
     private static $db=null;
-    private $dsn = 'mysql:dbname=urgewww;host=localhost;charset=utf8mb4';
+    private $dsn = 'mysql:dbname=urgedb;host=localhost;charset=utf8mb4';
     private $user = 'root';
     private $password = '';
     private $dbh = null;
