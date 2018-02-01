@@ -78,3 +78,7 @@
     font-family: 'Oleo Script', cursive;
     color: #999999;
 }
+
+.link-line-none{
+    text-decoration: none !important
+}
