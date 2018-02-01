@@ -31,7 +31,7 @@ class User{
      * @return bool
      */
     public function createDBUser(){
-        if (isset($this->userid) && isset($this->email) && isset($this->password) && isset($this->usertype)){
+        if ($this->failSafe()){
             try {
                 $db = DB::getDBConnection();
                 //SQL Injection SAFE query method:
@@ -47,6 +47,52 @@ class User{
         }
         return false;
     }
+
+    /** Update User in DB
+     * @return bool
+     */
+    public function updateUser(){
+        if ($this->failSafe()){
+            try {
+                $db = DB::getDBConnection();
+                //SQL Injection SAFE query method:
+                $query = "UPDATE users SET password = (?) AND usertype = (?) AND wannabe = (?) WHERE userid = (?)";
+                $param = array($this->password, $this->usertype, $this->wannabe, $this->userid);
+                $stmt = $db->prepare($query);
+                $stmt->execute($param);
+            } catch (PDOException $ex) {
+                echo "Could not update password"; //Error message
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public function isTeacher(){
+        if ($this->failSafe()){
+            $this->usertype = "teacher";
+            $this->wannabe = false;
+            $this->updateUser();
+        }
+    }
+
+    public function isStudent(){
+        if ($this->failSafe()){
+            $this->usertype = "student";
+            $this->wannabe = false;
+            $this->updateUser();
+        }
+    }
+
+    public function isAdmin(){
+        if ($this->failSafe()){
+            $this->usertype = "admin";
+            $this->wannabe = false;
+            $this->updateUser();
+        }
+    }
+
 
     /**
      * @param $email
@@ -97,6 +143,14 @@ class User{
         return true;
     }
 
+
+    function failSafe(){
+        if (isset($this->userid) && isset($this->email) && isset($this->password) && isset($this->usertype)){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
 
 
