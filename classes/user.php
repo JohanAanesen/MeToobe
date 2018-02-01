@@ -39,6 +39,11 @@ class User{
                 unset($_SESSION['userid']);
             } else if (isset($_SESSION['userid'])) {
                 $this->userid = $_SESSION['userid'];
+                $this->userData['email'] = $_SESSION['email'];
+                $this->userData['usertype'] = $_SESSION['usertype'];
+                $this->userData['password'] = $_SESSION['password'];
+                $this->userData['wannabe'] = $_SESSION['wannabe'];
+
             }
         }
     }
@@ -138,6 +143,10 @@ class User{
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 $this->userData = $row;
                 $_SESSION['userid'] = $row['userid'];
+                $_SESSION['email'] = $row['email'];
+                $_SESSION['usertype'] = $row['usertype'];
+                $_SESSION['password'] = $row['password'];
+                $_SESSION['wannabe'] = $row['wannabe'];
                 $this->userid = $row['userid'];
                 return array('status'=>'OK');
             }
