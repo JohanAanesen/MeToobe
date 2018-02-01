@@ -3,11 +3,11 @@ require_once "../classes/DB.php";
 
 class User{
 
-    protected $userid;
-    protected $email;
-    protected $password;
-    protected $usertype;
-    protected $wannabe;
+    private $userid;
+    private $email;
+    private $password;
+    private $usertype;
+    private $wannabe;
 
 
     /**
@@ -68,6 +68,7 @@ class User{
         }
         return false;
     }
+
 
     public function isTeacher(){
         if ($this->failSafe()){
@@ -143,7 +144,9 @@ class User{
         return true;
     }
 
-
+    /**Fail-safe
+     * @return bool
+     */
     function failSafe(){
         if (isset($this->userid) && isset($this->email) && isset($this->password) && isset($this->usertype)){
             return true;
