@@ -1,10 +1,11 @@
 
 DROP SCHEMA
 
-IF EXISTS urgewww;
-	CREATE SCHEMA urgewww COLLATE = utf8_general_ci;
+IF EXISTS urgedb;
+	CREATE SCHEMA urgedb COLLATE = utf8_general_ci;
 
-USE urgewww;
+USE urgedb;
+
 
 CREATE TABLE `Users` (
   `userid` VARCHAR(32),
