@@ -16,23 +16,19 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6 col-sm-12 form-line">
-            <form class="form-signin form-group">
+            <form action="/php/login.php" method="post" class="form-signin form-group">
                 <h2 class="form-signin-heading text-white">Sign in</h2>
-                <label for="inputEmail" class="sr-only">Email address</label>
-                <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
-                <label for="inputPassword" class="sr-only">Password</label>
-                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
-                <div class="checkbox">
-                    <!--    <label>
-                            <input type="checkbox" value="remember-me"> Remember me
-                        </label>-->
-                    </div>
+
+                <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+
+                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+
                 <button class="btn btn-default bg-transparent btn-block border border-white text-white" type="submit">Sign in</button>
             </form>
         </div>
 
         <div class="col-md-6 col-sm-12">
-            <form action="/view/login/register.php" method="post" class="form-signin form-group">
+            <form action="/php/register.php" method="post" class="form-signin form-group">
                 <h2 class="form-signin-heading text-white">Register</h2>
                 <input type="email" name="email" id="registerEmail" class="form-control" placeholder="Email address" required="" autofocus="">
                 <input type="password" name="password" id="registerPassword" class="form-control" placeholder="Password" required="">

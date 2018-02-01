@@ -10,7 +10,7 @@ CREATE TABLE `Users` (
   `userid` VARCHAR(32),
   `email` VARCHAR(64),
   `password` VARCHAR(64),
-  `brukertype` ENUM("admin","teacher", "student"),
+  `usertype` ENUM("admin","teacher", "student"),
   `wannabe` BOOLEAN,
   PRIMARY KEY (`userid`)
 );
