@@ -1,53 +1,78 @@
 <?php
-require_once "../classes/DB.php";
+$ROOT = $_SERVER['DOCUMENT_ROOT'];
+require_once "$ROOT/classes/DB.php";
 
 class User{
 
-    private $userid;
-    private $email;
+    private $userid = "";
+    public $userData = [];
+    private $db;
+  /*  private $email;
     private $password;
     private $usertype;
-    private $wannabe;
+    private $wannabe; */
 
 
     /**
      * User constructor.
-     * @param string $userid User id
-     * @param string $email User email
-     * @param string $password User password
-     * @param string $usertype User type
-     * @param bool $wannabe User wannabe
+     * @param $db
      */
-    function __construct($userid = "", $email, $password, $usertype = 'student', $wannabe = false)
-    {
-        $this->userid = $userid;
-        $this->email = $email;
-        $this->password = $password;
-        $this->usertype = $usertype;
-        $this->wannabe = $wannabe;
+    function __construct($db){
+        $this->db = $db;
+
+        if(isset($_POST['newemail'])){
+            $wannabe = false;
+            if(isset($_POST['isTeacher']) && $_POST['isTeacher'] == 'yes'){
+                $wannabe = true;
+            }
+            if(self::checkUniqueUser($_POST['newemail'])){
+                //adds new user to DB
+                $this->createDBUser($_POST['newemail'], md5($_POST['newpassword']), $wannabe);
+
+                //sets session and stuff..
+                $this->findUser($_POST['newemail'], md5($_POST['newpassword']));
+            }
+        }else{
+            if (isset($_POST['email'])) {
+                $this->findUser($_POST['email'], md5($_POST['password']));
+            } else if (isset($_POST['logout'])) {
+                unset($_SESSION['userid']);
+            } else if (isset($_SESSION['userid'])) {
+                $this->userid = $_SESSION['userid'];
+            }
+        }
+    }
+
+    /** Logged in function, returns true if user is logged in!
+     * @return bool
+     */
+    public function loggedIn(){
+        if ($this->userid != ""){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     /**
-     * @return bool
+     * @param $email
+     * @param $password
+     * @param $wannabe
      */
-    public function createDBUser(){
-        if ($this->failSafe()){
-            try {
-                $db = DB::getDBConnection();
-                //SQL Injection SAFE query method:
-                $query = "INSERT INTO users (userid, email, password, usertype, wannabe) VALUES (?, ?, ?, ?, ?)";
-                $param = array($this->userid, $this->email, $this->password, $this->usertype, $this->wannabe);
-                $stmt = $db->prepare($query);
-                $stmt->execute($param);
-            } catch (PDOException $ex) {
-                echo "Could not register your funny ass"; //Error message
-                return false;
-            }
-            return true;
+    public function createDBUser($email, $password, $wannabe){
+        try {
+            $db = DB::getDBConnection();
+            //SQL Injection SAFE query method:
+            $query = "INSERT INTO users (userid, email, password, usertype, wannabe) VALUES (?, ?, ?, ?, ?)";
+            $param = array(uniqid(), $email, $password, "student", $wannabe);
+            $stmt = $db->prepare($query);
+            $stmt->execute($param);
+        } catch (PDOException $ex) {
+            echo "Could not register your funny ass"; //Error message
         }
-        return false;
-    }
 
+    }
+//DOESNT WORK YET -> needs to be updated :)
     /** Update User in DB
      * @return bool
      */
@@ -57,7 +82,7 @@ class User{
                 $db = DB::getDBConnection();
                 //SQL Injection SAFE query method:
                 $query = "UPDATE users SET password = (?) AND usertype = (?) AND wannabe = (?) WHERE userid = (?)";
-                $param = array($this->password, $this->usertype, $this->wannabe, $this->userid);
+                $param = array($this->userData['password'], $this->userData['usertype'], $this->userData['wannabe'], $this->userData['userid']);
                 $stmt = $db->prepare($query);
                 $stmt->execute($param);
             } catch (PDOException $ex) {
@@ -72,24 +97,24 @@ class User{
 
     public function isTeacher(){
         if ($this->failSafe()){
-            $this->usertype = "teacher";
-            $this->wannabe = false;
+            $this->userData['usertype'] = "teacher";
+            $this->userData['wannabe'] = false;
             $this->updateUser();
         }
     }
 
     public function isStudent(){
         if ($this->failSafe()){
-            $this->usertype = "student";
-            $this->wannabe = false;
+            $this->userData['usertype'] = "student";
+            $this->userData['wannabe'] = false;
             $this->updateUser();
         }
     }
 
     public function isAdmin(){
         if ($this->failSafe()){
-            $this->usertype = "admin";
-            $this->wannabe = false;
+            $this->userData['usertype'] = "admin";
+            $this->userData['wannabe'] = false;
             $this->updateUser();
         }
     }
@@ -98,10 +123,9 @@ class User{
     /**
      * @param $email
      * @param $password
-     * @return User
+     * @return array
      */
-    public static function findUser($email, $password)
-    {
+    public function findUser($email, $password){
         try {
             $db = DB::getDBConnection();
             //SQL Injection SAFE query method:
@@ -112,13 +136,15 @@ class User{
 
             if($stmt->rowCount() == 1) {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                $user = new User($row['userid'],$row['email'],$row['password'],$row['usertype'],$row['wannabe']);
-                return $user;
+                $this->userData = $row;
+                $_SESSION['userid'] = $row['userid'];
+                $this->userid = $row['userid'];
+                return array('status'=>'OK');
             }
         } catch (PDOException $ex) {
-            echo "Could not find user"; //Error message
+            return array('status'=>'FAIL', 'errorMessage'=>'Something went wrong');
         }
-        return null;
+        return array('status'=>'FAIL', 'errorMessage'=>'Wrong Username/Password!');
     }
 
     /**
@@ -148,7 +174,11 @@ class User{
      * @return bool
      */
     function failSafe(){
-        if (isset($this->userid) && isset($this->email) && isset($this->password) && isset($this->usertype)){
+        if (isset($this->userData['userid']) &&
+            isset($this->userData['email']) &&
+            isset($this->userData['password']) &&
+            isset($this->userData['usertype'])){
+
             return true;
         }else{
             return false;
