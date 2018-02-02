@@ -2,10 +2,25 @@
 {% block title %} Upload {% endblock %}
 {% block content %}
 
-  <form action="/php/upload.php" method="post" enctype="multipart/form-data">
-    <label for="pickFile">Velg en fil</label><input type="file" name="fileToUpload" id="pickFile"><br>
-    <label for="descr">Beskrivelse</label><input type="text" name="descr" id="descr"><br>
-    <input type="submit" value="Lagre filen i databasen">
-  </form>
+<div class="jumbotron">
+    <div class="container">
+        <form action="/php/upload.php" method="post" enctype="multipart/form-data">
+            <div class="row col-md-12">
+                <div class="col-md-4">
+                   <label for="fileuploader"><h4 class="other-title">Upload video</h4></label>
+                    <div class="custom-file" id="fileuploader">
+                        <input type="file" class="custom-file-input" id="customFile" name="fileToUpload" accept="video/mp4,video/x-m4v,video/*" required>
+                        <label class="custom-file-label" for="customFile">Choose video</label>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <label for="videotitle"><h4 class="other-title">Title</h4></label><input class="form-control" type="text" name="videotitle" id="videotitle" required><br>
+                    <label for="descr"><h4 class="other-title">Description</h4></label><textarea class="form-control" id="descr" name="descr" rows="3"></textarea><br>
+                    <button type="submit" value="Lagre filen i databasen" class="btn btn-success">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 {% endblock content %}
