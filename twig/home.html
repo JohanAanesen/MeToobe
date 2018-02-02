@@ -5,9 +5,39 @@
 <!-- Main jumbotron -->
 <div class="jumbotron">
     <div class="container">
-        <h1>Holy fucking shit you need to register mate!</h1>
-        <p>Smash this button and get to it.</p>
-        <p><a class="btn btn-success btn-lg" href="/login" role="button">Register »</a></p>
+        {% if loggedin=='yes' %}
+        <h1>Your Subscriptions</h1>
+        <div class="row my-md-1">
+            <div class="col-md-2">
+                <h2 class="lead text-limit">1234567890123456789012345678901234567890</h2>
+                <a href="/video"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+            </div>
+            <div class="col-md-2">
+                <h2 class="lead text-limit">Video 2</h2>
+                <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+            </div>
+            <div class="col-md-2">
+                <h2 class="lead text-limit">Video 3</h2>
+                <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+            </div>
+            <div class="col-md-2">
+                <h2 class="lead text-limit">Video 4</h2>
+                <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+            </div>
+            <div class="col-md-2">
+                <h2 class="lead text-limit">Video 5</h2>
+                <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+            </div>
+            <div class="col-md-2">
+                <h2 class="lead text-limit">Video 6</h2>
+                <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+            </div>
+        </div>
+        {% else %}
+            <h1>Register now!</h1>
+            <p>Smash this button and get to it.</p>
+            <p><a class="btn btn-success btn-lg" href="/login" role="button">Register »</a></p>
+        {% endif %}
     </div>
 </div>
 

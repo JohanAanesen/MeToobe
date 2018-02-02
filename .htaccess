@@ -1,5 +1,6 @@
 RewriteEngine On
 RewriteRule ^video/?$ /view/video/
 RewriteRule ^login/?$ /view/login/
+RewriteRule ^upload/?$ /view/upload/
 RewriteRule ^logout/?$ /php/logout.php
 RewriteRule ^/?$ /view/home/index.php
