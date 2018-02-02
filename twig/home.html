@@ -5,6 +5,33 @@
 <!-- Main jumbotron -->
 <div class="jumbotron">
     <div class="container">
+
+        {% if user['usertype']=='admin' %}
+        <h4>Admin view</h4>
+        <hr>
+            <h5>Wannabe's</h5>
+            <div class="row">
+                <div class="col-md-2">
+                    <p>brede@klausen.no</p>
+                </div>
+                <div class="row col-md-6">
+                    <div class="col-1">
+                        <button type="button" class="btn btn-success btn-sm">Yai!</button>
+                    </div>
+                    <div class="col-1">
+                        <button type="button" class="btn btn-danger btn-sm">Nej!</button>
+                    </div>
+                    <!-- Empty div for spacing -->
+                    <div class="col-1"></div>
+
+                    <div class="col-2">
+                        <button type="button" class="btn btn-warning btn-sm">Admin!</button>
+                    </div>
+                </div>
+
+            </div>
+        <hr>
+        {% endif %}
         {% if loggedin=='yes' %}
         <h1>Your Subscriptions</h1>
         <div class="row my-md-1">
