@@ -9,27 +9,39 @@
         {% if user['usertype']=='admin' %}
         <h4>Admin view</h4>
         <hr>
-            <h5>Wannabe's</h5>
-            <div class="row">
-                <div class="col-md-2">
-                    <p>brede@klausen.no</p>
-                </div>
-                <div class="row col-md-6">
-                    <div class="col-1">
-                        <button type="button" class="btn btn-success btn-sm">Yai!</button>
-                    </div>
-                    <div class="col-1">
-                        <button type="button" class="btn btn-danger btn-sm">Nej!</button>
-                    </div>
-                    <!-- Empty div for spacing -->
-                    <div class="col-1"></div>
+            {% if wannabeBool=='true' %}
+                <h5>Wannabe's</h5>
+                {% for users in wannabeUsers %}
+                    <div class="row">
+                        <div class="col-md-2">
+                            <p>{{ users['email'] }}</p>
+                        </div>
+                        <div class="row col-md-6">
+                            <div class="col-1">
+                                <form action="/php/wannabe.php" method="post" class="form-group">
+                                    <button type="submit" name="yes" value="{{ users['userid'] }}" class="btn btn-success btn-sm">Yai!</button>
+                                </form>
+                            </div>
+                            <div class="col-1">
+                                <form action="/php/wannabe.php" method="post" class="form-group">
+                                    <button type="submit" name="no" value="{{ users['userid'] }}" class="btn btn-danger btn-sm">Nej!</button>
+                                </form>
+                            </div>
+                            <!-- Empty div for spacing -->
+                            <div class="col-1"></div>
 
-                    <div class="col-2">
-                        <button type="button" class="btn btn-warning btn-sm">Admin!</button>
-                    </div>
-                </div>
+                            <div class="col-2">
+                                <form action="/php/wannabe.php" method="post" class="form-group">
+                                    <button type="submit" name="admin" value="{{ users['userid'] }}" class="btn btn-warning btn-sm">Admin!</button>
+                                </form>
+                            </div>
+                        </div>
 
-            </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Nothing new here.</p>
+            {% endif %}
         <hr>
         {% endif %}
         {% if loggedin=='yes' %}

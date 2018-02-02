@@ -19,12 +19,25 @@ $user = new User($db);
 
 $data = [];
 
+$wannabe = array();
+$wannabeBool = false;
+
 if ($user->loggedIn()){
+    if($user->userData['usertype'] == 'admin'){
+        $wannabe = $user->getWannabe();
+    }
+    if(!empty($wannabe)){
+        $wannabeBool = true;
+    }
+
+
     echo $twig->render('home.html', array(
         'title' => 'home',
         'data' => $data,
         'loggedin' => 'yes',
         'user' => $user->userData,
+        'wannabeUsers' => $wannabe,
+        'wannabeBool' => $wannabeBool,
     ));
 }else{
     echo $twig->render('home.html', array(

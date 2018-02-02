@@ -25,7 +25,7 @@ class User{
             if(isset($_POST['isTeacher']) && $_POST['isTeacher'] == 'yes'){
                 $wannabe = true;
             }
-            if(self::checkUniqueUser($_POST['newemail'])){
+            if(self::checkUniqueUser($_POST['newemail'], $db)){
                 //adds new user to DB
                 $this->createDBUser($_POST['newemail'], md5($_POST['newpassword']), $wannabe);
 
@@ -66,7 +66,7 @@ class User{
      */
     public function createDBUser($email, $password, $wannabe){
         try {
-            $db = DB::getDBConnection();
+            $db = $this->db;
             //SQL Injection SAFE query method:
             $query = "INSERT INTO users (userid, email, password, usertype, wannabe) VALUES (?, ?, ?, ?, ?)";
             $param = array(uniqid(), $email, $password, "student", $wannabe);
@@ -84,9 +84,9 @@ class User{
     public function updateUser(){
         if ($this->failSafe()){
             try {
-                $db = DB::getDBConnection();
+                $db = $this->db;
                 //SQL Injection SAFE query method:
-                $query = "UPDATE users SET password = (?) AND usertype = (?) AND wannabe = (?) WHERE userid = (?)";
+                $query = "UPDATE users SET password = (?), usertype = (?), wannabe = (?) WHERE userid = (?)";
                 $param = array($this->userData['password'], $this->userData['usertype'], $this->userData['wannabe'], $this->userData['userid']);
                 $stmt = $db->prepare($query);
                 $stmt->execute($param);
@@ -99,29 +99,27 @@ class User{
         return false;
     }
 
+    /**
+     * @param $userid
+     * @param $usertype
+     * @param $db
+     * @return bool
+     */
+    public static function updateType($userid, $usertype, $db){
+        try{
+            //SQL Injection SAFE query method:
+            $query = "UPDATE users SET usertype = ?, wannabe = ? WHERE userid = (?)";
+            $param = array($usertype, false, $userid);
+            $stmt = $db->prepare($query);
+            $stmt->execute($param);
 
-    public function isTeacher(){
-        if ($this->failSafe()){
-            $this->userData['usertype'] = "teacher";
-            $this->userData['wannabe'] = false;
-            $this->updateUser();
+            if ($stmt->rowCount()==1) {
+                return true;
+            }
+        }catch(PDOException $ex){
+            echo "Something went wrong".$ex; //Error message
         }
-    }
-
-    public function isStudent(){
-        if ($this->failSafe()){
-            $this->userData['usertype'] = "student";
-            $this->userData['wannabe'] = false;
-            $this->updateUser();
-        }
-    }
-
-    public function isAdmin(){
-        if ($this->failSafe()){
-            $this->userData['usertype'] = "admin";
-            $this->userData['wannabe'] = false;
-            $this->updateUser();
-        }
+        return false;
     }
 
 
@@ -132,7 +130,7 @@ class User{
      */
     public function findUser($email, $password){
         try {
-            $db = DB::getDBConnection();
+            $db = $this->db;
             //SQL Injection SAFE query method:
             $query = "SELECT * FROM users WHERE email = (?) AND password = (?)";
             $param = array($email, $password);
@@ -157,12 +155,12 @@ class User{
     }
 
     /**
+     * @param $db
      * @param $email
      * @return bool
      */
-    public static function checkUniqueUser($email){
+    public static function checkUniqueUser($email, $db){
         try{
-            $db = DB::getDBConnection();
             //SQL Injection SAFE query method:
             $query = "SELECT * FROM users WHERE email = (?)";
             $param = array($email);
@@ -178,6 +176,34 @@ class User{
         }
         return true;
     }
+
+    /** getWannabe grabs all wannabe's from the DB
+     * @return array|null
+     */
+    public function getWannabe(){
+        if($this->userData['usertype'] == 'admin'){
+            try{
+                $db = $this->db;
+                //SQL Injection SAFE query method:
+                $query = "SELECT * FROM users WHERE wannabe = (?)";
+                $param = array(true);
+                $stmt = $db->prepare($query);
+                $stmt->execute($param);
+
+                if($stmt->rowCount() > 0) {
+                    $users = array();
+                    while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        $users[] = $row;
+                    }
+                    return $users;
+                }
+            }catch(PDOException $ex){
+                echo "Something went wrong ".$ex; //Error message
+            }
+        }
+        return null;
+    }
+
 
     /**Fail-safe
      * @return bool
