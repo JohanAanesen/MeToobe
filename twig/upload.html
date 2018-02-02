@@ -1,0 +1,11 @@
+{% extends "_base.html" %}
+{% block title %} Upload {% endblock %}
+{% block content %}
+
+  <form action="/php/upload.php" method="post" enctype="multipart/form-data">
+    <label for="pickFile">Velg en fil</label><input type="file" name="fileToUpload" id="pickFile"><br>
+    <label for="descr">Beskrivelse</label><input type="text" name="descr" id="descr"><br>
+    <input type="submit" value="Lagre filen i databasen">
+  </form>
+
+{% endblock content %}
