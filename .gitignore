@@ -8,6 +8,8 @@ uploadedFiles/
 # Movie
 *.mp4
 *.avi
+*.webm
+*.oog
 
 # Twig
 cache/

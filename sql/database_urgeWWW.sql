@@ -21,6 +21,7 @@ CREATE TABLE `Video` (
   `user` VARCHAR(64),
   `name` VARCHAR(64),
   `descr` VARCHAR(512),
+  `mime` VARCHAR(32),
   `views` BIGINT,
   `time` TIMESTAMP,
   PRIMARY KEY (`videoid`),

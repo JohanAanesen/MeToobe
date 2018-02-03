@@ -11,14 +11,16 @@ class Video {
     }
 
     function add($uid, $name, $descr, $mime, $size) {
-        $sql = "INSERT INTO video (videoid, user, name, descr) VALUES (:videoid, :user, :name, :descr)";
+        $sql = "INSERT INTO video (videoid, user, name, descr, mime, views) VALUES (:videoid, :user, :name, :descr, :mime, 0)";
         $sth = $this->db->prepare ($sql);
 
-        $videoid = (string)md5($size . $name . $mime . $uid);
+      //  $videoid = (string)md5($size . $name . $mime . $uid);
+        $videoid = uniqid();
         $sth->bindParam(':videoid', $videoid);
         $sth->bindParam(':user',  $uid);
         $sth->bindParam(':name',  $name);
         $sth->bindParam(':descr', $descr);
+        $sth->bindParam(':mime', $mime);
         $sth->execute();
         
         if ($sth->rowCount() === 1) {  
@@ -29,7 +31,7 @@ class Video {
     }
 
     function delete($videoid) {
-        $sql = "delete from video where id=:videoid";
+        $sql = "delete from video where videoid=:videoid";
         $sth = $this->db->prepare($sql);
         $sth->bindParam(':videoid', $videoid);
         $sth->execute();
@@ -40,6 +42,11 @@ class Video {
       */
     function saveToFile($uid, $videoid, $tmp_filepath, $mime) {
         $ROOT = $_SERVER['DOCUMENT_ROOT'];
+
+        if (!file_exists("$ROOT/uploadedFiles")){
+            @mkdir("$ROOT/uploadedFiles");
+        }
+
         $upload_dir = "$ROOT/uploadedFiles/$uid";
         $extension = "";
         // CREATE DIRECTORY IF DOES NOT EXIST
@@ -48,11 +55,12 @@ class Video {
         }
 
         // Add extension to the video, to know how to play it back.
-        if ($mime === "video/quicktime") {
-            $extension .= "video.quicktime";
-        }
-        else {
-            $extension .= "video.generic";
+        if ($mime == "video/mp4") {
+            $extension .= "mp4";
+        } else if($mime == "video/webm") {
+            $extension .= "webm";
+        } else if($mime == "video/ogg") {
+            $extension .= "ogg";
         }
 
         // MOVE FILE FROM TEMP-DIRECTORY to UPLOAD-DIRECTORY
@@ -61,4 +69,50 @@ class Video {
         }
         return 0;
     }
+
+    /**
+     * @param $videoid
+     * @return array|null
+     */
+    public function findVideo($videoid){
+        try{
+            //SQL Injection SAFE query method:
+            $query = "SELECT * FROM video WHERE videoid = (?)";
+            $param = array($videoid);
+            $stmt = $this->db->prepare($query);
+            $stmt->execute($param);
+
+            if ($stmt->rowCount()==1) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                if($row){
+                    return $row;
+                }
+            }
+        }catch(PDOException $ex){
+            echo "Something went wrong".$ex; //Error message
+        }
+        return null;
+    }
+
+    /**
+     * @param $videoid
+     * @return bool
+     */
+    public function viewCountPlus($videoid){
+        try{
+            //SQL Injection SAFE query method:
+            $query = "UPDATE video SET views=views+1 WHERE videoid = (?)";
+            $param = array($videoid);
+            $stmt = $this->db->prepare($query);
+            $stmt->execute($param);
+
+            if ($stmt->rowCount()==1) {
+                return true;
+            }
+        }catch(PDOException $ex){
+            echo "Something went wrong".$ex; //Error message
+        }
+        return false;
+    }
+
 };

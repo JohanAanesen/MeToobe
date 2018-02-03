@@ -27,11 +27,12 @@ $mime    = $_FILES['fileToUpload']['type'];
 $name    = $_FILES['fileToUpload']['name'];
 $size    = $_FILES['fileToUpload']['size'];
 $descr   = $_POST['descr'];
+$title   = $_POST['videotitle'];
 
 $db = DB::getDBConnection();
 $video = new Video($db);
 
-$videoid = $video->add($uid, $name, $descr, $mime, $size); 
+$videoid = $video->add($uid, $title, $descr, $mime, $size);
 if ($videoid === 0) {
     echo 'ERROR - $videoid === 0 - video->add() went wrong.';
     exit();
