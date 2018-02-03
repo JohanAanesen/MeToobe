@@ -17,10 +17,10 @@ CREATE TABLE `Users` (
 );
 
 CREATE TABLE `Video` (
-  `videoid` BIGINT,
+  `videoid` CHAR(32),
   `user` VARCHAR(64),
   `name` VARCHAR(64),
-  `desc` VARCHAR(512),
+  `descr` VARCHAR(512),
   `views` BIGINT,
   `time` TIMESTAMP,
   PRIMARY KEY (`videoid`),
@@ -29,7 +29,7 @@ CREATE TABLE `Video` (
 
 CREATE TABLE `UserLike` (
   `user` VARCHAR(32),
-  `video` BIGINT,
+  `video` CHAR(32),
   FOREIGN KEY (`user`) REFERENCES Users(userid),
   FOREIGN KEY (`video`) REFERENCES Video(videoid)
 );
@@ -53,7 +53,7 @@ CREATE TABLE `UserSubscribe` (
 CREATE TABLE `Comments` (
   `commentid` BIGINT,
   `user` VARCHAR(64),
-  `video` BIGINT,
+  `video` CHAR(32),
   `comment` VARCHAR(64),
   `time` TIMESTAMP,
   PRIMARY KEY (`commentid`),
@@ -62,7 +62,7 @@ CREATE TABLE `Comments` (
 );
 
 CREATE TABLE `VideoPlaylist` (
-  `video` BIGINT,
+  `video` CHAR(32),
   `playlist` BIGINT,
   FOREIGN KEY (`video`) REFERENCES Video(videoid),
   FOREIGN KEY (`playlist`) REFERENCES Playlist(playlistid)
