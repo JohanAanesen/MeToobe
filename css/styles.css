@@ -82,3 +82,7 @@
 .link-line-none{
     text-decoration: none !important
 }
+
+.custom-file-label {
+    overflow: hidden;
+}

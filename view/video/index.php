@@ -16,9 +16,17 @@ $data = [];
 
 $video = new Video($db);
 
-$video->viewCountPlus($_GET['id']);
+$videoData = null;
 
-$videoData = $video->findVideo($_GET['id']);
+
+//if videoid is not set, return user to frontpage.
+if (isset($_GET['id'])){
+    $video->viewCountPlus($_GET['id']);
+
+    $videoData = $video->findVideo($_GET['id']);
+}else{
+    header("Location: /");
+}
 
 
 
