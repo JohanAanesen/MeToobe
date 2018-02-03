@@ -9,7 +9,7 @@ uploadedFiles/
 *.mp4
 *.avi
 *.webm
-*.oog
+*.ogg
 
 # Twig
 cache/
