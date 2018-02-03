@@ -115,4 +115,49 @@ class Video {
         return false;
     }
 
+    /**
+     * @param $db
+     * @param $videoid
+     * @return null
+     */
+    public static function findLikes($db, $videoid){
+        try{
+            //SQL Injection SAFE query method:
+            $query = "SELECT * FROM userlike WHERE video = (?)";
+            $param = array($videoid);
+            $stmt = $db->prepare($query);
+            $stmt->execute($param);
+
+            if ($stmt->rowCount()>0) {
+                $users = array();
+                while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $users[] = $row;
+                }
+                return $users;
+            }
+        }catch(PDOException $ex){
+            echo "Something went wrong".$ex; //Error message
+        }
+        return null;
+    }
+
+    /**
+     * @param $db
+     * @param $videoid
+     * @param $userid
+     * @param $like
+     */
+    public static function videoVote($db, $videoid, $userid, $like){
+        try{
+            //SQL Injection SAFE query method:
+            $query = "INSERT INTO userlike (userid, video, vote) VALUES (?, ?, ?)";
+            $param = array($userid, $videoid, $like);
+            $stmt = $db->prepare($query);
+            $stmt->execute($param);
+
+        }catch(PDOException $ex){
+            echo "Something went wrong".$ex; //Error message
+        }
+    }
+
 };

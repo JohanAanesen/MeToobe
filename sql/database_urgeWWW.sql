@@ -29,9 +29,10 @@ CREATE TABLE `Video` (
 );
 
 CREATE TABLE `UserLike` (
-  `user` VARCHAR(32),
+  `userid` VARCHAR(32),
   `video` CHAR(32),
-  FOREIGN KEY (`user`) REFERENCES Users(userid),
+  `vote` BOOLEAN,
+  FOREIGN KEY (`userid`) REFERENCES Users(userid),
   FOREIGN KEY (`video`) REFERENCES Video(videoid)
 );
 

@@ -18,12 +18,38 @@ $video = new Video($db);
 
 $videoData = null;
 
+$likes = 0;
+$dislikes = 0;
+$hasLiked = false;
+
+if (isset($_POST['upvote'])){
+    Video::videoVote($db, $_GET['id'], $_SESSION['userid'], true);
+}else if(isset($_POST['downvote'])){
+    Video::videoVote($db, $_GET['id'], $_SESSION['userid'], false);
+}
+
 
 //if videoid is not set, return user to frontpage.
 if (isset($_GET['id'])){
     $video->viewCountPlus($_GET['id']);
 
     $videoData = $video->findVideo($_GET['id']);
+
+    $videoLikes = Video::findLikes($db, $_GET['id']);
+    if(isset($videoLikes)){
+        foreach ($videoLikes as $like){
+            if ($like['vote']==true){
+                $likes++;
+            }else if($like['vote']==false){
+                $dislikes++;
+            }
+
+            if($like['userid']==$_SESSION['userid']){
+                $hasLiked = true;
+            }
+
+        }
+    }
 }else{
     header("Location: /");
 }
@@ -37,6 +63,9 @@ if ($user->loggedIn()){
         'loggedin' => 'yes',
         'user' => $user->userData,
         'videoData' => $videoData,
+        'likes' => $likes,
+        'dislikes' => $dislikes,
+        'hasLiked' => $hasLiked,
     ));
 }else{
     echo $twig->render('video.html', array(
@@ -44,5 +73,7 @@ if ($user->loggedIn()){
         'data' => $data,
         'loggedin' => 'no',
         'videoData' => $videoData,
+        'likes' => $likes,
+        'dislikes' => $dislikes,
     ));
 }

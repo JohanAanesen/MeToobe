@@ -16,20 +16,34 @@
 
 
         <div class="row col-md-12">
-            <div class="row col-md-10">
-                <h2 class="other-title">Views: </h2>
-                <h4>{{ videoData['views'] }}</h4>
+            <div class="row col-md-8">
+                <p class="other-title">Views:</p>
+                <p class="other-title text-dark">{{ videoData['views'] }}</p>
             </div>
-            <div class="col-md-1">
-                <button type="button" class="btn btn-success btn-sm">
-                    <img src="/icon/arrow-up.png" aria-hidden="true">
-                </button>
-            </div>
+            <div class="row col-md-4 justify-content-end">
+                <div>
+                    <p class="other-title text-success">{{ likes }}</p>
+                </div>
+                <div class="col-1"></div>
+                <div>
+                    <form action="/video?id={{ videoData['videoid'] }}" method="POST">
+                        <button type="submit" name="upvote" value="upvote" class="btn btn-success btn-sm">
+                            <img src="/icon/arrow-up.png" aria-hidden="true">
+                        </button>
+                    </form>
+                </div>
 
-            <div class="col-md-1">
-                <button type="button" class="btn btn-danger btn-sm">
-                    <img src="/icon/arrow-down.png" aria-hidden="true">
-                </button>
+                <div>
+                    <form action="/video?id={{ videoData['videoid'] }}" method="POST">
+                        <button type="submit" name="downvote" value="downvote" class="button btn btn-danger btn-sm">
+                            <img src="/icon/arrow-down.png" aria-hidden="true">
+                        </button>
+                    </form>
+                </div>
+                <div class="col-1"></div>
+                <div>
+                    <p class="other-title text-danger">{{ dislikes }}  </p>
+                </div>
             </div>
         </div>
         <hr>
