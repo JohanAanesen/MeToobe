@@ -22,9 +22,9 @@ $likes = 0;
 $dislikes = 0;
 $hasLiked = false;
 
-if (isset($_POST['upvote'])){
+if (isset($_POST['upvote']) && isset($_POST['id'])){
     Video::videoVote($db, $_GET['id'], $_SESSION['userid'], true);
-}else if(isset($_POST['downvote'])){
+}else if(isset($_POST['downvote']) && isset($_POST['id'])){
     Video::videoVote($db, $_GET['id'], $_SESSION['userid'], false);
 }
 
