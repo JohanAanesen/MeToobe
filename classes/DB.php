@@ -13,6 +13,8 @@ class DB {
     private function __construct() {
         try {
             $this->dbh = new PDO($this->dsn, $this->user, $this->password);
+            $this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // @debug magic
+
         } catch (PDOException $e) {
             // NOTE IKKE BRUK DETTE I PRODUKSJON
             echo 'Connection failed: ' . $e->getMessage();
