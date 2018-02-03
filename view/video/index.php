@@ -3,14 +3,9 @@ session_start();
 
 $ROOT = $_SERVER['DOCUMENT_ROOT'];
 
-require_once "$ROOT/vendor/autoload.php";
+require_once "$ROOT/php/twigloader.php";
 require_once "$ROOT/classes/DB.php";
 require_once "$ROOT/classes/user.php";
-
-$loader = new Twig_Loader_Filesystem("$ROOT/twig");
-$twig = new Twig_Environment($loader, array(
-// 'cache' => './cache', /* Only enable cache when everything works correctly */
-));
 
 $db = DB::getDBConnection();
 
