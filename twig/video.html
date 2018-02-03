@@ -21,16 +21,22 @@
                 <h4>{{ videoData['views'] }}</h4>
             </div>
             <div class="col-md-1">
-                <button type="button" class="btn btn-success">
+                <button type="button" class="btn btn-success btn-sm">
                     <img src="/icon/arrow-up.png" aria-hidden="true">
                 </button>
             </div>
 
             <div class="col-md-1">
-                <button type="button" class="btn btn-danger">
+                <button type="button" class="btn btn-danger btn-sm">
                     <img src="/icon/arrow-down.png" aria-hidden="true">
                 </button>
             </div>
+        </div>
+        <hr>
+        <div class="col-md-12 ">
+            <h2 class="other-title">Description</h2>
+
+            <p>{{ videoData['descr'] }}</p>
         </div>
     </div>
 </div>
