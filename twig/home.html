@@ -88,30 +88,19 @@
 
     <!-- Example row of columns -->
     <div class="row my-md-1">
+        {% if newVideos=='no' %}
         <div class="col-md-4">
-            <h2 class="lead text-limit">1234567890123456789012345678901234567890</h2>
-            <a href="/video"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+            <h2 class="other-title">No videos available.</h2>
         </div>
+        {% else %}
+
+        {% for video in newVideos %}
         <div class="col-md-4">
-            <h2 class="lead text-limit">Video 2</h2>
-           <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+            <h2 class="lead text-limit">{{ video['name'] }}</h2>
+            <a href="/video?id={{ video['videoid'] }}"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
         </div>
-        <div class="col-md-4">
-            <h2 class="lead text-limit">Video 3</h2>
-           <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
-        </div>
-        <div class="col-md-4">
-            <h2 class="lead text-limit">Video 4</h2>
-           <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
-        </div>
-        <div class="col-md-4">
-            <h2 class="lead text-limit">Video 5</h2>
-           <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
-        </div>
-        <div class="col-md-4">
-            <h2 class="lead text-limit">Video 6</h2>
-           <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
-        </div>
+        {% endfor %}
+        {% endif %}
     </div>
 
 </div> <!-- /container -->

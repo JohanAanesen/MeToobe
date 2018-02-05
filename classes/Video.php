@@ -95,6 +95,32 @@ class Video {
     }
 
     /**
+     * @param $db
+     * @return array|null
+     */
+    public static function getNewVideos($db){
+        try{
+            //SQL Injection SAFE query method:
+            $query = "SELECT videoid, name FROM video ORDER BY time DESC LIMIT 6";
+            $param = array();
+            $stmt = $db->prepare($query);
+            $stmt->execute($param);
+
+            if ($stmt->rowCount()>0) {
+                $videos = array();
+                while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $videos[] = $row;
+                }
+                return $videos;
+            }
+        }catch(PDOException $ex){
+            echo "Something went wrong".$ex; //Error message
+        }
+        return null;
+    }
+
+
+    /**
      * @param $videoid
      * @return bool
      */

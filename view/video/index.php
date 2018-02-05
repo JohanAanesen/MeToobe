@@ -23,9 +23,9 @@ $dislikes = 0;
 $hasLiked = false;
 
 if($user->loggedIn()){
-    if (isset($_POST['upvote']) && isset($_POST['id'])){
+    if (isset($_POST['upvote']) && isset($_GET['id'])){
         Video::videoVote($db, $_GET['id'], $_SESSION['userid'], true);
-    }else if(isset($_POST['downvote']) && isset($_POST['id'])){
+    }else if(isset($_POST['downvote']) && isset($_GET['id'])){
         Video::videoVote($db, $_GET['id'], $_SESSION['userid'], false);
     }
 }
@@ -44,11 +44,11 @@ if (isset($_GET['id'])){
             }else if($like['vote']==false){
                 $dislikes++;
             }
-
-            if($like['userid']==$_SESSION['userid']){
-                $hasLiked = true;
+            if(isset($_SESSION['userid'])) {
+                if ($like['userid'] == $_SESSION['userid']) {
+                    $hasLiked = true;
+                }
             }
-
         }
     }
 }else{
