@@ -2,10 +2,11 @@
 
 class Comment {
     public static function add($db, $userid, $videoid, $comment) {
-        $commentid = uniqid();
+        $commentid = uniqid(rand(10000,99999), true);
 
         $sql = "INSERT INTO Comments (commentid, user, video, comment) VALUES (?, ?, ?, ?)";
         $stmt = $db->prepare($sql);
+
         $param = array($commentid, $userid, $videoid, $comment);
         $stmt->execute($param);
 

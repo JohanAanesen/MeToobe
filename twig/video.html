@@ -80,6 +80,17 @@
                 <h1 class="display-4">Comments</h1>
             </div>
 
+            <form class="comment-submit" action="/php/postComment.php?videoid={{ videoData['videoid'] }}" method="post">
+                <div class="form-group">
+                  <label for="comment">Comment:</label>
+                  <textarea class="form-control" rows="5" id="textarea-comment" name="comment"></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Submit</button>
+            </form>
+
+            <br>
+            <br>
+
             {# If there are no comments, we display an error message to the user. #}
             {% if comments == null %}
             <div class="comment">
