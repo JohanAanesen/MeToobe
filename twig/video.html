@@ -80,23 +80,25 @@
                 <h1 class="display-4">Comments</h1>
             </div>
 
+            {# If there are no comments, we display an error message to the user. #}
+            {% if comments == null %}
+            <div class="comment">
+                <p class="comment-name">Thats a shame....</p>
+                <p class="comment-text">No comment found for this video...</p>
+            </div>
 
-            <div class="comment">
-                <p class="comment-name">Ola Normann</p>
-                <p class="comment-text">This is the shittiest fucking video I've ever fucking seen, kill yourself!</p>
-            </div>
-            <div class="comment">
-                <p class="comment-name">Ola Normann</p>
-                <p class="comment-text">This is the shittiest fucking video I've ever fucking seen, kill yourself!</p>
-            </div>
-            <div class="comment">
-                <p class="comment-name">Ola Normann</p>
-                <p class="comment-text">This is the shittiest fucking video I've ever fucking seen, kill yourself!</p>
-            </div>
-            <div class="comment">
-                <p class="comment-name">Ola Normann</p>
-                <p class="comment-text">This is the shittiest fucking video I've ever fucking seen, kill yourself!</p>
-            </div>
+            {# else, we want to loop through each comment and display them on the screen. #}
+            {% else %}
+                {% for commentdata in comments %}
+                <div class="comment">
+                    <p class="comment-name">{{ user.email }}</p>
+                    <p class="comment-text">{{ commentdata.comment }}</p>
+                    <p class="comment-time">{{ commentdata.time }}</p>
+                </div>
+                {% endfor %}
+            {% endif %}
+
+
         </div>
         <div class="col-md-3 col-xs-12">
             <div class="col-12 ml-lg-0">

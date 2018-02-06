@@ -1,17 +1,24 @@
 <?php
 session_start();
 
-$ROOT = $_SERVER['DOCUMENT_ROOT'];
+$ROOT    = $_SERVER['DOCUMENT_ROOT'];
+$userid  = $_SESSION['userid'];
+$videoid = $_GET['id'];
+
+//if videoid is not set, return user to frontpage.
+if (!isset($videoid)){
+    header("Location: /");
+    exit();
+}
 
 require_once "$ROOT/php/twigloader.php";
 require_once "$ROOT/classes/DB.php";
 require_once "$ROOT/classes/user.php";
 require_once "$ROOT/classes/Video.php";
+require_once "$ROOT/classes/Comment.php";
 
 $db = DB::getDBConnection();
-
 $user = new User($db);
-
 $data = [];
 
 $videoData = null;
@@ -21,39 +28,43 @@ $dislikes = 0;
 $hasLiked = false;
 
 if($user->loggedIn()){
-    if (isset($_POST['upvote']) && isset($_GET['id'])){
-        Video::videoVote($db, $_GET['id'], $_SESSION['userid'], true);
-    }else if(isset($_POST['downvote']) && isset($_GET['id'])){
-        Video::videoVote($db, $_GET['id'], $_SESSION['userid'], false);
+    if (isset($_POST['upvote'])){
+        Video::videoVote($db, $videoid, $userid, true);
+    }else if(isset($_POST['downvote'])){
+        Video::videoVote($db, $videoid, $userid, false);
     }
 }
 
-//if videoid is not set, return user to frontpage.
-if (isset($_GET['id'])){
-    Video::viewCountPlus($db, $_GET['id']);
 
-    $videoData = Video::findVideo($db, $_GET['id']);
-    $videoLikes = Video::findLikes($db, $_GET['id']);
+//
+// Load specific video, with corresponding data
+//
+Video::viewCountPlus($db, $videoid);
 
-    if(isset($videoLikes)){
-        foreach ($videoLikes as $like){
-            if ($like['vote']==true){
-                $likes++;
-            }else if($like['vote']==false){
-                $dislikes++;
-            }
-            if(isset($_SESSION['userid'])) {
-                if ($like['userid'] == $_SESSION['userid']) {
-                    $hasLiked = true;
-                }
+$videoData = Video::findVideo($db, $videoid);
+$videoLikes = Video::findLikes($db, $videoid);
+
+if(isset($videoLikes)){
+    foreach ($videoLikes as $like){
+        if ($like['vote']==true){
+            $likes++;
+        }else if($like['vote']==false){
+            $dislikes++;
+        }
+        if(isset($userid)) {
+            if ($like['userid'] == $userid) {
+                $hasLiked = true;
             }
         }
     }
-}else{
-    header("Location: /");
 }
 
 
+//
+// Load video comments
+//
+
+$comments = Comment::get($db, $videoid);
 
 if ($user->loggedIn()){
     echo $twig->render('video.html', array(
@@ -65,8 +76,9 @@ if ($user->loggedIn()){
         'likes' => $likes,
         'dislikes' => $dislikes,
         'hasLiked' => $hasLiked,
+        'comments' => $comments,
     ));
-}else{
+} else {
     echo $twig->render('video.html', array(
         'title' => 'home',
         'data' => $data,
@@ -74,5 +86,6 @@ if ($user->loggedIn()){
         'videoData' => $videoData,
         'likes' => $likes,
         'dislikes' => $dislikes,
+        'comments' => $comments
     ));
 }
