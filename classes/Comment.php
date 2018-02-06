@@ -24,7 +24,10 @@ class Comment {
     }
 
     public static function get($db, $videoid) {
-        $sql = "SELECT * FROM Comments WHERE video=? ORDER BY time DESC"; 
+        $sql = "SELECT commentid ,user, video, comment, time, email 
+                FROM Comments 
+                INNER JOIN users ON comments.user = users.userid
+                WHERE video=(?) ORDER BY time DESC";
         
         $stmt = $db->prepare($sql);
         $param = array($videoid);

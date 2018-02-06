@@ -102,7 +102,7 @@
             {% else %}
                 {% for commentdata in comments %}
                 <div class="comment">
-                    <p class="comment-name">{{ user.email }}</p>
+                    <p class="comment-name">{{ commentdata.email }}</p>
                     <p class="comment-text">{{ commentdata.comment }}</p>
                     <p class="comment-time" style="font-size: 10px; color: grey;">{{ commentdata.time }}</p>
                 </div>

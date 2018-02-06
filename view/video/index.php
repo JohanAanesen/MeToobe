@@ -23,9 +23,7 @@ if($user->loggedIn()) {
     $userid = $_SESSION['userid'];
 }
 $data = [];
-
 $videoData = null;
-
 $likes = 0;
 $dislikes = 0;
 $hasLiked = false;
@@ -43,8 +41,10 @@ if($user->loggedIn()){
 //
 // Load specific video, with corresponding data
 //
+// View-counter
 Video::viewCountPlus($db, $videoid);
 
+// Video title, desc, likes fetched from db
 $videoData = Video::findVideo($db, $videoid);
 $videoLikes = Video::findLikes($db, $videoid);
 
@@ -57,6 +57,7 @@ if(isset($videoLikes)){
             $dislikes++;
         }
         if(isset($userid)) {
+            //if hasLiked is true, the rendered buttons will not post the correct codes
             if ($like['userid'] == $userid) {
                 $hasLiked = true;
             }
@@ -64,13 +65,15 @@ if(isset($videoLikes)){
     }
 }
 
-
 //
 // Load video comments
 //
-
 $comments = Comment::get($db, $videoid);
 
+
+//
+// Twig render
+//
 if ($user->loggedIn()){
     echo $twig->render('video.html', array(
         'title' => 'home',

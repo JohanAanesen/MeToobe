@@ -204,6 +204,23 @@ class User{
         return null;
     }
 
+    public static function getEmail($db, $userid){
+        try{
+            //SQL Injection SAFE query method:
+            $query = "SELECT DISTINCT email FROM users WHERE userid = (?) LIMIT 1";
+            $param = array($userid);
+            $stmt = $db->prepare($query);
+            $stmt->execute($param);
+
+            if($stmt->rowCount() > 0) {
+                return $stmt->fetch(PDO::FETCH_ASSOC);
+            }
+        }catch(PDOException $ex){
+            echo "Can't get users email. Something went wrong!"; //Error message
+        }
+        return null;
+    }
+
 
     /**Fail-safe
      * @return bool
