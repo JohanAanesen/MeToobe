@@ -18,11 +18,10 @@ class Video {
         $sth->bindParam(':mime', $mime);
         $sth->execute();
         
-        if ($sth->rowCount() === 1) {  
-            assert($videoid === $db->lastInsertId());
-            return $videoid;
+        if ($sth->rowCount() !== 1) {  
+            return 0;
         }
-        return 0;
+        return $videoid;
     }
 
     public static function delete($db, $videoid) {
