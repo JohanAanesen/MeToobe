@@ -30,20 +30,19 @@ $descr   = $_POST['descr'];
 $title   = $_POST['videotitle'];
 
 $db = DB::getDBConnection();
-$video = new Video($db);
 
 // failsafe
 if ($mime == 'video/mp4' || $mime == 'video/webm' || $mime == 'video/ogg'){
-    $videoid = $video->add($uid, $title, $descr, $mime, $size);
+    $videoid = Video::add($db, $uid, $title, $descr, $mime, $size);
     if ($videoid === 0) {
-        echo 'ERROR - $videoid === 0 - video->add() went wrong.';
+        echo 'ERROR - $videoid === 0 - Video::add() went wrong.';
         exit();
     }
 
-    $result = $video->saveToFile($uid, $videoid, $tmp_filepath, $mime);
+    $result = Video::saveToFile($uid, $videoid, $tmp_filepath, $mime);
     if ($result === 0) {
-        $video->delete($videoid);
-        echo 'ERROR - $result = $video->saveToFile() - Unable to move uploaded file to destination folder.';
+        Video::delete($db, $videoid);
+        echo 'ERROR - $result = Video::saveToFile() - Unable to move uploaded file to destination folder.';
         exit();
     }
 

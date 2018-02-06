@@ -4,15 +4,10 @@
   *  class Video
   */
 class Video {
-    private $db;
 
-    function __construct($db) {
-        $this->db = $db;
-    }
-
-    function add($uid, $name, $descr, $mime, $size) {
+    public static function add($db, $uid, $name, $descr, $mime, $size) {
         $sql = "INSERT INTO video (videoid, user, name, descr, mime, views) VALUES (:videoid, :user, :name, :descr, :mime, 0)";
-        $sth = $this->db->prepare ($sql);
+        $sth = $db->prepare ($sql);
 
       //  $videoid = (string)md5($size . $name . $mime . $uid);
         $videoid = uniqid();
@@ -24,15 +19,15 @@ class Video {
         $sth->execute();
         
         if ($sth->rowCount() === 1) {  
-            assert($videoid === $this->db->lastInsertId());
+            assert($videoid === $db->lastInsertId());
             return $videoid;
         }
         return 0;
     }
 
-    function delete($videoid) {
+    public static function delete($db, $videoid) {
         $sql = "delete from video where videoid=:videoid";
-        $sth = $this->db->prepare($sql);
+        $sth = $db->prepare($sql);
         $sth->bindParam(':videoid', $videoid);
         $sth->execute();
     }
@@ -40,7 +35,7 @@ class Video {
     /**
       * Saves a video to the filesystem.
       */
-    function saveToFile($uid, $videoid, $tmp_filepath, $mime) {
+    public static function saveToFile($uid, $videoid, $tmp_filepath, $mime) {
         $ROOT = $_SERVER['DOCUMENT_ROOT'];
 
         if (!file_exists("$ROOT/uploadedFiles")){
@@ -74,12 +69,12 @@ class Video {
      * @param $videoid
      * @return array|null
      */
-    public function findVideo($videoid){
+    public static function findVideo($db, $videoid){
         try{
             //SQL Injection SAFE query method:
             $query = "SELECT * FROM video WHERE videoid = (?)";
             $param = array($videoid);
-            $stmt = $this->db->prepare($query);
+            $stmt = $db->prepare($query);
             $stmt->execute($param);
 
             if ($stmt->rowCount()==1) {
@@ -124,12 +119,12 @@ class Video {
      * @param $videoid
      * @return bool
      */
-    public function viewCountPlus($videoid){
+    public static function viewCountPlus($db, $videoid){
         try{
             //SQL Injection SAFE query method:
             $query = "UPDATE video SET views=views+1 WHERE videoid = (?)";
             $param = array($videoid);
-            $stmt = $this->db->prepare($query);
+            $stmt = $db->prepare($query);
             $stmt->execute($param);
 
             if ($stmt->rowCount()==1) {

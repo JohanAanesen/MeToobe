@@ -14,8 +14,6 @@ $user = new User($db);
 
 $data = [];
 
-$video = new Video($db);
-
 $videoData = null;
 
 $likes = 0;
@@ -32,11 +30,11 @@ if($user->loggedIn()){
 
 //if videoid is not set, return user to frontpage.
 if (isset($_GET['id'])){
-    $video->viewCountPlus($_GET['id']);
+    Video::viewCountPlus($db, $_GET['id']);
 
-    $videoData = $video->findVideo($_GET['id']);
-
+    $videoData = Video::findVideo($db, $_GET['id']);
     $videoLikes = Video::findLikes($db, $_GET['id']);
+
     if(isset($videoLikes)){
         foreach ($videoLikes as $like){
             if ($like['vote']==true){
