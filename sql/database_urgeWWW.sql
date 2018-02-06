@@ -23,7 +23,7 @@ CREATE TABLE `Video` (
   `descr` VARCHAR(512),
   `mime` VARCHAR(32),
   `views` BIGINT,
-  `time` TIMESTAMP,
+  `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`videoid`),
   FOREIGN KEY (`user`) REFERENCES Users(userid)
 );
@@ -57,7 +57,7 @@ CREATE TABLE `Comments` (
   `user` VARCHAR(64),
   `video` CHAR(32),
   `comment` VARCHAR(64),
-  `time` TIMESTAMP,
+  `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`commentid`),
   FOREIGN KEY (`user`) REFERENCES Users(userid),
   FOREIGN KEY (`video`) REFERENCES Video(videoid)
