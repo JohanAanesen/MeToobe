@@ -20,6 +20,9 @@ class User{
     function __construct($db){
         $this->db = $db;
 
+        //
+        // REGISTER NEW USER
+        //
         if(isset($_POST['newemail'])){
             $wannabe = false;
             if(isset($_POST['isTeacher']) && $_POST['isTeacher'] == 'yes'){
@@ -32,7 +35,11 @@ class User{
                 //sets session and stuff..
                 $this->findUser($_POST['newemail'], md5($_POST['newpassword']));
             }
-        }else{
+        }
+        //
+        // LOG IN EXISTING USER
+        //
+        else {
             if (isset($_POST['email'])) {
                 $this->findUser($_POST['email'], md5($_POST['password']));
             } else if (isset($_POST['logout'])) {

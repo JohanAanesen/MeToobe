@@ -18,7 +18,7 @@ if ( !isset($_FILES['fileToUpload']) ) {
 $tmp_filepath = $_FILES['fileToUpload']['tmp_name'];
 
 if (!is_uploaded_file($tmp_filepath)) {
-    echo 'ERROR - !is_uploaded_file($tmp_filepath) -  The file was not uploaded using HTTP POST';
+    echo 'ERROR - !is_uploaded_file($tmp_filepath)';
     exit();
 }
 
