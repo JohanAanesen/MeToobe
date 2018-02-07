@@ -7,65 +7,70 @@ IF EXISTS urgedb;
 USE urgedb;
 
 
-CREATE TABLE `Users` (
-  `userid` VARCHAR(32),
-  `email` VARCHAR(64),
-  `password` VARCHAR(64),
-  `usertype` ENUM("admin","teacher", "student"),
-  `wannabe` BOOLEAN,
-  PRIMARY KEY (`userid`)
+CREATE TABLE `User` (
+  `id` 				VARCHAR(64) NOT NULL,
+  `email` 		VARCHAR(64) NOT NULL,
+  `password` 	VARCHAR(64) NOT NULL,
+  `usertype` 	ENUM("admin","teacher", "student") NOT NULL,
+  `wannabe` 	BOOLEAN,
+  PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `Video` (
-  `videoid` CHAR(32),
-  `user` VARCHAR(64),
-  `name` VARCHAR(64),
-  `descr` VARCHAR(512),
-  `mime` VARCHAR(32),
-  `views` BIGINT,
-  `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`videoid`),
-  FOREIGN KEY (`user`) REFERENCES Users(userid)
+  `id` 					VARCHAR(64) NOT NULL,
+  `userid` 			VARCHAR(64) NOT NULL,
+  `name` 				VARCHAR(64) NOT NULL,
+	`course`			VARCHAR(64),
+	`topic`				VARCHAR(64),
+  `description` VARCHAR(512),
+  `mime` 				VARCHAR(64),
+  `views` 			BIGINT NOT NULL,
+  `time` 				TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`userid`) REFERENCES User(id)
 );
 
 CREATE TABLE `UserLike` (
-  `userid` VARCHAR(32),
-  `video` CHAR(32),
-  `vote` BOOLEAN,
-  FOREIGN KEY (`userid`) REFERENCES Users(userid),
-  FOREIGN KEY (`video`) REFERENCES Video(videoid)
+  `userid` 		VARCHAR(64) NOT NULL,
+  `videoid` 	VARCHAR(64) NOT NULL,
+  `vote` 			BOOLEAN NOT NULL,
+  FOREIGN KEY (`userid`) REFERENCES User(id),
+  FOREIGN KEY (`videoid`) REFERENCES Video(id)
 );
 
 CREATE TABLE `Playlist` (
-  `playlistid` BIGINT,
-  `user` VARCHAR(64),
-  `title` VARCHAR(64),
-  `desc` VARCHAR(512),
-  PRIMARY KEY (`playlistid`),
-  FOREIGN KEY (`user`) REFERENCES Users(userid)
+  `id` 					VARCHAR(64) NOT NULL,
+  `userid` 			VARCHAR(64) NOT NULL,
+  `title` 			VARCHAR(64) NOT NULL,
+  `description` VARCHAR(512),
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`userid`) REFERENCES User(id)
 );
 
 CREATE TABLE `UserSubscribe` (
-  `userid` VARCHAR(64),
-  `playlistid` BIGINT,
-  FOREIGN KEY (`userid`) REFERENCES Users(userid),
-  FOREIGN KEY (`playlistid`) REFERENCES Playlist(playlistid)
+  `userid` 			VARCHAR(64) NOT NULL,
+  `playlistid` 	VARCHAR(64) NOT NULL,
+  FOREIGN KEY (`userid`) REFERENCES User(id),
+  FOREIGN KEY (`playlistid`) REFERENCES Playlist(id)
 );
 
-CREATE TABLE `Comments` (
-  `commentid` BIGINT,
-  `user` VARCHAR(64),
-  `video` CHAR(32),
-  `comment` VARCHAR(64),
-  `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`commentid`),
-  FOREIGN KEY (`user`) REFERENCES Users(userid),
-  FOREIGN KEY (`video`) REFERENCES Video(videoid)
+CREATE TABLE `Comment` (
+  `id` 					VARCHAR(64) NOT NULL,
+  `userid` 			VARCHAR(64) NOT NULL,
+  `videoid` 		VARCHAR(64) NOT NULL,
+  `comment` 		VARCHAR(512) NOT NULL,
+  `time` 				TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`userid`) REFERENCES User(id),
+  FOREIGN KEY (`videoid`) REFERENCES Video(id)
 );
 
 CREATE TABLE `VideoPlaylist` (
-  `video` CHAR(32),
-  `playlist` BIGINT,
-  FOREIGN KEY (`video`) REFERENCES Video(videoid),
-  FOREIGN KEY (`playlist`) REFERENCES Playlist(playlistid)
+  `videoid` 			VARCHAR(64) NOT NULL,
+  `playlistid` 		VARCHAR(64) NOT NULL,
+  FOREIGN KEY (`videoid`) REFERENCES Video(id),
+  FOREIGN KEY (`playlistid`) REFERENCES Playlist(id)
 );
+
+/*=====================================================================INSERT ADMIN TO USER======================================================================*/;
+INSERT INTO `user` (`id`, `email`, `password`, `usertype`, `wannabe`) VALUES ('1337ADMIN1337', 'admin@metoobe.com', '21232f297a57a5a743894a0e4a801fc3', 'admin', 0);
