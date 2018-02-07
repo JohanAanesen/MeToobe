@@ -105,7 +105,16 @@
                 {% for commentdata in comments %}
                 <div class="comment">
                     <p class="comment-name">{{ commentdata.fullname }}</p>
-                    <p class="comment-text">{{ commentdata.comment }}</p>
+                    <div class="row col">
+                        <p class="comment-text col-11">{{ commentdata.comment }}</p>
+                        {% if commentdata.user==userid %}
+                        <div class="col-1">
+                            <form action="/video?id={{ videoData['videoid'] }}" method="post">
+                                <button type="submit" name="deleteComment" value="{{ commentdata.commentid }}" class="btn btn-danger">X</button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
                     <p class="comment-time" style="font-size: 10px; color: grey;">{{ commentdata.time }}</p>
                 </div>
                 {% endfor %}
