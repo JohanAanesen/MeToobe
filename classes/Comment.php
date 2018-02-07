@@ -24,7 +24,7 @@ class Comment {
     }
 
     public static function get($db, $videoid) {
-        $sql = "SELECT comment.id, userid, videoid, comment, comment.time, email
+        $sql = "SELECT comment.id, userid, videoid, comment, comment.time, fullname
                 FROM Comment
                 INNER JOIN User ON comment.userid = user.id
                 WHERE videoid=(?) ORDER BY time DESC";

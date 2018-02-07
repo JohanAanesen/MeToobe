@@ -9,6 +9,7 @@ USE urgedb;
 
 CREATE TABLE `User` (
   `id` 				VARCHAR(64) NOT NULL,
+	`fullname`	VARCHAR(64) NOT NULL,
   `email` 		VARCHAR(64) NOT NULL,
   `password` 	VARCHAR(64) NOT NULL,
   `usertype` 	ENUM("admin","teacher", "student") NOT NULL,
@@ -73,4 +74,4 @@ CREATE TABLE `VideoPlaylist` (
 );
 
 /*=====================================================================INSERT ADMIN TO USER======================================================================*/;
-INSERT INTO `user` (`id`, `email`, `password`, `usertype`, `wannabe`) VALUES ('1337ADMIN1337', 'admin@metoobe.com', '21232f297a57a5a743894a0e4a801fc3', 'admin', 0);
+INSERT INTO `user` (`id`, `fullname`, `email`, `password`, `usertype`, `wannabe`) VALUES ('1337ADMIN1337', 'admin', 'admin@metoobe.com', '21232f297a57a5a743894a0e4a801fc3', 'admin', 0);
