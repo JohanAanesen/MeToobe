@@ -6,26 +6,26 @@
 class Video {
 
     public static function add($db, $uid, $name, $descr, $mime, $size) {
-        $sql = "INSERT INTO video (videoid, user, name, descr, mime, views) VALUES (:videoid, :user, :name, :descr, :mime, 0)";
+        $sql = "INSERT INTO video (id, userid, name, description, mime, views) VALUES (:id, :user, :name, :description, :mime, 0)";
         $sth = $db->prepare ($sql);
 
       //  $videoid = (string)md5($size . $name . $mime . $uid);
         $videoid = uniqid();
-        $sth->bindParam(':videoid', $videoid);
+        $sth->bindParam(':id', $videoid);
         $sth->bindParam(':user',  $uid);
         $sth->bindParam(':name',  $name);
-        $sth->bindParam(':descr', $descr);
+        $sth->bindParam(':description', $descr);
         $sth->bindParam(':mime', $mime);
         $sth->execute();
-        
-        if ($sth->rowCount() !== 1) {  
+
+        if ($sth->rowCount() !== 1) {
             return 0;
         }
         return $videoid;
     }
 
     public static function delete($db, $videoid) {
-        $sql = "delete from video where videoid=:videoid";
+        $sql = "DELETE FROM video WHERE id=:videoid";
         $sth = $db->prepare($sql);
         $sth->bindParam(':videoid', $videoid);
         $sth->execute();
@@ -71,7 +71,7 @@ class Video {
     public static function findVideo($db, $videoid){
         try{
             //SQL Injection SAFE query method:
-            $query = "SELECT * FROM video WHERE videoid = (?)";
+            $query = "SELECT * FROM video WHERE id = (?)";
             $param = array($videoid);
             $stmt = $db->prepare($query);
             $stmt->execute($param);
@@ -95,7 +95,7 @@ class Video {
     public static function getNewVideos($db){
         try{
             //SQL Injection SAFE query method:
-            $query = "SELECT videoid, name FROM video ORDER BY time DESC LIMIT 6";
+            $query = "SELECT id, name FROM video ORDER BY time DESC LIMIT 6";
             $param = array();
             $stmt = $db->prepare($query);
             $stmt->execute($param);
@@ -121,7 +121,7 @@ class Video {
     public static function viewCountPlus($db, $videoid){
         try{
             //SQL Injection SAFE query method:
-            $query = "UPDATE video SET views=views+1 WHERE videoid = (?)";
+            $query = "UPDATE video SET views=views+1 WHERE id = (?)";
             $param = array($videoid);
             $stmt = $db->prepare($query);
             $stmt->execute($param);
@@ -143,7 +143,7 @@ class Video {
     public static function findLikes($db, $videoid){
         try{
             //SQL Injection SAFE query method:
-            $query = "SELECT * FROM userlike WHERE video = (?)";
+            $query = "SELECT * FROM userlike WHERE videoid = (?)";
             $param = array($videoid);
             $stmt = $db->prepare($query);
             $stmt->execute($param);
@@ -170,7 +170,7 @@ class Video {
     public static function videoVote($db, $videoid, $userid, $like){
         try{
             //SQL Injection SAFE query method:
-            $query = "INSERT INTO userlike (userid, video, vote) VALUES (?, ?, ?)";
+            $query = "INSERT INTO userlike (userid, videoid, vote) VALUES (?, ?, ?)";
             $param = array($userid, $videoid, $like);
             $stmt = $db->prepare($query);
             $stmt->execute($param);

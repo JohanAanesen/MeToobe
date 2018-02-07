@@ -75,7 +75,7 @@ class User{
         try {
             $db = $this->db;
             //SQL Injection SAFE query method:
-            $query = "INSERT INTO users (userid, email, password, usertype, wannabe) VALUES (?, ?, ?, ?, ?)";
+            $query = "INSERT INTO user (id, email, password, usertype, wannabe) VALUES (?, ?, ?, ?, ?)";
             $param = array(uniqid(), $email, $password, "student", $wannabe);
             $stmt = $db->prepare($query);
             $stmt->execute($param);
@@ -93,8 +93,8 @@ class User{
             try {
                 $db = $this->db;
                 //SQL Injection SAFE query method:
-                $query = "UPDATE users SET password = (?), usertype = (?), wannabe = (?) WHERE userid = (?)";
-                $param = array($this->userData['password'], $this->userData['usertype'], $this->userData['wannabe'], $this->userData['userid']);
+                $query = "UPDATE user SET password = (?), usertype = (?), wannabe = (?) WHERE id = (?)";
+                $param = array($this->userData['password'], $this->userData['usertype'], $this->userData['wannabe'], $this->userData['id']);
                 $stmt = $db->prepare($query);
                 $stmt->execute($param);
             } catch (PDOException $ex) {
@@ -115,7 +115,7 @@ class User{
     public static function updateType($userid, $usertype, $db){
         try{
             //SQL Injection SAFE query method:
-            $query = "UPDATE users SET usertype = ?, wannabe = ? WHERE userid = (?)";
+            $query = "UPDATE user SET usertype = ?, wannabe = ? WHERE id = (?)";
             $param = array($usertype, false, $userid);
             $stmt = $db->prepare($query);
             $stmt->execute($param);
@@ -139,7 +139,7 @@ class User{
         try {
             $db = $this->db;
             //SQL Injection SAFE query method:
-            $query = "SELECT * FROM users WHERE email = (?) AND password = (?)";
+            $query = "SELECT * FROM user WHERE email = (?) AND password = (?)";
             $param = array($email, $password);
             $stmt = $db->prepare($query);
             $stmt->execute($param);
@@ -147,12 +147,12 @@ class User{
             if($stmt->rowCount() == 1) {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 $this->userData = $row;
-                $_SESSION['userid'] = $row['userid'];
+                $_SESSION['userid'] = $row['id'];
                 $_SESSION['email'] = $row['email'];
                 $_SESSION['usertype'] = $row['usertype'];
                 $_SESSION['password'] = $row['password'];
                 $_SESSION['wannabe'] = $row['wannabe'];
-                $this->userid = $row['userid'];
+                $this->userid = $row['id'];
                 return array('status'=>'OK');
             }
         } catch (PDOException $ex) {
@@ -169,7 +169,7 @@ class User{
     public static function checkUniqueUser($email, $db){
         try{
             //SQL Injection SAFE query method:
-            $query = "SELECT * FROM users WHERE email = (?)";
+            $query = "SELECT * FROM user WHERE email = (?)";
             $param = array($email);
             $stmt = $db->prepare($query);
             $stmt->execute($param);
@@ -192,7 +192,7 @@ class User{
             try{
                 $db = $this->db;
                 //SQL Injection SAFE query method:
-                $query = "SELECT * FROM users WHERE wannabe = (?)";
+                $query = "SELECT * FROM user WHERE wannabe = (?)";
                 $param = array(true);
                 $stmt = $db->prepare($query);
                 $stmt->execute($param);
@@ -214,7 +214,7 @@ class User{
     public static function getEmail($db, $userid){
         try{
             //SQL Injection SAFE query method:
-            $query = "SELECT DISTINCT email FROM users WHERE userid = (?) LIMIT 1";
+            $query = "SELECT DISTINCT email FROM user WHERE id = (?) LIMIT 1";
             $param = array($userid);
             $stmt = $db->prepare($query);
             $stmt->execute($param);
@@ -223,7 +223,7 @@ class User{
                 return $stmt->fetch(PDO::FETCH_ASSOC);
             }
         }catch(PDOException $ex){
-            echo "Can't get users email. Something went wrong!"; //Error message
+            echo "Can't get user email. Something went wrong!"; //Error message
         }
         return null;
     }
@@ -244,7 +244,3 @@ class User{
         }
     }
 }
-
-
-
-

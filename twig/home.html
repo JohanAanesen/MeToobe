@@ -11,20 +11,20 @@
         <hr>
             {% if wannabeBool=='true' %}
                 <h5>Wannabe's</h5>
-                {% for users in wannabeUsers %}
+                {% for user in wannabeUsers %}
                     <div class="row">
                         <div class="col-md-2">
-                            <p>{{ users['email'] }}</p>
+                            <p>{{ user['email'] }}</p>
                         </div>
                         <div class="row col-md-6">
                             <div class="col-1">
                                 <form action="/php/wannabe.php" method="post" class="form-group">
-                                    <button type="submit" name="yes" value="{{ users['userid'] }}" class="btn btn-success btn-sm">Yai!</button>
+                                    <button type="submit" name="yes" value="{{ user['id'] }}" class="btn btn-success btn-sm">Yai!</button>
                                 </form>
                             </div>
                             <div class="col-1">
                                 <form action="/php/wannabe.php" method="post" class="form-group">
-                                    <button type="submit" name="no" value="{{ users['userid'] }}" class="btn btn-danger btn-sm">Nej!</button>
+                                    <button type="submit" name="no" value="{{ user['id'] }}" class="btn btn-danger btn-sm">Nej!</button>
                                 </form>
                             </div>
                             <!-- Empty div for spacing -->
@@ -32,7 +32,7 @@
 
                             <div class="col-2">
                                 <form action="/php/wannabe.php" method="post" class="form-group">
-                                    <button type="submit" name="admin" value="{{ users['userid'] }}" class="btn btn-warning btn-sm">Admin!</button>
+                                    <button type="submit" name="admin" value="{{ user['id'] }}" class="btn btn-warning btn-sm">Admin!</button>
                                 </form>
                             </div>
                         </div>
@@ -96,7 +96,7 @@
         {% for video in newVideos %}
         <div class="col-md-4">
             <h2 class="lead text-limit">{{ video['name'] }}</h2>
-            <a href="/video?id={{ video['videoid'] }}"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+            <a href="/video?id={{ video['id'] }}"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
         </div>
         {% endfor %}
         {% endif %}
