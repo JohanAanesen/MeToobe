@@ -28,6 +28,11 @@ $likes = 0;
 $dislikes = 0;
 $hasLiked = false;
 
+if(isset($_POST['deleteComment'])){
+    Comment::delete($db, $_POST['deleteComment']);
+}
+
+
 // Voting, only if user is logged in and corresponding post requests are made.
 if($user->loggedIn()){
     if (isset($_POST['upvote'])){
@@ -80,6 +85,7 @@ if ($user->loggedIn()){
         'data' => $data,
         'loggedin' => 'yes',
         'user' => $user->userData,
+        'userid' => $userid,
         'videoData' => $videoData,
         'likes' => $likes,
         'dislikes' => $dislikes,

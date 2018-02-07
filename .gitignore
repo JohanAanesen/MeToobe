@@ -1,6 +1,8 @@
 vendor/
 uploadedFiles/
 
+composer.phar
+
 # IntelliJ
 .idea/*
 *.iml
