@@ -9,6 +9,7 @@ USE urgedb;
 
 CREATE TABLE `Users` (
   `userid` VARCHAR(32),
+  `fullname` VARCHAR(64),
   `email` VARCHAR(64),
   `password` VARCHAR(64),
   `usertype` ENUM("admin","teacher", "student"),

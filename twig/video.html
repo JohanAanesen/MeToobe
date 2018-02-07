@@ -14,9 +14,11 @@
             <source src="/uploadedFiles/{{ videoData['user'] }}/{{ videoData['videoid'] }}{% if videoData['mime']=='video/mp4' %}.mp4{% elseif videoData['mime']=='video/webm' %}.webm{% elseif videoData['mime']=='video/ogg' %}.ogg{% endif %}" type="{{ videoData['mime'] }}">
         </video>
 
-
         <div class="row col-md-12">
-            <div class="row col-md-8">
+            <div class="col-md-6">
+                <p class="other-title">{{ user['fullname'] }}</p>
+            </div>
+            <div class="row col-md-2">
                 <p class="other-title">Views:</p>
                 <p class="other-title text-dark">{{ videoData['views'] }}</p>
             </div>
@@ -102,7 +104,7 @@
             {% else %}
                 {% for commentdata in comments %}
                 <div class="comment">
-                    <p class="comment-name">{{ commentdata.email }}</p>
+                    <p class="comment-name">{{ commentdata.fullname }}</p>
                     <p class="comment-text">{{ commentdata.comment }}</p>
                     <p class="comment-time" style="font-size: 10px; color: grey;">{{ commentdata.time }}</p>
                 </div>

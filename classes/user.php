@@ -27,7 +27,7 @@ class User{
             }
             if(self::checkUniqueUser($_POST['newemail'], $db)){
                 //adds new user to DB
-                $this->createDBUser($_POST['newemail'], md5($_POST['newpassword']), $wannabe);
+                $this->createDBUser($_POST['newemail'], $_POST['newname'], md5($_POST['newpassword']), $wannabe);
 
                 //sets session and stuff..
                 $this->findUser($_POST['newemail'], md5($_POST['newpassword']));
@@ -43,6 +43,7 @@ class User{
                 $this->userData['usertype'] = $_SESSION['usertype'];
                 $this->userData['password'] = $_SESSION['password'];
                 $this->userData['wannabe'] = $_SESSION['wannabe'];
+                $this->userData['fullname'] = $_SESSION['fullname'];
 
             }
         }
@@ -64,12 +65,12 @@ class User{
      * @param $password
      * @param $wannabe
      */
-    public function createDBUser($email, $password, $wannabe){
+    public function createDBUser($email, $fullname, $password, $wannabe){
         try {
             $db = $this->db;
             //SQL Injection SAFE query method:
-            $query = "INSERT INTO users (userid, email, password, usertype, wannabe) VALUES (?, ?, ?, ?, ?)";
-            $param = array(uniqid(), $email, $password, "student", $wannabe);
+            $query = "INSERT INTO users (userid, fullname, email, password, usertype, wannabe) VALUES (?, ?, ?, ?, ?, ?)";
+            $param = array(uniqid(), $fullname, $email, $password, "student", $wannabe);
             $stmt = $db->prepare($query);
             $stmt->execute($param);
         } catch (PDOException $ex) {
@@ -141,6 +142,7 @@ class User{
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 $this->userData = $row;
                 $_SESSION['userid'] = $row['userid'];
+                $_SESSION['fullname'] = $row['fullname'];
                 $_SESSION['email'] = $row['email'];
                 $_SESSION['usertype'] = $row['usertype'];
                 $_SESSION['password'] = $row['password'];
