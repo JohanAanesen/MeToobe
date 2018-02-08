@@ -14,9 +14,13 @@ final class CommentTest extends TestCase {
     private $userid  = "8888";
 
     public function setup() {
+        echo "\nSetting up test environment\n";
+        ob_flush();
+    }
 
-        
-
+    public function tearDown() {
+        echo "\nTearing down test environment\n";
+        ob_flush();        
     }
 
     public function testAddCommentWithCorrectID() {
