@@ -1,6 +1,14 @@
 <?php
 
 class Comment {
+
+    /* 
+     * @param db - PDO connection object
+     * @param userid - user who add's a new comment
+     * @param videoid - video which the comment is attached to
+     * @param comment - actual comment text
+     * @return commentid - id of newly created comment
+     */
     public static function add($db, $userid, $videoid, $comment) {
         $commentid = uniqid(rand(10000,99999), true);
 
@@ -16,6 +24,10 @@ class Comment {
         return $commentid;
     }
 
+    /* 
+     * @param db - PDO connection object
+     * @param commentid - comment we want to delete
+     */
     public static function delete($db, $commentid) {
         $sql = "DELETE FROM Comment WHERE id=?";
         $sth = $db->prepare($sql);
@@ -23,6 +35,12 @@ class Comment {
         $sth->execute($param);
     }
 
+
+    /* 
+     * @param db - PDO connection object
+     * @param videoid - video we want comments from
+     * @return array of comments
+     */
     public static function get($db, $videoid) {
         $sql = "SELECT comment.id, userid, videoid, comment, comment.time, fullname
                 FROM Comment
