@@ -2,6 +2,7 @@
 
 require_once "./vendor/autoload.php";
 require_once "./classes/DB.php";
+require_once "./classes/Video.php";
 require_once "./classes/Playlist.php";
 
 use PHPUnit\Framework\TestCase;
@@ -43,7 +44,6 @@ final class PlaylistTest extends TestCase {
             $v = $videos[$i];
             $vid = $this->videoid[$i];
          //   print_r($v);
-            $this->assertTrue($v['id'] > 0, $v['id']." > 0");         
             $this->assertEquals($vid, $v['videoid']);
             $this->assertEquals($this->playlistid, $v['playlistid']);
             $this->assertArrayHasKey('id', $v);
@@ -105,5 +105,107 @@ final class PlaylistTest extends TestCase {
             $playlist = Playlist::get($this->db, $newPlaylist['id']);
             $this->assertTrue(empty($playlist));
         }
+    }
+
+
+    public function testPushRemoveVideoPlaylist() {
+        
+        $newVideoid = array();
+        $newPlaylistid = Playlist::create($this->db, $this->userid, "New playlist");
+        $newVideoid[0] = Video::add($this->db, $this->userid, "Newtitle1");
+        $newVideoid[1] = Video::add($this->db, $this->userid, "Newtitle2");
+        $newVideoid[2] = Video::add($this->db, $this->userid, "Newtitle3");
+        
+        $this->assertNotEquals(0, $newVideoid[0]);
+        $this->assertNotEquals(0, $newVideoid[1]);
+        $this->assertNotEquals(0, $newVideoid[2]);
+        //
+        // PUSH
+        //
+        foreach ($newVideoid as $videoid) {    
+            $videoPlaylistId = Playlist::pushVideo(
+                $this->db,
+                $newPlaylistid,
+                $videoid
+            );
+            $this->assertNotEquals(0, $videoPlaylistId);
+        }
+
+        // Test to push the first videoid again.
+        try {
+            $videoPlaylistId = Playlist::pushVideo(
+                $this->db,
+                $newPlaylistid,
+                $videoid[0]
+            );
+            $this->assertTrue(false);
+            return;
+        } catch (PDOException $e) {
+            $this->assertEquals($e->errorInfo[2], 'Cannot add or update a child row: a foreign key constraint fails (`urgedb`.`videoplaylist`, CONSTRAINT `videoplaylist_ibfk_1` FOREIGN KEY (`videoid`) REFERENCES `Video` (`id`))');
+        }
+
+        Playlist::delete($this->db, $newPlaylistid);
+        Video::delete($this->db, $newVideoid[0]);
+        Video::delete($this->db, $newVideoid[1]);
+        Video::delete($this->db, $newVideoid[2]);
+    }
+
+    /*
+     * @depends testGetVideos
+     */
+    public function testSwapVideos() {
+
+        $videos = Playlist::getVideos($this->db, $this->playlistid);
+
+        $this->assertArrayHasKey(0,$videos);
+        $this->assertArrayHasKey(1,$videos);
+        $this->assertArrayHasKey('videoid',$videos[0]);
+        $this->assertArrayHasKey('rank', $videos[0]);
+
+        $videoID     = $videos[0]['videoid'];
+        $otherVideoID = $videos[1]['videoid'];
+
+        $videoRankBefore      = $videos[0]['rank'];
+        $otherVideoRankBefore = $videos[1]['rank'];
+
+        $this->assertEquals($this->videoid[0], $videoID);
+        $this->assertEquals($this->videoid[1], $otherVideoID);
+
+        //
+        // SWAP FORWARD
+        //
+        $updateCount = Playlist::swapVideoRank(
+            $this->db, 
+            $this->playlistid,
+            $videoID,
+            $otherVideoID
+        );
+        //$this->assertEquals(2, $updateCount);
+
+        $videosAfter = Playlist::getVideos($this->db, $this->playlistid);     
+
+        $videoRankAfter      = $videosAfter[0]['rank'];
+        $otherVideoRankAfter = $videosAfter[1]['rank'];
+        
+        $this->assertEquals($videoRankBefore, $otherVideoRankAfter);
+        $this->assertEquals($videoRankAfter,  $otherVideoRankBefore);
+
+        //
+        // SWAP BACK
+        //
+        $updateCount = Playlist::swapVideoRank(
+            $this->db, 
+            $this->playlistid,
+            $videoID,
+            $otherVideoID
+        );
+
+        $videos = Playlist::getVideos($this->db, $this->playlistid);     
+        
+        $videoRankBack      = $videos[0]['rank'];
+        $otherVideoRankBack = $videos[1]['rank'];
+        
+        $this->assertEquals($videoRankBefore, $videoRankBack);
+        $this->assertEquals($otherVideoRankBack, $otherVideoRankBefore);
     }
 };
