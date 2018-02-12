@@ -87,11 +87,12 @@ CREATE TABLE `VideoPlaylist` (
   `id`            int(11)     NOT NULL AUTO_INCREMENT,
   `videoid` 			VARCHAR(64) NOT NULL,
   `playlistid` 		VARCHAR(64) NOT NULL,
+  `rank`          int(11)     NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`videoid`) REFERENCES Video(id),
   FOREIGN KEY (`playlistid`) REFERENCES Playlist(id)
 );
-ALTER TABLE `VideoPlaylist` ADD UNIQUE KEY `videoid_playlistid_unique_index` (`videoid`,`playlistid`);
+ALTER TABLE `VideoPlaylist` ADD UNIQUE KEY `videoid_playlistid_rank_unique_index` (`videoid`,`playlistid`, `rank`);
 
 
 /*================================INSERT ADMIN TO USER=====================================*/;
@@ -107,6 +108,6 @@ INSERT INTO `video` (`id`, `userid`, `name`) VALUES ('testvideo1', '1337TEST1337
 INSERT INTO `video` (`id`, `userid`, `name`) VALUES ('testvideo2', '1337TEST1337', 'TEst Video 2');  
 INSERT INTO `video` (`id`, `userid`, `name`) VALUES ('testvideo3', '1337TEST1337', 'Test video 3');
 
-INSERT INTO `VideoPlaylist`(`videoid`, `playlistid`)VALUES('testvideo1', 'testplaylist1');
-INSERT INTO `VideoPlaylist`(`videoid`, `playlistid`)VALUES('testvideo2', 'testplaylist1');
-INSERT INTO `VideoPlaylist`(`videoid`, `playlistid`)VALUES('testvideo3', 'testplaylist1');
+INSERT INTO `VideoPlaylist`(`videoid`, `playlistid`, `rank`)VALUES('testvideo1', 'testplaylist1', 0);
+INSERT INTO `VideoPlaylist`(`videoid`, `playlistid`, `rank`)VALUES('testvideo2', 'testplaylist1', 1);
+INSERT INTO `VideoPlaylist`(`videoid`, `playlistid`, `rank`)VALUES('testvideo3', 'testplaylist1', 2);
