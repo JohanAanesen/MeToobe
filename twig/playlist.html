@@ -7,32 +7,32 @@
     
     <form {% if newPlaylist %} action="/php/playlistCreate.php" {% else %} action="/php/playlistUpdate.php" {% endif %}/>        
     
-        <input id="playlist-title" placeholder="Playlist Title" required {% if not editMode %} readonly {% endif %}/><br>
-        <input id="playlist-description" placeholder="Description" required {% if not editMode %} readonly {% endif %}/><br>
+        <input type="text" class="form-control" id="playlist-title" placeholder="Playlist Title" required {% if not editMode %} readonly {% endif %}/><br>
+        <textarea type="text" class="form-control" rows="5" id="playlist-description" placeholder="Playlist Description" name="comment" {% if not editMode %} readonly {% endif %}></textarea>
 
         
         {# % for video in videos % #}
-        
 
-        <div class="col-md-2">
-            <span> 1</span>
-            <h2 class="lead text-limit">1234567890123456789012345678901234567890</h2>
+
+    <hr>
+    <div class="col">
+        <span> 1</span>
+        <h2 class="lead text">1234567890123456789012345678901234567890</h2>
+    </div>
+    <div class="row">
+        <div class="col">
             <a href="/video"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
-        </div><br>
+        </div>
+        <div class="col-md-8" style="word-break: break-all; word-wrap: break-word;">
+            <p>DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription</p>
+        </div>
+    </div>
 
-        <div class="col-md-2">
-            <span> 2</span>
-            <h2 class="lead text-limit">1234567890123456789012345678901234567890</h2>
-                <a href="/video"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
-            </div><br>
 
-        <div class="col-md-2">
-                <span> 3</span>
-                <h2 class="lead text-limit">1234567890123456789012345678901234567890</h2>
-                <a href="/video"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
-        </div><br>
 
         {# % endfor % #}
+
+
 
         {% if editmode %}
             
@@ -42,8 +42,10 @@
             <label for="playlist-video-rank">To:</label>
             <input id="playlist-video-swap-1"/><br>
         {% endif %}
-        
+
+    <br>
         <input type="submit" id="playlist-video-swap-1" class="btn btn-success" {% if newPlaylist %} value="Create" {% else %} value="Update" {% endif %}/>                
     </form>
 </div>
+
 {% endblock content %}
