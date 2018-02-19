@@ -17,22 +17,22 @@ function urge_print_upload_error($errorNumber){
     case UPLOAD_ERR_OK: // This should not show up, but is here just in case
       echo "There is no error, the file uploaded with success."; break;
     case UPLOAD_ERR_INI_SIZE:
-      echo "The uploaded file exceeds the upload_max_filesize directive in php.ini."; exit(); break;
+      echo "The uploaded file exceeds the upload_max_filesize directive in php.ini."; break;
     case UPLOAD_ERR_FORM_SIZE:
-      echo "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form."; exit(); break;
+      echo "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form."; break;
     case UPLOAD_ERR_PARTIAL:
-      echo "The uploaded file was only partially uploaded."; exit(); break;
+      echo "The uploaded file was only partially uploaded."; break;
     case UPLOAD_ERR_NO_FILE:
-      echo "No file was uploaded."; exit(); break;
+      echo "No file was uploaded."; break;
     case UPLOAD_ERR_NO_TMP_DIR:
-      echo "Missing a temporary folder."; exit(); break;
+      echo "Missing a temporary folder."; break;
     case UPLOAD_ERR_CANT_WRITE:
-      echo "Failed to write file to disk."; exit(); break;
+      echo "Failed to write file to disk."; break;
     case UPLOAD_ERR_EXTENSION:
       echo "A PHP extension stopped the file upload. PHP does not provide a way to ascertain which extension caused the file upload to stop;
-      examining the list of loaded extensions with phpinfo() may help."; exit(); break;
+      examining the list of loaded extensions with phpinfo() may help."; break;
     default:
-      echo "There was a problem with your upload."; exit (); break;
+      echo "There was a problem with your upload."; break;
     }
 }
 
@@ -46,6 +46,7 @@ $errorCode = $_FILES['fileToUpload']['error'];
 
 if (!is_uploaded_file($tmp_filepath)) {
    urge_print_upload_error($errorCode);
+   exit();
 }
 
 $uid     = $_SESSION['userid'];
