@@ -107,10 +107,10 @@
                     <p class="comment-name">{{ commentdata.fullname }}</p>
                     <div class="row col">
                         <p class="comment-text col-11">{{ commentdata.comment }}</p>
-                        {% if commentdata.user==userid %}
+                        {% if commentdata.userid==userid %}
                         <div class="col-1">
-                            <form action="/video?id={{ videoData['videoid'] }}" method="post">
-                                <button type="submit" name="deleteComment" value="{{ commentdata.commentid }}" class="btn btn-danger">X</button>
+                            <form action="/video?id={{ videoData['id'] }}" method="post">
+                                <button type="submit" name="deleteComment" value="{{ commentdata.id }}" class="btn btn-danger">X</button>
                             </form>
                         </div>
                         {% endif %}
