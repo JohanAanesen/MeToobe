@@ -55,12 +55,14 @@ $name    = $_FILES['fileToUpload']['name'];
 $size    = $_FILES['fileToUpload']['size'];
 $descr   = $_POST['descr'];
 $title   = $_POST['videotitle'];
+$course  = $_POST['videocourse'];
+$topic   = $_POST['videotopic'];
 
 $db = DB::getDBConnection();
 
 // failsafe
 if ($mime == 'video/mp4' || $mime == 'video/webm' || $mime == 'video/ogg'){
-    $videoid = Video::add($db, $uid, $title, $descr, $mime, $size);
+    $videoid = Video::add($db, $uid, $title, $course, $topic, $descr, $mime, $size);
     if ($videoid === 0) {
         echo 'ERROR - $videoid === 0 - Video::add() went wrong.';
         exit();

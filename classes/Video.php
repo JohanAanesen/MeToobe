@@ -5,8 +5,8 @@
   */
 class Video {
 
-    public static function add($db, $uid, $name, $descr, $mime, $size) {
-        $sql = "INSERT INTO video (id, userid, name, description, mime, views) VALUES (:id, :user, :name, :description, :mime, 0)";
+    public static function add($db, $uid, $name, $course, $topic, $descr, $mime, $size) {
+        $sql = "INSERT INTO video (id, userid, name, course, topic, description, mime, views) VALUES (:id, :user, :name, :course, :topic, :description, :mime, 0)";
         $sth = $db->prepare ($sql);
 
       //  $videoid = (string)md5($size . $name . $mime . $uid);
@@ -14,6 +14,8 @@ class Video {
         $sth->bindParam(':id', $videoid);
         $sth->bindParam(':user',  $uid);
         $sth->bindParam(':name',  $name);
+        $sth->bindParam(':course',  $course);
+        $sth->bindParam(':topic',  $topic);
         $sth->bindParam(':description', $descr);
         $sth->bindParam(':mime', $mime);
         $sth->execute();
