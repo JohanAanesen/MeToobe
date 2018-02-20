@@ -193,6 +193,7 @@ class Video {
                       OR video.topic LIKE (?)
                       LIMIT 10";
 
+            //adding the wildcard characters to query word
             $qWild = "%".$q."%";
 
             $param = array($qWild, $qWild, $qWild, $qWild, $qWild);
