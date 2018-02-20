@@ -1,6 +1,7 @@
 RewriteEngine On
 RewriteRule ^video/?$ /view/video/
 RewriteRule ^playlist/?$ /view/playlist/
+RewriteRule ^user/?$ /view/user/
 RewriteRule ^login/?$ /view/login/
 RewriteRule ^upload/?$ /view/upload/
 RewriteRule ^logout/?$ /php/logout.php
