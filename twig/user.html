@@ -1,0 +1,80 @@
+{% extends "_base.html" %}
+{% block title %} User {% endblock %}
+{% block content %}
+
+<div class="container-fluid border-top">
+    <div class="row">
+        <!-- LEFT -->
+        <div class="col-md-4 border-right" style="margin-top:0px;">
+            <div style="margin-top: 10px;"></div>
+
+            <h2 class="other-title text-dark text-center">Account</h2>
+            <p>Johan Aanesen</p>
+            <p>johan.aanesen@gmail.com</p>
+            <p>Views: 1500000000</p>
+
+
+
+        </div>
+
+        <!-- MIDDLE -->
+        <div class="col-md-4 border-right" align="center">
+            <div style="margin-top: 10px;"></div>
+
+            <h2 class="other-title text-success text-center">Videos</h2>
+
+            <div class="col-md-8">
+                <h2 class="lead text-limit">1234567890123456789012345678901234567890</h2>
+                <a href="/video"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+            </div>
+            <div class="col-md-8">
+                <h2 class="lead text-limit">Video 2</h2>
+                <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+            </div>
+            <div class="col-md-8">
+                <h2 class="lead text-limit">Video 3</h2>
+                <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+            </div>
+        
+
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="col-md-4" align="center">
+            <div style="margin-top: 10px;"></div>
+
+            <h2 class="other-title text-info text-center">Playlists</h2>
+
+            <div class="col-md-8">
+                <h2 class="lead text-limit">1234567890123456789012345678901234567890</h2>
+                <a href="/video"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+            </div>
+            <div class="col-md-8">
+                <h2 class="lead text-limit">Video 2</h2>
+                <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+            </div>
+            <div class="col-md-8">
+                <h2 class="lead text-limit">Video 3</h2>
+                <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+            </div>
+
+
+
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <form action="" method="post">
+            <div class="checkbox">
+                <label class="text-dark">
+                    <input type="checkbox" name="isTeacher" value="yes" required > I am sure, I want to delete my account.
+                </label>
+            </div>
+            <button type="submit" class="btn btn-danger btn-lg btn-block">DELETE</button>
+        </form>
+    </div>
+
+</div>
+
+{% endblock content %}
