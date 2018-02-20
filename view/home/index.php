@@ -6,7 +6,7 @@ $ROOT = $_SERVER['DOCUMENT_ROOT'];
 
 require_once "$ROOT/vendor/autoload.php";
 require_once "$ROOT/classes/DB.php";
-require_once "$ROOT/classes/user.php";
+require_once "$ROOT/classes/User.php";
 require_once "$ROOT/classes/Video.php";
 
 $loader = new Twig_Loader_Filesystem("$ROOT/twig");

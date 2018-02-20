@@ -12,7 +12,7 @@ if (!isset($videoid)){
 
 require_once "$ROOT/php/twigloader.php";
 require_once "$ROOT/classes/DB.php";
-require_once "$ROOT/classes/user.php";
+require_once "$ROOT/classes/User.php";
 require_once "$ROOT/classes/Video.php";
 require_once "$ROOT/classes/Comment.php";
 

@@ -4,5 +4,6 @@ RewriteRule ^playlist/?$ /view/playlist/
 RewriteRule ^user/?$ /view/user/
 RewriteRule ^login/?$ /view/login/
 RewriteRule ^upload/?$ /view/upload/
+RewriteRule ^search/?$ /view/search/
 RewriteRule ^logout/?$ /php/logout.php
 RewriteRule ^/?$ /view/home/index.php

@@ -3,7 +3,7 @@
 $ROOT = $_SERVER['DOCUMENT_ROOT'];
 
 require_once "$ROOT/classes/DB.php";
-require_once "$ROOT/classes/user.php";
+require_once "$ROOT/classes/User.php";
 
 $db = DB::getDBConnection();
 
