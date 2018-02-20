@@ -180,7 +180,11 @@ class Video {
         }
     }
 
-
+    /**
+     * @param $db
+     * @param $q
+     * @return array|null
+     */
     public static function searchVideos($db, $q){
         try{
             //SQL Injection SAFE query method:
@@ -213,4 +217,33 @@ class Video {
         return null;
     }
 
+    /**
+     * @param $db
+     * @param $userid
+     * @return array|null
+     */
+    public static function getUsersVideos($db, $userid){
+        try{
+            //SQL Injection SAFE query method:
+            $query = "SELECT video.id, video.name FROM video
+                      WHERE video.userid LIKE (?)
+                      LIMIT 10";
+
+
+            $param = array($userid);
+            $stmt = $db->prepare($query);
+            $stmt->execute($param);
+
+            if ($stmt->rowCount()>0) {
+                $videos = array();
+                while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $videos[] = $row;
+                }
+                return $videos;
+            }
+        }catch(PDOException $ex){
+            echo "Something went wrong".$ex; //Error message
+        }
+        return null;
+    }
 };

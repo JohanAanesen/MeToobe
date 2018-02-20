@@ -18,7 +18,7 @@
         </li>
         <li class="nav-item">
             {% if loggedin=='yes' %}
-            <a class="nav-link text-success" href="/">{{ user['fullname'] }}</a>
+            <a class="nav-link text-success" href="/user?id={{ user['userid'] }}">{{ user['fullname'] }}</a>
         </li>
         <li class="nav-item">
             <a class="nav-link text-success" href="/logout">Logout</a>

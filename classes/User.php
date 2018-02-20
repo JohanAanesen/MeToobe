@@ -46,6 +46,7 @@ class User{
                 unset($_SESSION['userid']);
             } else if (isset($_SESSION['userid'])) {
                 $this->userid = $_SESSION['userid'];
+                $this->userData['userid'] = $_SESSION['userid'];
                 $this->userData['email'] = $_SESSION['email'];
                 $this->userData['usertype'] = $_SESSION['usertype'];
                 $this->userData['password'] = $_SESSION['password'];
@@ -69,6 +70,7 @@ class User{
 
     /**
      * @param $email
+     * @param $fullname
      * @param $password
      * @param $wannabe
      */
@@ -217,6 +219,28 @@ class User{
         try{
             //SQL Injection SAFE query method:
             $query = "SELECT DISTINCT email FROM user WHERE id = (?) LIMIT 1";
+            $param = array($userid);
+            $stmt = $db->prepare($query);
+            $stmt->execute($param);
+
+            if($stmt->rowCount() > 0) {
+                return $stmt->fetch(PDO::FETCH_ASSOC);
+            }
+        }catch(PDOException $ex){
+            echo "Can't get user email. Something went wrong!"; //Error message
+        }
+        return null;
+    }
+
+    /**
+     * @param $db
+     * @param $userid
+     * @return null
+     */
+    public static function getUserStats($db, $userid){
+        try{
+            //SQL Injection SAFE query method:
+            $query = "SELECT fullname, email FROM user WHERE id = (?) LIMIT 1";
             $param = array($userid);
             $stmt = $db->prepare($query);
             $stmt->execute($param);

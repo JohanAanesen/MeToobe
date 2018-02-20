@@ -200,4 +200,25 @@ class Playlist {
 
         return true;
     }
+
+    public static function getUserPlaylist($db, $userid){
+        try{
+            //SQL Injection SAFE query method:
+            $query = "SELECT id, title FROM playlist WHERE userid = (?) LIMIT 1";
+            $param = array($userid);
+            $stmt = $db->prepare($query);
+            $stmt->execute($param);
+
+            if ($stmt->rowCount()>0) {
+                $playlists = array();
+                while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $playlists[] = $row;
+                }
+                return $playlists;
+            }
+        }catch(PDOException $ex){
+            echo "Can't get playlists. Something went wrong!"; //Error message
+        }
+        return null;
+    }
 }
