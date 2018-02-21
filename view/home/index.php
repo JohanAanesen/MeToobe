@@ -8,7 +8,7 @@ $userid = User::getLoggedInUserid();
 
 $user = null;
 if ($userid) {
-    $user = User::getUser($db, $userid);
+    $user = User::get($db, $userid);
     if (!isset($user))
         Urge::gotoError('Server encountered an error. It should be possible to get user information from logged in user.');
 }
