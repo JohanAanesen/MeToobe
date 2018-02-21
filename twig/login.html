@@ -16,26 +16,26 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6 col-sm-12 form-line">
-            <form action="/" method="post" class="form-signin form-group">
+            <form action="/php/userLogin.php" method="post" class="form-signin form-group">
                 <h2 class="form-signin-heading text-white">Sign in</h2>
 
-                <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+                <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus="">
 
-                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
 
                 <button class="btn btn-default bg-transparent btn-block border border-white text-white" type="submit">Sign in</button>
             </form>
         </div>
 
         <div class="col-md-6 col-sm-12">
-            <form action="/" method="post" class="form-signin form-group">
+            <form action="/php/userRegister.php" method="post" class="form-signin form-group">
                 <h2 class="form-signin-heading text-white">Register</h2>
                 <input type="text" name="newname" id="registerUsername" class="form-control" placeholder="Full name" required="" autofocus=""><br>
                 <input type="email" name="newemail" id="registerEmail" class="form-control" placeholder="Email address" required="">
                 <input type="password" name="newpassword" id="registerPassword" class="form-control" placeholder="Password" required="">
                 <div class="checkbox">
                     <label class="text-white">
-                        <input type="checkbox" name="isTeacher" value="yes" > I am a teacher
+                        <input type="checkbox" name="isTeacher" value="yes"/ > I am a teacher
                     </label>
                 </div>
                 <button class="btn btn-default bg-transparent btn-block border border-white text-white" type="submit">Register</button>

@@ -6,45 +6,55 @@
 <div class="jumbotron">
     <div class="container">
 
-        {% if user['usertype']=='admin' %}
+        {% if admin %}
         <h4>Admin view</h4>
         <hr>
-            {% if wannabeBool=='true' %}
-                <h5>Wannabe's</h5>
-                {% for user in wannabeUsers %}
-                    <div class="row">
-                        <div class="col-md-2">
-                            <p>{{ user['email'] }}</p>
-                        </div>
-                        <div class="row col-md-6">
-                            <div class="col-1">
-                                <form action="/php/wannabe.php" method="post" class="form-group">
-                                    <button type="submit" name="yes" value="{{ user['id'] }}" class="btn btn-success btn-sm">Yai!</button>
-                                </form>
-                            </div>
-                            <div class="col-1">
-                                <form action="/php/wannabe.php" method="post" class="form-group">
-                                    <button type="submit" name="no" value="{{ user['id'] }}" class="btn btn-danger btn-sm">Nej!</button>
-                                </form>
-                            </div>
-                            <!-- Empty div for spacing -->
-                            <div class="col-1"></div>
-
-                            <div class="col-2">
-                                <form action="/php/wannabe.php" method="post" class="form-group">
-                                    <button type="submit" name="admin" value="{{ user['id'] }}" class="btn btn-warning btn-sm">Admin!</button>
-                                </form>
-                            </div>
-                        </div>
-
-                    </div>
-                {% endfor %}
+            {% if wannabeUsers is empty %}
+            <p>Nothing new here.</p>
+           
             {% else %}
-                <p>Nothing new here.</p>
+
+            <h5>Wannabe's</h5>
+            {% for _user in wannabeUsers %}
+            <div class="row">
+                <div class="col-md-2">
+                    <p>{{ _user['email'] }}</p>
+                </div>
+                <div class="row col-md-6">
+                    <div class="col-1">
+                        <form action="/php/wannabe.php" method="post" class="form-group">
+                            <button type="submit" name="yes" value="{{ _user['id'] }}" class="btn btn-success btn-sm">Yai!</button>
+                        </form>
+                    </div>
+                    <div class="col-1">
+                        <form action="/php/wannabe.php" method="post" class="form-group">
+                            <button type="submit" name="no" value="{{ _user['id'] }}" class="btn btn-danger btn-sm">Nej!</button>
+                        </form>
+                    </div>
+                    <!-- Empty div for spacing -->
+                    <div class="col-1"></div>
+
+                    <div class="col-2">
+                        <form action="/php/wannabe.php" method="post" class="form-group">
+                            <button type="submit" name="admin" value="{{ _user['id'] }}" class="btn btn-warning btn-sm">Admin!</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
             {% endif %}
         <hr>
         {% endif %}
-        {% if loggedin=='yes' %}
+       
+        {% if not userid %}
+        
+        <h1>Register now!</h1>
+        <p>Smash this button and get to it.</p>
+        <p><a class="btn btn-success btn-lg" href="/login" role="button">Register »</a></p> 
+        
+        {% else %}
+        
         <h1>Your Subscriptions</h1>
         <div class="row my-md-1">
             <div class="col-md-2">
@@ -72,10 +82,6 @@
                 <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
             </div>
         </div>
-        {% else %}
-            <h1>Register now!</h1>
-            <p>Smash this button and get to it.</p>
-            <p><a class="btn btn-success btn-lg" href="/login" role="button">Register »</a></p>
         {% endif %}
     </div>
 </div>
@@ -88,7 +94,7 @@
 
     <!-- Example row of columns -->
     <div class="row my-md-1">
-        {% if newVideos=='no' %}
+        {% if newVideos is empty %}
         <div class="col-md-4">
             <h2 class="other-title">No videos available.</h2>
         </div>

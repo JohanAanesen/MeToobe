@@ -17,13 +17,14 @@
             <a href="/upload"><i class="my-3 fas fa-upload fa-lg" style="color: #28a745;"></i></a>
         </li>
         <li class="nav-item">
-            {% if loggedin=='yes' %}
+            {% if not userid %}
+            <a class="nav-link text-success" href="/login">Login</a>
+            
+            {% else %}            
             <a class="nav-link text-success" href="/">{{ user['fullname'] }}</a>
         </li>
         <li class="nav-item">
             <a class="nav-link text-success" href="/logout">Logout</a>
-            {% else %}
-            <a class="nav-link text-success" href="/login">Login</a>
             {% endif %}
         </li>
     </ul>
