@@ -28,7 +28,7 @@
             <h2 class="other-title text-success text-center">Videos</h2>
 
 
-            {% if userVideos=='no' %}
+            {% if userVideos is empty %}
             <div class="col-md-4">
                 <p>No videos found.</p>
             </div>
@@ -52,7 +52,7 @@
 
             <h2 class="other-title text-info text-center">Playlists</h2>
 
-            {% if userPlaylists=='no' %}
+            {% if userPlaylists is empty %}
             <div class="col-md-4">
                 <p>No playlists found.</p>
             </div>

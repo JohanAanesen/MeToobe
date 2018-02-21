@@ -2,7 +2,7 @@
 $ROOT    = $_SERVER['DOCUMENT_ROOT'];
 require_once "$ROOT/classes/Urge.php";
 
-$userid = Urge::requireUserid(); 
+$userid = Urge::requireLoggedInUser(); 
 $db     = Urge::requireDatabase();
 
 if (!isset($_GET['videoid'])) {

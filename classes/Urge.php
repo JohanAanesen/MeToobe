@@ -6,7 +6,7 @@ require_once "$ROOT/classes/Comment.php";
 require_once "$ROOT/classes/DB.php";
 require_once "$ROOT/classes/Video.php";
 require_once "$ROOT/classes/User.php";
-require_once "$ROOT/classes/Video.php";
+require_once "$ROOT/classes/Playlist.php";
 
 
 /**
@@ -35,17 +35,34 @@ class Urge {
         exit();
     }
 
-    public static function requireUserid() {
+    public static function requireParameter($param) {
+        $resultParam = null;
+        if (isset($_GET[$param])) {
+            $currentParam = $_GET[$param];
+        }
+        else if (isset($_POST[$param]) ) {
+            $currentParam = $_POST[$param];
+        }
+        else {
+            Urge::gotoError(400, "Bad request, missing parameter: " . $param);
+        }
+        return $resultParam;
+    }
+
+    public static function requireParameterArray(...$paramArray) {
+        $result = array();
+        foreach ($paramArray as $param) {
+            array_push($result, Urge::requireParameter($param));
+        }
+        return $result;
+    }
+
+    public static function requireLoggedInUser() {
         $userid = User::getLoggedInUserid();
         if (!$userid) {
             Urge::gotoLogin();
         }
         return $userid;
-    }
-
-    // alias for the function requireUserid
-    public static function requireLoggedInUser() {
-        return Urge::requireUserid();
     }
 
     public static function requireDatabase() {

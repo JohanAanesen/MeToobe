@@ -1,69 +1,51 @@
 <?php
-session_start();
 $ROOT = $_SERVER['DOCUMENT_ROOT'];
+require_once "$ROOT/classes/Urge.php";
 
-$playlistID = null;
-if(isset($_GET['id'])){
-    $playlistID = $_GET['id'];
+$db     = Urge::requireDatabase();
+$twig   = Urge::requireTwig();
+$userid = User::getLoggedInUserid();
+
+if (!isset($_GET['id']) && !$userid) {
+    Urge::gotoLogin();
 }
 
-$createMode = false;
+if (!isset($_GET['id']) && $userid) {   
+    $user = User::get($db, $userid);
+    echo $twig->render('playlist.html', array(
+        'title' => 'home',
+        'userid' => $userid,
+        'user' => $user,        
+        'createMode' => true,
+    ));     
+    exit();
+}
+
+$playlistID = $_GET['id'];
+$playlist   = Playlist::get($db, $playlistID);
+$videos     = Playlist::getVideos($db, $playlistID, true);
+
+if (!$userid) {
+    echo $twig->render('playlist.html', array(
+        'title' => 'home',
+        'playlist' => $playlist,
+        'videos' => $videos,
+    ));
+    exit();
+}
+
 $editMode = false;
-
-if(!isset($playlistID)){
-    $createMode = true;
-}
-
-require_once "$ROOT/php/twigloader.php";
-require_once "$ROOT/classes/DB.php";
-require_once "$ROOT/classes/User.php";
-require_once "$ROOT/classes/Video.php";
-require_once "$ROOT/classes/Playlist.php";
-
-$db = DB::getDBConnection();
-$user = new User($db);
-$userid = "";
-if($user->loggedIn()) {
-    $userid = $_SESSION['userid'];
-}
-$data = [];
-$videos = null;
-$playlist = null;
-
-//Not logged in users in createMode get redirected
-if($createMode){
-    if(!$user->loggedIn())
-        header("Location: /");
-}
-
-if(!$createMode){
-    $playlist = Playlist::get($db, $playlistID);
-    $videos = Playlist::getVideos($db, $playlistID, true);
-}
-
-if($playlist['userid'] == $userid){
+if ($playlist['userid'] === $userid) {
     $editMode = true;
 }
 
-if ($user->loggedIn()){
-    echo $twig->render('playlist.html', array(
-        'title' => 'home',
-        'data' => $data,
-        'loggedin' => 'yes',
-        'user' => $user->userData,
-        'createMode' => $createMode,
-        'editMode' => $editMode,
-        'playlist' => $playlist,
-        'videos' => $videos,
-    ));
-}else{
-    echo $twig->render('playlist.html', array(
-        'title' => 'home',
-        'data' => $data,
-        'loggedin' => 'no',
-        'createMode' => $createMode,
-        'playlist' => $playlist,
-        'videos' => $videos,
-    ));
-}
+$user = User::get($db, $userid);
+echo $twig->render('playlist.html', array(
+    'title' => 'home',
+    'userid' => $userid,
+    'user' => $user,
+    'editMode' => $editMode,
+    'playlist' => $playlist,
+    'videos' => $videos,
+));
 

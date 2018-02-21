@@ -3,7 +3,7 @@ $ROOT = $_SERVER['DOCUMENT_ROOT'];
 require_once "$ROOT/classes/Urge.php";
 
 $db = Urge::requireDatabase();
-$userid = Urge::requireUserid();
+$userid = Urge::requireLoggedInUser();
 
 
 if ( !isset($_FILES['fileToUpload']) ) {

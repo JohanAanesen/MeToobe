@@ -4,7 +4,7 @@ require_once "$ROOT/classes/Urge.php";
 
 $videoid = $_GET['id'];
 if (!isset($videoid)){
-    Urge::gotoError(400, "Bad request, missing videoid");
+    Urge::gotoError(400, "Bad request, missing parameter: videoid");
 }
 
 $db   = Urge::requireDatabase();

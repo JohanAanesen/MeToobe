@@ -6,32 +6,36 @@
 <div class="container">
 
     
-    <form method="post" {% if createMode %} action="/php/playlistCreate.php" {% else %} action="/php/playlistUpdate.php" {% endif %}/>
+    {% if createMode %}
+    <form method="post" action="/php/playlistCreate.php"/>
+    {% elseif editmode %}
+    <form method="post"  action="/php/playlistUpdate.php" />
+    {% endif %}
 
-    <p>{{ playlist.id }}</p>
-    <input type="text" class="form-control" id="playlist-title" name="playlist-title" value="{{ playlist.title }}"  placeholder="{% if not createMode %}{{ playlist.title }}{% else %}Playlist Title{% endif %}" required {% if not createMode and not editMode %} readonly {% endif %}><br>
-    <textarea type="text" class="form-control" rows="4" id="playlist-description" placeholder="Playlist Description" name="playlist-description" {% if not createMode and not editMode %} readonly {% endif %}>{{ playlist.description }}</textarea>
+        <p>{{ playlist.id }}</p>
+        <input type="text" class="form-control" id="playlist-title" name="playlist-title" value="{{ playlist.title }}"  placeholder="{% if not createMode %}{{ playlist.title }}{% else %}Playlist Title{% endif %}" required {% if not createMode and not editMode %} readonly {% endif %}><br>
+        <textarea type="text" class="form-control" rows="4" id="playlist-description" placeholder="Playlist Description" name="playlist-description" {% if not createMode and not editMode %} readonly {% endif %}>{{ playlist.description }}</textarea>
 
-        
-    {% for video in videos %}
+            
+        {% for video in videos %}
 
 
-    <hr>
-    <div class="col">
-        <span> {{ video.rank + 1 }}</span>
-        <h2 class="lead text">{{ video.name }}</h2>
-    </div>
-    <div class="row">
+        <hr>
         <div class="col">
-            <a href="/video"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+            <span> {{ video.rank + 1 }}</span>
+            <h2 class="lead text">{{ video.name }}</h2>
         </div>
-        <div class="col-md-8" style="word-break: break-all; word-wrap: break-word;">
-            <p>{{ video.description }}</p>
+        <div class="row">
+            <div class="col">
+                <a href="/video"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+            </div>
+            <div class="col-md-8" style="word-break: break-all; word-wrap: break-word;">
+                <p>{{ video.description }}</p>
+            </div>
         </div>
-    </div>
 
 
-    {% endfor %}
+        {% endfor %}
 
 
 
@@ -47,12 +51,14 @@
 
         {% endif %}
 
-    <br>
-    {% if editMode %}
+        <br>
         <!-- need the playlist id when updating the site, thus hidden. -->
         <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
-        <input type="submit" class="btn btn-success" {% if createMode %} value="Create" {% else %} value="Update" {% endif %}/>
-    {% endif %}
+        {% if createMode %}
+        <input type="submit" class="btn btn-success" value="Update" />
+        {% elseif editMode %}
+        <input type="submit" class="btn btn-success" value="Create" />
+        {% endif %}
     </form>
 </div>
 

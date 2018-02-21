@@ -7,7 +7,7 @@
         <div class="input-group">
             <input type="text" name="query" class="form-control" placeholder="imt2631..">
             <span class="input-group-btn">
-                <button class="btn btn-outline-success ml-lg-1" type="button">GO</button>
+                <button class="btn btn-outline-success ml-lg-1" type="submit">GO</button>
             </span>
         </div>
     </form>
@@ -25,7 +25,7 @@
             <a class="nav-link text-success" href="/user?id={{ userid }}">{{ user['fullname'] }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-success" href="/logout">Logout</a>
+            <a class="nav-link text-success" href="/php/userLogout.php">Logout</a>
             {% endif %}
         </li>
     </ul>
