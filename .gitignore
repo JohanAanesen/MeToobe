@@ -18,3 +18,5 @@ cache/
 
 # Mac
 .DS_Store
+
+logs/
