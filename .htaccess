@@ -7,3 +7,5 @@ RewriteRule ^upload/?$ /view/upload/
 RewriteRule ^search/?$ /view/search/
 RewriteRule ^logout/?$ /php/logout.php
 RewriteRule ^/?$ /view/home/index.php
+RewriteRule ^error/?$ /view/error/
+RewriteRule ^error/?$ /view/error/index.php
