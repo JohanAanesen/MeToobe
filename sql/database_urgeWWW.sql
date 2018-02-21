@@ -21,6 +21,8 @@ CREATE TABLE `User` (
   `wannabe` 	BOOLEAN,
   PRIMARY KEY (`id`)
 );
+ALTER TABLE `User` ADD UNIQUE KEY `email_index` (`email`);
+
 
 CREATE TABLE `Video` (
   `id` 					VARCHAR(64) NOT NULL,
