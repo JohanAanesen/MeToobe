@@ -49,6 +49,7 @@
 
     <br>
     {% if editMode %}
+        <!-- need the playlist id when updating the site, thus hidden. -->
         <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
         <input type="submit" class="btn btn-success" {% if createMode %} value="Create" {% else %} value="Update" {% endif %}/>
     {% endif %}
