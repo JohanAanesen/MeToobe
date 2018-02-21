@@ -35,6 +35,8 @@ class Comment {
         $sth = $db->prepare($sql);
         $param = array($commentid);
         $sth->execute($param);
+
+        return ($sth->rowCount() === 1);
     }
 
 

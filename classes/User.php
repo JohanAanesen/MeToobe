@@ -165,11 +165,11 @@ class User {
     }
 
     /**
-     * @function getUser
+     * @function get
      * @param db: PDOConnection
      * @return user | null
      */
-    static public function getUser($db, $userid) {
+    static public function get($db, $userid) {
         //SQL Injection SAFE query method:
         $query = "SELECT * FROM user WHERE id = (?)";
         $param = array($userid);

@@ -20,12 +20,18 @@ class Urge {
     }
 
     public static function gotoError($code, $msg) {
+        // @doc http://php.net/manual/en/function.debug-backtrace.php
         header("Location: /error?code=" . $code . "&msg=" . $msg);
         exit();
     }
 
     public static function gotoLogin() {
         header("Location: /login");
+        exit();
+    }
+
+    public static function gotoVideo($videoid) {
+        header("Location: /video?id=".$videoid);
         exit();
     }
 
@@ -36,7 +42,12 @@ class Urge {
         }
         return $userid;
     }
-    
+
+    // alias for the function requireUserid
+    public static function requireLoggedInUser() {
+        return Urge::requireUserid();
+    }
+
     public static function requireDatabase() {
         $db = DB::getDBConnection();
         if (!$db) {
