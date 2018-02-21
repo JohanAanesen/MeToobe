@@ -22,7 +22,9 @@ class Playlist {
      * @return videos - array of videos connected to the playlist id
      */
     public static function getVideos($db, $id, $orderByRank=false) {
-        $sql = "SELECT * FROM VideoPlaylist WHERE playlistid=?";
+        $sql = "SELECT * FROM VideoPlaylist
+                INNER JOIN video ON videoplaylist.videoid = video.id
+                WHERE playlistid=?";
         if ($orderByRank === true) {
             $sql .= " ORDER BY rank";
         }
@@ -201,6 +203,11 @@ class Playlist {
         return true;
     }
 
+    /**
+     * @param $db
+     * @param $userid
+     * @return array|null
+     */
     public static function getUserPlaylist($db, $userid){
         try{
             //SQL Injection SAFE query method:

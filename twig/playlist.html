@@ -2,48 +2,56 @@
 {% block title %} Playlist {% endblock %}
 {% block content %}
 
+<div class="container-fluid border-top" style="margin-bottom: 10px;"></div>
 <div class="container">
 
     
-    <form {% if newPlaylist %} action="/php/playlistCreate.php" {% else %} action="/php/playlistUpdate.php" {% endif %}/>        
-    
-        <input type="text" class="form-control" id="playlist-title" placeholder="Playlist Title" required {% if not editMode %} readonly {% endif %}/><br>
-        <textarea type="text" class="form-control" rows="5" id="playlist-description" placeholder="Playlist Description" name="comment" {% if not editMode %} readonly {% endif %}></textarea>
+    <form method="post" {% if createMode %} action="/php/playlistCreate.php" {% else %} action="/php/playlistUpdate.php" {% endif %}/>
+
+    <p>{{ playlist.id }}</p>
+    <input type="text" class="form-control" id="playlist-title" name="playlist-title" value="{{ playlist.title }}"  placeholder="{% if not createMode %}{{ playlist.title }}{% else %}Playlist Title{% endif %}" required {% if not createMode and not editMode %} readonly {% endif %}><br>
+    <textarea type="text" class="form-control" rows="4" id="playlist-description" placeholder="Playlist Description" name="playlist-description" {% if not createMode and not editMode %} readonly {% endif %}>{{ playlist.description }}</textarea>
 
         
-    {# % for video in videos % #}
+    {% for video in videos %}
 
 
     <hr>
     <div class="col">
-        <span> 1</span>
-        <h2 class="lead text">1234567890123456789012345678901234567890</h2>
+        <span> {{ video.rank + 1 }}</span>
+        <h2 class="lead text">{{ video.name }}</h2>
     </div>
     <div class="row">
         <div class="col">
             <a href="/video"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
         </div>
         <div class="col-md-8" style="word-break: break-all; word-wrap: break-word;">
-            <p>DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription</p>
+            <p>{{ video.description }}</p>
         </div>
     </div>
 
 
-    {# % endfor % #}
+    {% endfor %}
 
 
 
-        {% if editmode %}
-            
+        {% if editMode %}
+            <br>
+            <div class="border border-danger">
+                <h1>Does not work yet.</h1>
+                <label for="playlist-video-swap-1">Swap: </label>
+                <input type="text" class="form-control col-md-2" id="playlist-video-swap-1"/>
+                <label for="playlist-video-swap-2">To:</label>
+                <input type="text" class="form-control col-md-2" id="playlist-video-swap-2"/><br>
+            </div>
 
-            <label for="playlist-video-rank">Swap: </label>
-            <input id="playlist-video-swap-1"/>
-            <label for="playlist-video-rank">To:</label>
-            <input id="playlist-video-swap-1"/><br>
         {% endif %}
 
     <br>
-        <input type="submit" id="playlist-video-swap-1" class="btn btn-success" {% if newPlaylist %} value="Create" {% else %} value="Update" {% endif %}/>                
+    {% if editMode %}
+        <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
+        <input type="submit" class="btn btn-success" {% if createMode %} value="Create" {% else %} value="Update" {% endif %}/>
+    {% endif %}
     </form>
 </div>
 
