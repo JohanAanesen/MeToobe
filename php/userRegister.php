@@ -3,8 +3,6 @@ $ROOT = $_SERVER['DOCUMENT_ROOT'];
 require_once "$ROOT/classes/Urge.php";
 $db = Urge::requireDatabase();
 
-print_r($_POST);
-
 $newname = $_POST['newname'];
 $newemail = $_POST['newemail'];
 $newpassword = $_POST['newpassword'];

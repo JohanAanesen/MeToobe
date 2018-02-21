@@ -1,9 +1,8 @@
 <?php
 $ROOT = $_SERVER['DOCUMENT_ROOT'];
 require_once "$ROOT/classes/Urge.php";
-$db = Urge::requireDatabase();
 
-print_r($_POST);
+$db = Urge::requireDatabase();
 
 $email = $_POST['email'];
 $name = $_POST['password'];

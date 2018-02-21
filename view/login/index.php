@@ -2,9 +2,9 @@
 $ROOT = $_SERVER['DOCUMENT_ROOT'];
 require_once "$ROOT/classes/Urge.php";
 
-$twig = Urge::getTwig();
+$twig = Urge::requireTwig();
 
-if (User::isLoggedIn()) {
+if (User::getLoggedInUserid()) {
     Urge::gotoHome();
 }
 

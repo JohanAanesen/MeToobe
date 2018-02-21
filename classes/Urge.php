@@ -29,50 +29,23 @@ class Urge {
         exit();
     }
 
-    public static function get_Userid_Database_Twig() {
-        
-        return array(
-            User::isLoggedIn(),
-            Urge::requireDatabase(),
-            Urge::getTwig()
-        );
-    }
-
-    public static function require_Userid_Database_Twig() {
-        
-        return array(
-            Urge::requireUserid(),
-            Urge::requireDatabase(),
-            Urge::getTwig()
-        );
-    }
-
-    public static function require_Userid_Database() {
-        
-        return array(
-            Urge::requireUserid(),
-            Urge::requireDatabase(),
-        );
-    }
-
-    public static function require_Userid() {
-        
-        return array(
-            Urge::requireUserid(),
-        );
-    }
-
     public static function requireUserid() {
-        
-        return User::isLoggedInOrRedirectTo("/login");        
+        $userid = User::getLoggedInUserid();
+        if (!$userid) {
+            Urge::gotoLogin();
+        }
+        return $userid;
     }
     
     public static function requireDatabase() {
-        
-        return DB::getDBConnection();
+        $db = DB::getDBConnection();
+        if (!$db) {
+            Urge::gotoError(500, "No connection with the database");
+        }
+        return $db;
     }
 
-    public static function getTwig() {
+    public static function requireTwig() {
         $ROOT = $_SERVER['DOCUMENT_ROOT'];        
         $loader = new Twig_Loader_Filesystem("$ROOT/twig");
         return new Twig_Environment($loader, array(

@@ -1,18 +1,27 @@
 <?php
 
 $ROOT = $_SERVER['DOCUMENT_ROOT'];
+require_once "$ROOT/classes/Urge.php";
 
-require_once "$ROOT/classes/DB.php";
-require_once "$ROOT/classes/User.php";
+$db = Urge::requireDatabase();
+$userid = Urge::requireUserid();
 
-$db = DB::getDBConnection();
+$updateCount = 0;
 
-if(isset($_POST['yes'])){
-    User::updateType($_POST['yes'], "teacher", $db); // "teacher", $db);
-}else if(isset($_POST['no'])){
-    User::updateType($_POST['no'], "student", $db);
+if(isset($_POST['teacher'])){
+    $updateCount = User::updateType($db, $_POST['teacher'], "teacher"); // "teacher", $db);
+
+}else if(isset($_POST['student'])){
+    $updateCount = User::updateType($db, $_POST['student'], "student");
+
 }else if(isset($_POST['admin'])){
-    User::updateType($_POST['admin'], "admin", $db);
+    $updateCount = User::updateType($db, $_POST['admin'], "admin");
+
+} else {
+    Urge::gotoError(400, "Invalid request");
 }
 
-header("Location: /");
+if(!$updateCount)
+    Urge::gotoError(500, "There was a server error while updating the usertype");
+
+Urge::gotoHome();

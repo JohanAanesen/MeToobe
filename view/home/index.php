@@ -2,7 +2,9 @@
 $ROOT = $_SERVER['DOCUMENT_ROOT'];
 require_once "$ROOT/classes/Urge.php";
 
-list($userid, $db, $twig) = Urge::get_Userid_Database_Twig();
+$db = Urge::requireDatabase();
+$twig = Urge::requireTwig();
+$userid = User::getLoggedInUserid();
 
 $user = null;
 if ($userid) {

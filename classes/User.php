@@ -84,31 +84,15 @@ class User {
     }
 
     /**
-      * @function isLoggedIn
+      * @function getLoggedInUserid
       * @global $_SESSION
       * @return userid | 0
       */
-    static function isLoggedIn() {
+    static function getLoggedInUserid() {
         User::requireSession();
         
         if( !isset($_SESSION[User::$KEY_SESSION_USERID]) ) {
             return 0;
-        }
-        return $_SESSION[User::$KEY_SESSION_USERID];
-    }
-
-    /** 
-      * @function isLoggedInOrRedirectTo
-      * @param redirectURL: string - URL to redirect to if there is an error
-      * @global $_SESSION
-      * @return  userid | redirect to specified redirectURL
-      */
-    static function isLoggedInOrRedirectTo($redirectURL) {
-        User::requireSession();
-        
-        if( !isset($_SESSION[User::$KEY_SESSION_USERID]) ) {
-            header("Location: " . $redirectURL);
-            exit();
         }
         return $_SESSION[User::$KEY_SESSION_USERID];
     }
@@ -121,7 +105,7 @@ class User {
 
         if ( !isset($_SESSION[User::$KEY_SESSION_USERTYPE]) || $_SESSION[User::$KEY_SESSION_USERTYPE] !== 'admin' )
             return 0;
-        return $_SESSION[User::$KEY_SESSION_USERID];
+        return true;
     }
 
     /** 
@@ -144,20 +128,20 @@ class User {
     }
 
     /** 
-     * @function updateUserType
+     * @function updateType
      * @param db: PDOConnection
      * @param userid: string
      * @param usertype: enum['admin', 'teacher', 'student']
      * @return if updated true | false 
      */
-    static function updateUserType($db, $userid, $usertype) {
+    static function updateType($db, $userid, $usertype) {
 
         $query = "UPDATE user SET usertype = ?, wannabe = ? WHERE id = (?)";
         $param = array($usertype, false, $userid);
         $stmt = $db->prepare($query);
         $stmt->execute($param);
 
-        return ($stmt->rowCount() === 1); 
+        return ($stmt->rowCount() == 1); 
     }
 
     /** 
