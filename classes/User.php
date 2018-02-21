@@ -1,272 +1,187 @@
 <?php
-$ROOT = $_SERVER['DOCUMENT_ROOT'];
-require_once "$ROOT/classes/DB.php";
 
-class User{
 
-    private $userid = "";
-    public $userData = [];
-    private $db;
-  /*  private $email;
-    private $password;
-    private $usertype;
-    private $wannabe; */
+class User {
 
+    private static $KEY_SESSION_USERID = 'userid';
+    private static $KEY_SESSION_USERTYPE = 'usertype';
 
     /**
-     * User constructor.
-     * @param $db
+     * @function create
+     *  @brief  Create a valid new user in the database.
+     *  @param  db:             PDOConnection 
+     *  @param  fullname:       string - Example: Jonas Testerson
+     *  @param  email:          string - Example: jonas.test@gmail.com
+     *  @param  password:       string - Example: "my secret awesome password is magic"
+     *  @param  wannebeTeacher: bool   - The user has requested the teacher role. An administrator has to 
+     *                                   approve of the request, before the user gets the teacher role.
+     *  @return userid | 0
      */
-    function __construct($db){
-        $this->db = $db;
+    static function create($db, $fullname, $email, $password, $wannebeTeacher) {
 
-        //
-        // REGISTER NEW USER
-        //
-        if(isset($_POST['newemail'])){
-            $wannabe = false;
-            if(isset($_POST['isTeacher']) && $_POST['isTeacher'] == 'yes'){
-                $wannabe = true;
-            }
-            if(self::checkUniqueUser($_POST['newemail'], $db)){
-                //adds new user to DB
-                $this->createDBUser($_POST['newemail'], $_POST['newname'], md5($_POST['newpassword']), $wannabe);
-
-                //sets session and stuff..
-                $this->findUser($_POST['newemail'], md5($_POST['newpassword']));
-            }
+        // Is email already registered?
+        $query = "SELECT * FROM User WHERE email = ?";
+        $param = array($email);
+        $stmt = $db->prepare($query);
+        $stmt->execute($param);
+    
+        // @error A user with that email already registered.
+        if ($stmt->fetchColumn() > 0) {
+            return 0;
         }
-        //
-        // LOG IN EXISTING USER
-        //
-        else {
-            if (isset($_POST['email'])) {
-                $this->findUser($_POST['email'], md5($_POST['password']));
-            } else if (isset($_POST['logout'])) {
-                unset($_SESSION['userid']);
-            } else if (isset($_SESSION['userid'])) {
-                $this->userid = $_SESSION['userid'];
-                $this->userData['userid'] = $_SESSION['userid'];
-                $this->userData['email'] = $_SESSION['email'];
-                $this->userData['usertype'] = $_SESSION['usertype'];
-                $this->userData['password'] = $_SESSION['password'];
-                $this->userData['wannabe'] = $_SESSION['wannabe'];
-                $this->userData['fullname'] = $_SESSION['fullname'];
+        $query = "INSERT INTO user (id, fullname, email, password, usertype, wannabe) VALUES (?, ?, ?, ?, ?, ?)";
+        $userid = uniqid();
+        $param = array($userid, $fullname, $email, md5($password), "student", $wannebeTeacher);
+        $stmt = $db->prepare($query);
+        $stmt->execute($param);
 
-            }
+        // @error There was an error when inserting the user
+        if ($stmt->rowCount() !== 1) {
+            return 0;
         }
-    }
-
-    /** Logged in function, returns true if user is logged in!
-     * @return bool
-     */
-    public function loggedIn(){
-        if ($this->userid != ""){
-            return true;
-        }else{
-            return false;
-        }
+        return $userid;      
     }
 
     /**
-     * @param $email
-     * @param $fullname
-     * @param $password
-     * @param $wannabe
-     */
-    public function createDBUser($email, $fullname, $password, $wannabe){
-        try {
-            $db = $this->db;
-            //SQL Injection SAFE query method:
-            $query = "INSERT INTO user (id, fullname, email, password, usertype, wannabe) VALUES (?, ?, ?, ?, ?, ?)";
-            $param = array(uniqid(), $fullname, $email, $password, "student", $wannabe);
-            $stmt = $db->prepare($query);
-            $stmt->execute($param);
-        } catch (PDOException $ex) {
-            echo "Could not register your funny ass"; //Error message
+      * @function login
+      *  @param  db:       PDOConnection
+      *  @param  email:    string - Example: jonas.test@gmail.com
+      *  @param  password: string - Example: "my secret awesome password is magic"
+      *  @global $_SESSION
+      *  @return userid | 0
+      */
+    static function login($db, $email, $password) {
+
+        $query = "SELECT * FROM user WHERE email = (?) AND password = (?)";
+        $param = array($email, md5($password));
+        $stmt = $db->prepare($query);
+        $stmt->execute($param);
+
+        if($stmt->rowCount() !== 1) {
+            return 0;       
         }
 
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        User::requireSession();
+        $_SESSION[User::$KEY_SESSION_USERID] = $row['id'];
+        $_SESSION[User::$KEY_SESSION_USERTYPE] = $row['usertype'];
+
+        return $_SESSION[User::$KEY_SESSION_USERID];
     }
-//DOESNT WORK YET -> needs to be updated :)
-    /** Update User in DB
-     * @return bool
-     */
-    public function updateUser(){
-        if ($this->failSafe()){
-            try {
-                $db = $this->db;
-                //SQL Injection SAFE query method:
-                $query = "UPDATE user SET password = (?), usertype = (?), wannabe = (?) WHERE id = (?)";
-                $param = array($this->userData['password'], $this->userData['usertype'], $this->userData['wannabe'], $this->userData['id']);
-                $stmt = $db->prepare($query);
-                $stmt->execute($param);
-            } catch (PDOException $ex) {
-                echo "Could not update password"; //Error message
-                return false;
-            }
-            return true;
-        }
-        return false;
+    
+    /**
+      * @function logout
+      * @brief Modified the $_SESSION to in effect log out the user.
+      * @global $_SESSION
+      */
+    static function logout() {
+        User::requireSession();
+        
+        unset($_SESSION[User::$KEY_SESSION_USERID]);
+        unset($_SESSION[User::$KEY_SESSION_USERTYPE]);
     }
 
     /**
-     * @param $userid
-     * @param $usertype
-     * @param $db
-     * @return bool
-     */
-    public static function updateType($userid, $usertype, $db){
-        try{
-            //SQL Injection SAFE query method:
-            $query = "UPDATE user SET usertype = ?, wannabe = ? WHERE id = (?)";
-            $param = array($usertype, false, $userid);
-            $stmt = $db->prepare($query);
-            $stmt->execute($param);
-
-            if ($stmt->rowCount()==1) {
-                return true;
-            }
-        }catch(PDOException $ex){
-            echo "Something went wrong".$ex; //Error message
+      * @function getLoggedInUserid
+      * @global $_SESSION
+      * @return userid | 0
+      */
+    static function getLoggedInUserid() {
+        User::requireSession();
+        
+        if( !isset($_SESSION[User::$KEY_SESSION_USERID]) ) {
+            return 0;
         }
-        return false;
-    }
-
-
-    /**
-     * @param $email
-     * @param $password
-     * @return array
-     */
-    public function findUser($email, $password){
-        try {
-            $db = $this->db;
-            //SQL Injection SAFE query method:
-            $query = "SELECT * FROM user WHERE email = (?) AND password = (?)";
-            $param = array($email, $password);
-            $stmt = $db->prepare($query);
-            $stmt->execute($param);
-
-            if($stmt->rowCount() == 1) {
-                $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                $this->userData = $row;
-                $_SESSION['userid'] = $row['id'];
-                $_SESSION['fullname'] = $row['fullname'];
-                $_SESSION['email'] = $row['email'];
-                $_SESSION['usertype'] = $row['usertype'];
-                $_SESSION['password'] = $row['password'];
-                $_SESSION['wannabe'] = $row['wannabe'];
-                $this->userid = $row['id'];
-                return array('status'=>'OK');
-            }
-        } catch (PDOException $ex) {
-            return array('status'=>'FAIL', 'errorMessage'=>'Something went wrong');
-        }
-        return array('status'=>'FAIL', 'errorMessage'=>'Wrong Username/Password!');
+        return $_SESSION[User::$KEY_SESSION_USERID];
     }
 
     /**
-     * @param $db
-     * @param $email
-     * @return bool
+     * @global $_SESSION
      */
-    public static function checkUniqueUser($email, $db){
-        try{
-            //SQL Injection SAFE query method:
-            $query = "SELECT * FROM user WHERE email = (?)";
-            $param = array($email);
-            $stmt = $db->prepare($query);
-            $stmt->execute($param);
+    static function isAdmin() {
+        User::requireSession();        
 
-            if($stmt->rowCount() > 0) {
-                echo "Email already registered!";
-                return false;
-            }else return true;
-        }catch(PDOException $ex){
-            echo "Email already registered".$ex; //Error message
-        }
+        if ( !isset($_SESSION[User::$KEY_SESSION_USERTYPE]) || $_SESSION[User::$KEY_SESSION_USERTYPE] !== 'admin' )
+            return 0;
         return true;
     }
 
-    /** getWannabe grabs all wannabe's from the DB
-     * @return array|null
+    /** 
+     * @function updateUser
+     * @param db: PDOConnection
+     * @param userid: string
+     * @param password: string
+     * @param usertype: enum['admin', 'teacher', 'student']
+     * @param wannabe:  bool
+     * @return if updated true | false 
      */
-    public function getWannabe(){
-        if($this->userData['usertype'] == 'admin'){
-            try{
-                $db = $this->db;
-                //SQL Injection SAFE query method:
-                $query = "SELECT * FROM user WHERE wannabe = (?)";
-                $param = array(true);
-                $stmt = $db->prepare($query);
-                $stmt->execute($param);
+    static function updateUser($db, $userid, $password, $usertype, $wannabe) {
 
-                if($stmt->rowCount() > 0) {
-                    $users = array();
-                    while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                        $users[] = $row;
-                    }
-                    return $users;
-                }
-            }catch(PDOException $ex){
-                echo "Something went wrong ".$ex; //Error message
-            }
-        }
-        return null;
+        $query = "UPDATE user SET password = (?), usertype = (?), wannabe = (?) WHERE id = (?)";
+        $param = array($password, $usertype, $wannabe, $userid);
+        $stmt = $db->prepare($query);
+        $stmt->execute($param);
+
+        return ($stmt->rowCount() === 1);
     }
 
-    public static function getEmail($db, $userid){
-        try{
-            //SQL Injection SAFE query method:
-            $query = "SELECT DISTINCT email FROM user WHERE id = (?) LIMIT 1";
-            $param = array($userid);
-            $stmt = $db->prepare($query);
-            $stmt->execute($param);
+    /** 
+     * @function updateType
+     * @param db: PDOConnection
+     * @param userid: string
+     * @param usertype: enum['admin', 'teacher', 'student']
+     * @return if updated true | false 
+     */
+    static function updateType($db, $userid, $usertype) {
 
-            if($stmt->rowCount() > 0) {
-                return $stmt->fetch(PDO::FETCH_ASSOC);
-            }
-        }catch(PDOException $ex){
-            echo "Can't get user email. Something went wrong!"; //Error message
+        $query = "UPDATE user SET usertype = ?, wannabe = ? WHERE id = (?)";
+        $param = array($usertype, false, $userid);
+        $stmt = $db->prepare($query);
+        $stmt->execute($param);
+
+        return ($stmt->rowCount() == 1); 
+    }
+
+    /** 
+     * @function getWannabeTeachers
+     * @requires admin rights 
+     * @brief getWannabe grabs all wannabe's from the DB
+     * @param db: PDOConnection
+     * @return array of wannabeTeachers | null
+     */
+    static public function getWannabeTeachers($db){
+        // @error - user is not admin
+        if ( !User::isAdmin() ) {
+            return null;
         }
-        return null;
+        //SQL Injection SAFE query method:
+        $query = "SELECT * FROM user WHERE wannabe = (?)";
+        $param = array(true);
+        $stmt = $db->prepare($query);
+        $stmt->execute($param);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
-     * @param $db
-     * @param $userid
-     * @return null
+     * @function getUser
+     * @param db: PDOConnection
+     * @return user | null
      */
-    public static function getUserStats($db, $userid){
-        try{
-            //SQL Injection SAFE query method:
-            $query = "SELECT fullname, email FROM user WHERE id = (?) LIMIT 1";
-            $param = array($userid);
-            $stmt = $db->prepare($query);
-            $stmt->execute($param);
+    static public function getUser($db, $userid) {
+        //SQL Injection SAFE query method:
+        $query = "SELECT * FROM user WHERE id = (?)";
+        $param = array($userid);
+        $stmt = $db->prepare($query);
+        $stmt->execute($param);
 
-            if($stmt->rowCount() > 0) {
-                return $stmt->fetch(PDO::FETCH_ASSOC);
-            }
-        }catch(PDOException $ex){
-            echo "Can't get user email. Something went wrong!"; //Error message
-        }
-        return null;
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-
-    /**Fail-safe
-     * @return bool
-     */
-    function failSafe(){
-        if (isset($this->userData['userid']) &&
-            isset($this->userData['email']) &&
-            isset($this->userData['password']) &&
-            isset($this->userData['usertype'])){
-
-            return true;
-        }else{
-            return false;
+    static private function requireSession() {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
         }
     }
 }

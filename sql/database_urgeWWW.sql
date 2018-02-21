@@ -21,6 +21,8 @@ CREATE TABLE `User` (
   `wannabe` 	BOOLEAN,
   PRIMARY KEY (`id`)
 );
+ALTER TABLE `User` ADD UNIQUE KEY `email_index` (`email`);
+
 
 CREATE TABLE `Video` (
   `id` 					VARCHAR(64) NOT NULL,
@@ -98,16 +100,3 @@ ALTER TABLE `VideoPlaylist` ADD UNIQUE KEY `videoid_playlistid_rank_unique_index
 /*================================INSERT ADMIN TO USER=====================================*/;
 INSERT INTO `user` (`id`, `fullname`, `email`, `password`, `usertype`, `wannabe`) 
 VALUES ('1337ADMIN1337', 'admin', 'admin@metoobe.com', '21232f297a57a5a743894a0e4a801fc3', 'admin', 0);
-
-/*=================================== TEST DATA =================================*/
-
-/* class PlaylistTest */
-INSERT INTO `user` (`id`, `fullname`, `email`, `password`, `usertype`, `wannabe`) VALUES ('1337TEST1337', 'testuser', 'test@metoobe.com', '098f6bcd4621d373cade4e832627b4f6', 'student', 0);
-INSERT INTO `playlist` (`id`, `userid`,`title`) VALUES ('testplaylist1', '1337TEST1337', 'Test Playlist');  
-INSERT INTO `video` (`id`, `userid`, `name`) VALUES ('testvideo1', '1337TEST1337', 'Test Video 1');  
-INSERT INTO `video` (`id`, `userid`, `name`) VALUES ('testvideo2', '1337TEST1337', 'TEst Video 2');  
-INSERT INTO `video` (`id`, `userid`, `name`) VALUES ('testvideo3', '1337TEST1337', 'Test video 3');
-
-INSERT INTO `VideoPlaylist`(`videoid`, `playlistid`, `rank`)VALUES('testvideo1', 'testplaylist1', 0);
-INSERT INTO `VideoPlaylist`(`videoid`, `playlistid`, `rank`)VALUES('testvideo2', 'testplaylist1', 1);
-INSERT INTO `VideoPlaylist`(`videoid`, `playlistid`, `rank`)VALUES('testvideo3', 'testplaylist1', 2);

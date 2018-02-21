@@ -83,30 +83,25 @@ class Playlist {
 
         $db->beginTransaction();
 
+        try {
+        
         $sql = 'DELETE FROM VideoPlaylist WHERE playlistid = ?';
         $stmt = $db->prepare($sql);
         $param = array($id);
+        $stmt->execute($param);
+
+
+        $sql = 'DELETE FROM Playlist WHERE id = ?';
+        $stmt = $db->prepare($sql);
+        $param = array($id);
+        $stmt->execute($param);
         
-        try {
-            $stmt->execute($param);
         } catch (PDOException $e) {
             print_r($e->errorInfo); 
             $db->rollBack(); 
             return;
         }
-
-        $sql = 'DELETE FROM Playlist WHERE id = ?';
-        $stmt = $db->prepare($sql);
-        $param = array($id);
-
-        try {
-            $stmt->execute($param);
-        } catch (PDOException $e) {
-            print_r($e->errorInfo);
-            $db->rollBack();
-            return;            
-        }
-        
+            
         $db->commit();
     }
     
@@ -160,6 +155,8 @@ class Playlist {
         
         $db->beginTransaction();
 
+        try {
+
         $sql = "SELECT * FROM VideoPlaylist WHERE videoid = ?";
         $stmt = $db->prepare($sql);
         $param = array($videoid);
@@ -196,6 +193,12 @@ class Playlist {
         if ($stmt->rowCount() !== 1) {
             $db->rollBack();
             return false;
+        }
+
+        } catch (PDOException $e) {
+            print_r($e->errorInfo); 
+            $db->rollBack(); 
+            return;
         }
 
         $db->commit();

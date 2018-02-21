@@ -3,6 +3,7 @@
 class Comment {
 
     /* 
+     * @requires login
      * @param db - PDO connection object
      * @param userid - user who add's a new comment
      * @param videoid - video which the comment is attached to
@@ -25,6 +26,7 @@ class Comment {
     }
 
     /* 
+     * @requires login
      * @param db - PDO connection object
      * @param commentid - comment we want to delete
      */
