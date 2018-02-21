@@ -1,56 +1,24 @@
 <?php
-session_start();
-
 $ROOT    = $_SERVER['DOCUMENT_ROOT'];
+require_once "$ROOT/classes/Urge.php";
+
 $videoid = $_GET['id'];
-
-//if videoid is not set, return user to frontpage.
 if (!isset($videoid)){
-    header("Location: /");
-    exit();
+    Urge::gotoError(400, "Bad request, missing videoid");
 }
 
-require_once "$ROOT/php/twigloader.php";
-require_once "$ROOT/classes/DB.php";
-require_once "$ROOT/classes/User.php";
-require_once "$ROOT/classes/Video.php";
-require_once "$ROOT/classes/Comment.php";
-
-$db = DB::getDBConnection();
-$user = new User($db);
-$userid = "";
-if($user->loggedIn()) {
-    $userid = $_SESSION['userid'];
-}
-$data = [];
-$videoData = null;
+$db   = Urge::requireDatabase();
+$twig = Urge::requireTwig();
+$userid = User::getLoggedInUserid();
 $likes = 0;
 $dislikes = 0;
 $hasLiked = false;
 
-if(isset($_POST['deleteComment'])){
-    Comment::delete($db, $_POST['deleteComment']);
-}
 
-
-// Voting, only if user is logged in and corresponding post requests are made.
-if($user->loggedIn()){
-    if (isset($_POST['upvote'])){
-        Video::videoVote($db, $videoid, $userid, true);
-    }else if(isset($_POST['downvote'])){
-        Video::videoVote($db, $videoid, $userid, false);
-    }
-}
-
-
-//
-// Load specific video, with corresponding data
-//
 // View-counter
 Video::viewCountPlus($db, $videoid);
 
 // Video title, desc, likes fetched from db
-$videoData = Video::findVideo($db, $videoid);
 $videoLikes = Video::findLikes($db, $videoid);
 
 // Counts up likes and dislikes from db
@@ -70,21 +38,15 @@ if(isset($videoLikes)){
     }
 }
 
-//
-// Load video comments
-//
-$comments = Comment::get($db, $videoid);
+$videoData = Video::get($db, $videoid);
+$comments  = Comment::get($db, $videoid);
 
-
-//
-// Twig render
-//
-if ($user->loggedIn()){
+if ($userid) {
+    $user = User::get($db, $userid);
     echo $twig->render('video.html', array(
         'title' => 'home',
-        'data' => $data,
         'loggedin' => 'yes',
-        'user' => $user->userData,
+        'user' => $user,
         'userid' => $userid,
         'videoData' => $videoData,
         'likes' => $likes,
@@ -95,7 +57,6 @@ if ($user->loggedIn()){
 } else {
     echo $twig->render('video.html', array(
         'title' => 'home',
-        'data' => $data,
         'loggedin' => 'no',
         'videoData' => $videoData,
         'likes' => $likes,

@@ -8,11 +8,11 @@ class Video {
     public static function add($db, $uid, $name, $course, $topic, $descr="", $mime="") {
         $videoid = uniqid();
         $sql = "INSERT INTO"
-             ."video   (     id,userid, name,  course,  topic, description, mime)"
+             ." video   (     id,userid, name,  course,  topic, description, mime)"
              . "VALUES (      ?,    ?,     ?,       ?,      ?,      ?,    ?)";
         $param = array($videoid, $uid, $name, $course, $topic, $descr, $mime);
         $sth = $db->prepare ($sql);
-        $sth->execute();
+        $sth->execute($param);
 
         if ($sth->rowCount() !== 1) {
             return 0;
@@ -64,7 +64,7 @@ class Video {
      * @param $videoid
      * @return array|null
      */
-    public static function findVideo($db, $videoid){
+    public static function get($db, $videoid){
         try{
             //SQL Injection SAFE query method:
             $query = "SELECT * FROM video WHERE id = (?)";
