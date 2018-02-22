@@ -2,14 +2,10 @@
 $ROOT    = $_SERVER['DOCUMENT_ROOT'];
 require_once "$ROOT/classes/Urge.php";
 
-$videoid = $_GET['id'];
-if (!isset($videoid)){
-    Urge::gotoError(400, "Bad request, missing parameter: videoid");
-}
-
-$db   = Urge::requireDatabase();
-$twig = Urge::requireTwig();
-$userid = User::getLoggedInUserid();
+$videoid = Urge::requireParameter('id');
+$db      = Urge::requireDatabase();
+$twig    = Urge::requireTwig();
+$userid  = User::getLoggedInUserid();
 $likes = 0;
 $dislikes = 0;
 $hasLiked = false;

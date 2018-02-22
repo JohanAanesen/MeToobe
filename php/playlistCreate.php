@@ -1,22 +1,9 @@
 <?php
-session_start();
-$ROOT = $_SERVER['DOCUMENT_ROOT'];
-require_once "$ROOT/php/requirelogin.php";
-require_once "$ROOT/classes/DB.php";
-require_once "$ROOT/classes/Playlist.php";
-require_once "$ROOT/classes/User.php";
+$ROOT    = $_SERVER['DOCUMENT_ROOT'];
+require_once "$ROOT/classes/Urge.php";
 
-
-$db = DB::getDBConnection();
-$user = new User($db);
-$userid = "";
-if($user->loggedIn()) {
-    $userid = $_SESSION['userid'];
-}
-
-
-$playlistTitle = $_POST['playlist-title'];
-$playlistDesc = $_POST['playlist-description'];
+$userid = Urge::requireLoggedInUser();
+list($playlistTitle,$playlistDesc) = Urge::requireParameterArray('playlist-title', 'playlist-description');
 
 $playlistID = Playlist::create($db, $userid, $playlistTitle, $playlistDesc);
 

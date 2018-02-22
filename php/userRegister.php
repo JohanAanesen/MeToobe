@@ -3,9 +3,7 @@ $ROOT = $_SERVER['DOCUMENT_ROOT'];
 require_once "$ROOT/classes/Urge.php";
 $db = Urge::requireDatabase();
 
-$newname = $_POST['newname'];
-$newemail = $_POST['newemail'];
-$newpassword = $_POST['newpassword'];
+list($newname, $newemail, $newpassword) = Urge::requireParameterArray('newname','newemail', 'newpassword');
 $wannabeTeacher = (isset($_POST['isTeacher'])) ? true : false;
 
 $userid = User::create($db, $newname, $newemail, $newpassword, $wannabeTeacher);

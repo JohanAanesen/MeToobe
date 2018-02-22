@@ -38,10 +38,10 @@ class Urge {
     public static function requireParameter($param) {
         $resultParam = null;
         if (isset($_GET[$param])) {
-            $currentParam = $_GET[$param];
+            $resultParam = $_GET[$param];
         }
         else if (isset($_POST[$param]) ) {
-            $currentParam = $_POST[$param];
+            $resultParam = $_POST[$param];
         }
         else {
             Urge::gotoError(400, "Bad request, missing parameter: " . $param);

@@ -2,8 +2,8 @@
 $ROOT = $_SERVER['DOCUMENT_ROOT'];
 require_once "$ROOT/classes/Urge.php";
 
-$db = Urge::requireDatabase();
-$twig = Urge::requireTwig();
+$db     = Urge::requireDatabase();
+$twig   = Urge::requireTwig();
 $userid = User::getLoggedInUserid();
 
 $user = null;
