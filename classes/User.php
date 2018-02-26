@@ -240,6 +240,11 @@ class User {
                 $stmt = $db->prepare($sql);
                 $param = array($row['id']);
                 $stmt->execute($param);
+
+                $sql = 'DELETE FROM userlike WHERE videoid = ?';             //deletes all comments on these videos
+                $stmt = $db->prepare($sql);
+                $param = array($row['id']);
+                $stmt->execute($param);
             }
 
             $sql = 'DELETE FROM video WHERE userid = ?';                    //deletes all users videos
