@@ -13,7 +13,7 @@ if (!$userid) {
 else{
   if($userRemember) {
     $days = time() + (86400 * 30); // 86400 = 1 day. Will expire after 30 days
-    setcookie('email', $email, $days);
+    setcookie('email', $email, $days, "/");
   }
 }
 

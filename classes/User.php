@@ -98,6 +98,7 @@ class User {
 
     /**
      * @global $_SESSION
+     * @return bool | 0
      */
     static function isAdmin() {
         User::requireSession();
