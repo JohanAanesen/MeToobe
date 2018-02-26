@@ -17,4 +17,4 @@ if($checkOwner['userid'] == $userid){
     Video::delete($db, $videoid);
 }
 
-echo 'success!';
+Urge::gotoHome();

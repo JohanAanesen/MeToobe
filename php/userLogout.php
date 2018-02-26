@@ -8,6 +8,6 @@ if(isset($_COOKIE['email'])){
   setcookie('email', null, -1, '/');
 }
 
-header('Location: /');
+Urge::gotoHome();
 
 exit;
