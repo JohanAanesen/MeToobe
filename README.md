@@ -16,3 +16,8 @@ Oppgaveteksten ligger i [Wikien til det originale repositoriet](https://bitbucke
 
 # Rapporten #
 https://bitbucket.org/Aanesen/urgewww/wiki/Home
+
+# Ekstra ting vi har gjort
+* Bruker BCRYPT med salt for å hashe passord.
+* Remember-me knapp, using cookies.
+* Egen profilside, hvor bruker har oversikt over alle spillelister og videoer. 

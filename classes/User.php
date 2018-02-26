@@ -190,8 +190,7 @@ class User {
         }
     }
 
-    static function deleteUser($db){
-        $userid = User::getLoggedInUserid();
+    static function delete($db, $userid){
 
         $db->beginTransaction();
 
@@ -202,6 +201,7 @@ class User {
             $stmt->execute($param);
 
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
             foreach($rows as $row) {
                 $sql = 'DELETE FROM videoplaylist WHERE playlistid = ?';    //deletes the video-playlist links
                 $stmt = $db->prepare($sql);
