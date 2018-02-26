@@ -31,7 +31,7 @@ class User {
         }
         $query = "INSERT INTO user (id, fullname, email, password, usertype, wannabe) VALUES (?, ?, ?, ?, ?, ?)";
         $userid = uniqid();
-        $param = array($userid, $fullname, $email, md5($password), "student", $wannebeTeacher);
+        $param = array($userid, $fullname, $email, hash('sha256', $password, false), "student", $wannebeTeacher);
         $stmt = $db->prepare($query);
         $stmt->execute($param);
 
@@ -53,7 +53,7 @@ class User {
     static function login($db, $email, $password) {
 
         $query = "SELECT * FROM user WHERE email = (?) AND password = (?)";
-        $param = array($email, md5($password));
+        $param = array($email, hash('sha256', $password, false));
         $stmt = $db->prepare($query);
         $stmt->execute($param);
 
