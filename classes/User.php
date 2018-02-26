@@ -9,11 +9,11 @@ class User {
     /**
      * @function create
      *  @brief  Create a valid new user in the database.
-     *  @param  db:             PDOConnection 
+     *  @param  db:             PDOConnection
      *  @param  fullname:       string - Example: Jonas Testerson
      *  @param  email:          string - Example: jonas.test@gmail.com
      *  @param  password:       string - Example: "my secret awesome password is magic"
-     *  @param  wannebeTeacher: bool   - The user has requested the teacher role. An administrator has to 
+     *  @param  wannebeTeacher: bool   - The user has requested the teacher role. An administrator has to
      *                                   approve of the request, before the user gets the teacher role.
      *  @return userid | 0
      */
@@ -24,7 +24,7 @@ class User {
         $param = array($email);
         $stmt = $db->prepare($query);
         $stmt->execute($param);
-    
+
         // @error A user with that email already registered.
         if ($stmt->fetchColumn() > 0) {
             return 0;
@@ -39,7 +39,7 @@ class User {
         if ($stmt->rowCount() !== 1) {
             return 0;
         }
-        return $userid;      
+        return $userid;
     }
 
     /**
@@ -58,7 +58,7 @@ class User {
         $stmt->execute($param);
 
         if($stmt->rowCount() !== 1) {
-            return 0;       
+            return 0;
         }
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -69,7 +69,7 @@ class User {
 
         return $_SESSION[User::$KEY_SESSION_USERID];
     }
-    
+
     /**
       * @function logout
       * @brief Modified the $_SESSION to in effect log out the user.
@@ -77,7 +77,7 @@ class User {
       */
     static function logout() {
         User::requireSession();
-        
+
         unset($_SESSION[User::$KEY_SESSION_USERID]);
         unset($_SESSION[User::$KEY_SESSION_USERTYPE]);
     }
@@ -89,7 +89,7 @@ class User {
       */
     static function getLoggedInUserid() {
         User::requireSession();
-        
+
         if( !isset($_SESSION[User::$KEY_SESSION_USERID]) ) {
             return 0;
         }
@@ -100,21 +100,21 @@ class User {
      * @global $_SESSION
      */
     static function isAdmin() {
-        User::requireSession();        
+        User::requireSession();
 
         if ( !isset($_SESSION[User::$KEY_SESSION_USERTYPE]) || $_SESSION[User::$KEY_SESSION_USERTYPE] !== 'admin' )
             return 0;
         return true;
     }
 
-    /** 
+    /**
      * @function updateUser
      * @param db: PDOConnection
      * @param userid: string
      * @param password: string
      * @param usertype: enum['admin', 'teacher', 'student']
      * @param wannabe:  bool
-     * @return if updated true | false 
+     * @return if updated true | false
      */
     static function updateUser($db, $userid, $password, $usertype, $wannabe) {
 
@@ -126,12 +126,12 @@ class User {
         return ($stmt->rowCount() === 1);
     }
 
-    /** 
+    /**
      * @function updateType
      * @param db: PDOConnection
      * @param userid: string
      * @param usertype: enum['admin', 'teacher', 'student']
-     * @return if updated true | false 
+     * @return if updated true | false
      */
     static function updateType($db, $userid, $usertype) {
 
@@ -140,12 +140,12 @@ class User {
         $stmt = $db->prepare($query);
         $stmt->execute($param);
 
-        return ($stmt->rowCount() == 1); 
+        return ($stmt->rowCount() == 1);
     }
 
-    /** 
+    /**
      * @function getWannabeTeachers
-     * @requires admin rights 
+     * @requires admin rights
      * @brief getWannabe grabs all wannabe's from the DB
      * @param db: PDOConnection
      * @return array of wannabeTeachers | null
