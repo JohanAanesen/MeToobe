@@ -12,7 +12,7 @@
     <form id="updatePlaylist" method="post"  action="/php/playlistUpdate.php" />
     {% endif %}
 
-        <p>{{ playlist.id }}</p>
+        <p style="color: #aaaaaa;"> {{ playlist.id }} </p>
         <input type="text" class="form-control" id="playlist-title" name="playlist-title" value="{{ playlist.title }}"  placeholder="{% if not createMode %}{{ playlist.title }}{% else %}Playlist Title{% endif %}" required {% if not createMode and not editMode %} readonly {% endif %}><br>
         <textarea type="text" class="form-control" rows="4" id="playlist-description" placeholder="Playlist Description" name="playlist-description" {% if not createMode and not editMode %} readonly {% endif %}>{{ playlist.description }}</textarea>
 
@@ -26,12 +26,34 @@
             <h2 class="lead text">{{ video.name }}</h2>
         </div>
         <div class="row">
-            <div class="col">
+            <div class="col-md-3">
                 <a href="/video"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
             </div>
             <div class="col-md-8" style="word-break: break-all; word-wrap: break-word;">
                 <p>{{ video.description }}</p>
             </div>
+
+            {% if editMode %}
+            <div class="col-md-1 text-center">
+                <div style="margin-bottom: 1px; margin-top: 10%;">
+                    <form action="/php/videoVote.php?videoid={{ videoData['id'] }}" method="POST">
+                        <button type="submit" name="upvote" value="upvote" class="btn btn-secondary btn-sm">
+                            <img src="/icon/arrow-up.png" aria-hidden="true">
+                        </button>
+                    </form>
+                </div>
+                <div>
+                    <i class="fas fa-circle" style="color: #6c757d"></i>
+                </div>
+                <div>
+                    <form action="/php/videoVote.php?videoid={{ videoData['id'] }}" method="POST">
+                        <button type="submit" name="downvote" value="downvote" class="button btn btn-secondary btn-sm">
+                            <img src="/icon/arrow-down.png" aria-hidden="true">
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
         </div>
 
 
@@ -48,7 +70,6 @@
                 <label for="playlist-video-swap-2">To:</label>
                 <input type="text" class="form-control col-md-2" id="playlist-video-swap-2"/><br>
             </div>
-
         {% endif %}
 
         <br>
