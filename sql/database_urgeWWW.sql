@@ -68,7 +68,7 @@ CREATE TABLE `UserSubscribe` (
   `id`         int(11) NOT NULL AUTO_INCREMENT,
   `userid`     varchar(64) NOT NULL,
   `playlistid` varchar(64) NOT NULL,
-  PRIMARY KEY (`id`),  
+  PRIMARY KEY (`id`),
   FOREIGN KEY (`userid`) REFERENCES User(id),
   FOREIGN KEY (`playlistid`) REFERENCES Playlist(id)
 );
@@ -79,7 +79,7 @@ CREATE TABLE `UserLike` (
   `userid` 		VARCHAR(64) NOT NULL,
   `videoid` 	VARCHAR(64) NOT NULL,
   `vote` 			BOOLEAN NOT NULL,
-  PRIMARY KEY (`id`),  
+  PRIMARY KEY (`id`),
   FOREIGN KEY (`userid`) REFERENCES User(id),
   FOREIGN KEY (`videoid`) REFERENCES Video(id)
 );
@@ -98,5 +98,5 @@ ALTER TABLE `VideoPlaylist` ADD UNIQUE KEY `videoid_playlistid_rank_unique_index
 
 
 /*================================INSERT ADMIN TO USER=====================================*/;
-INSERT INTO `user` (`id`, `fullname`, `email`, `password`, `usertype`, `wannabe`) 
-VALUES ('1337ADMIN1337', 'admin', 'admin@metoobe.com', '21232f297a57a5a743894a0e4a801fc3', 'admin', 0);
+INSERT INTO `user` (`id`, `fullname`, `email`, `password`, `usertype`, `wannabe`)
+VALUES ('1337ADMIN1337', 'admin', 'admin@metoobe.com', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 'admin', 0);
