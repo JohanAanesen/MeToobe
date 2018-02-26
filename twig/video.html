@@ -19,7 +19,7 @@
             <div class="col-md-3">
                 <p class="other-title">{{ videoData['fullname'] }}</p>
             </div>
-            <div class="col-md-3">
+            <div class="row col-md-4">
                 <div class="dropdown show">
                     <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Add to playlist
@@ -31,9 +31,16 @@
                         {% endfor %}
                     </div>
                 </div>
+                <div style="margin-left: 1px;">
+                    <form action="/php/videoDelete.php?videoid={{ videoData['id'] }}" method="POST">
+                        <button type="submit" name="delete" value="delete" class="button btn btn-danger">
+                            Delete
+                        </button>
+                    </form>
+                </div>
             </div>
             {% else %}
-            <div class="col-md-6">
+            <div class="col-md-7">
                 <p class="other-title">{{ videoData['fullname'] }}</p>
             </div>
             {% endif %}
@@ -41,7 +48,7 @@
                 <p class="other-title">Views:</p>
                 <p class="other-title text-dark">{{ videoData['views'] }}</p>
             </div>
-            <div class="row col-md-4 justify-content-end">
+            <div class="row col-md-3 justify-content-end">
                 <div>
                     <p class="other-title text-success">{{ likes }}</p>
                 </div>
