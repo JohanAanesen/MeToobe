@@ -196,45 +196,58 @@ class User {
         $db->beginTransaction();
 
         try {
-            $sql = 'SELECT id FROM playlist WHERE userid = ?';
+            $sql = 'SELECT id FROM playlist WHERE userid = ?';              //gets users playlists
             $stmt = $db->prepare($sql);
             $param = array($userid);
             $stmt->execute($param);
 
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
             foreach($rows as $row) {
-                $sql = 'DELETE FROM videoplaylist WHERE playlistid = ?';
+                $sql = 'DELETE FROM videoplaylist WHERE playlistid = ?';    //deletes the video-playlist links
                 $stmt = $db->prepare($sql);
                 $param = array($row['id']);
                 $stmt->execute($param);
             }
 
-            $sql = 'DELETE FROM usersubscribe WHERE userid = ?';
+            $sql = 'DELETE FROM usersubscribe WHERE userid = ?';            //deletes the user-playlist links
             $stmt = $db->prepare($sql);
             $param = array($userid);
             $stmt->execute($param);
 
-            $sql = 'DELETE FROM userlike WHERE userid = ?';
+            $sql = 'DELETE FROM userlike WHERE userid = ?';                 //deletes user-like links
             $stmt = $db->prepare($sql);
             $param = array($userid);
             $stmt->execute($param);
 
-            $sql = 'DELETE FROM playlist WHERE userid = ?';
+            $sql = 'DELETE FROM playlist WHERE userid = ?';                 //deletes the users playlists
             $stmt = $db->prepare($sql);
             $param = array($userid);
             $stmt->execute($param);
 
-            $sql = 'DELETE FROM comment WHERE userid = ?';
+            $sql = 'DELETE FROM comment WHERE userid = ?';                  //deletes the users comments
             $stmt = $db->prepare($sql);
             $param = array($userid);
             $stmt->execute($param);
 
-            $sql = 'DELETE FROM video WHERE userid = ?';
+            $sql = 'SELECT id FROM video WHERE userid = ?';                 //gets the users videos
             $stmt = $db->prepare($sql);
             $param = array($userid);
             $stmt->execute($param);
 
-            $sql = 'DELETE FROM User WHERE id = ?';
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach($rows as $row) {
+                $sql = 'DELETE FROM comment WHERE videoid = ?';             //deletes all comments on these videos
+                $stmt = $db->prepare($sql);
+                $param = array($row['id']);
+                $stmt->execute($param);
+            }
+
+            $sql = 'DELETE FROM video WHERE userid = ?';                    //deletes all users videos
+            $stmt = $db->prepare($sql);
+            $param = array($userid);
+            $stmt->execute($param);
+
+            $sql = 'DELETE FROM User WHERE id = ?';                         //deletes user :)
             $stmt = $db->prepare($sql);
             $param = array($userid);
             $stmt->execute($param);
