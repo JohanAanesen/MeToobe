@@ -20,11 +20,39 @@ class Video {
         return $videoid;
     }
 
+    /**
+     * @param $db
+     * @param $videoid
+     */
     public static function delete($db, $videoid) {
-        $sql = "DELETE FROM video WHERE id=:videoid";
-        $sth = $db->prepare($sql);
-        $sth->bindParam(':videoid', $videoid);
-        $sth->execute();
+        $db->beginTransaction();
+        try {
+            $sql = 'DELETE FROM comment WHERE videoid = ?';             //deletes all comments on the video
+            $stmt = $db->prepare($sql);
+            $param = array($videoid);
+            $stmt->execute($param);
+
+            $sql = 'DELETE FROM userlike WHERE videoid = ?';            //deletes all likes/dislikes on the video
+            $stmt = $db->prepare($sql);
+            $param = array($videoid);
+            $stmt->execute($param);
+
+            $sql = 'DELETE FROM videoplaylist WHERE videoid = ?';       //deletes all entries of video in playlists
+            $stmt = $db->prepare($sql);
+            $param = array($videoid);
+            $stmt->execute($param);
+
+            $sql = 'DELETE FROM video WHERE id = ?';                    //deletes video
+            $stmt = $db->prepare($sql);
+            $param = array($videoid);
+            $stmt->execute($param);
+
+        } catch (PDOException $e) {
+            print_r($e->errorInfo);
+            $db->rollBack();
+            return;
+        }
+        $db->commit();
     }
 
     /**

@@ -5,7 +5,7 @@ $userid = Urge::requireLoggedInUser();
 $db = Urge::requireDatabase();
 
 if(!isset($_GET['playlistid']) || !isset($_GET['videoid'])){
-    header('Location: /');
+    Urge::gotoHome();
 }
 
 
