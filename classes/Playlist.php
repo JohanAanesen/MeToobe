@@ -132,10 +132,10 @@ class Playlist {
      * @param videoid - video 
      * @throws PDOException 
      */
-    public static function removeVideo($db, $id, $videoid) {
-        $sql = "DELETE FROM VideoPlaylist WHERE playlistid = ? AND videoid = ?";
+    public static function removeVideo($db, $id, $videoid, $rank) {
+        $sql = "DELETE FROM VideoPlaylist WHERE playlistid = ? AND videoid = ? AND rank = ? LIMIT 1";
         $stmt = $db->prepare($sql);
-        $param = array($id, $videoid);
+        $param = array($id, $videoid, $rank);
         $stmt->execute($param);
     }
 
@@ -228,6 +228,74 @@ class Playlist {
             }
         }catch(PDOException $ex){
             echo "Can't get playlists. Something went wrong!"; //Error message
+        }
+        return null;
+    }
+
+    /**
+     * @param $db
+     * @param $playlistid
+     * @param $videoRank
+     * @return int|null
+     */
+    public static function updateVideoRanks($db, $playlistid, $videoRank){
+        $db->beginTransaction();
+
+        $currentRank = null;
+
+        try{
+            //retrieves the "length" of playlist
+            $sql = "SELECT COUNT(videoid) AS test FROM VideoPlaylist WHERE playlistid = ?";
+            $stmt = $db->prepare($sql);
+            $param = array($playlistid);
+            $stmt->execute($param);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $playlistLength = $row['test'];
+            $playlistLength--; //remove 1 because we count from 0
+
+            if($videoRank == $playlistLength){
+                $db->rollBack();
+                return $videoRank;
+            }
+
+            //iterates from the current rank towards the end of playlist and swaps ranks
+            if($videoRank < $playlistLength) {
+                for ($i = $videoRank; $i < $playlistLength; $i++) {
+                    $currentVideoID = self::getVideoIdByRankPlaylist($db, $i, $playlistid);
+                    $nextVideoID = self::getVideoIdByRankPlaylist($db, $i+1, $playlistid);
+
+                    if($currentVideoID != $nextVideoID) {
+                        self::swapVideoRank($db, $playlistid, $currentVideoID, $nextVideoID);
+                    }
+                    $currentRank = $i+1;
+                }
+            }
+
+        } catch (PDOException $e) {
+            print_r($e->errorInfo);
+            $db->rollBack();
+            return null;
+        }
+
+        $db->commit();
+        return $currentRank;
+    }
+
+    public static function getVideoIdByRankPlaylist($db, $rank, $playlistid){
+        try{
+
+            $sql = "SELECT videoid FROM VideoPlaylist WHERE playlistid = ? AND rank = ? LIMIT 1";
+            $stmt = $db->prepare($sql);
+            $param = array($playlistid, $rank);
+            $stmt->execute($param);
+            if ($stmt->rowCount()==1){
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                return $row['videoid'];
+            }
+        } catch (PDOException $e) {
+            print_r($e->errorInfo);
+            return null;
         }
         return null;
     }
