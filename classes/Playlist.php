@@ -139,8 +139,6 @@ class Playlist {
         $stmt->execute($param);
     }
 
-
-
     /* 
      * @requires login
      * @param db - PDO connection object
@@ -245,15 +243,16 @@ class Playlist {
 
         try{
             //retrieves the "length" of playlist
-            $sql = "SELECT COUNT(videoid) AS test FROM VideoPlaylist WHERE playlistid = ?";
+            $sql = "SELECT COUNT(videoid) AS antall FROM VideoPlaylist WHERE playlistid = ?";
             $stmt = $db->prepare($sql);
             $param = array($playlistid);
             $stmt->execute($param);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            $playlistLength = $row['test'];
+            $playlistLength = $row['antall'];
             $playlistLength--; //remove 1 because we count from 0
 
+            //if video is the only one or is at the end of the 'array', no swap needed.
             if($videoRank == $playlistLength){
                 $db->rollBack();
                 return $videoRank;
@@ -282,9 +281,14 @@ class Playlist {
         return $currentRank;
     }
 
+    /**
+     * @param $db
+     * @param $rank
+     * @param $playlistid
+     * @return null|string
+     */
     public static function getVideoIdByRankPlaylist($db, $rank, $playlistid){
         try{
-
             $sql = "SELECT videoid FROM VideoPlaylist WHERE playlistid = ? AND rank = ? LIMIT 1";
             $stmt = $db->prepare($sql);
             $param = array($playlistid, $rank);
