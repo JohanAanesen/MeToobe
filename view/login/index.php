@@ -8,4 +8,6 @@ if (User::getLoggedInUserid()) {
     Urge::gotoHome();
 }
 
-echo $twig->render('login.html');
+$email = (isset($_COOKIE['email'])) ? $_COOKIE['email'] : "";
+
+echo $twig->render('login.html', array('email' => $email));

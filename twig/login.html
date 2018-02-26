@@ -18,13 +18,23 @@
         <div class="col-md-6 col-sm-12 form-line">
             <form action="/php/userLogin.php" method="post" class="form-signin form-group">
                 <h2 class="form-signin-heading text-white">Sign in</h2>
-                <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus="">
-                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                {% if  email %}
+                <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required value="{{ email }}"   >
+                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required autofocus="" >
+                <div class="checkbox">
+                  <label class="text-white">
+                    <input type="checkbox" name="rememberMe" value="yes" checked /> Remember me
+                  </label>
+                </div>
+                {% else %}
+                <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus="" value="{{ email }}"   >
+                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required >
                 <div class="checkbox">
                   <label class="text-white">
                     <input type="checkbox" name="rememberMe" value="yes"/> Remember me
                   </label>
                 </div>
+                {% endif %}
                 <button class="btn btn-default bg-transparent btn-block border border-white text-white" type="submit">Sign in</button>
             </form>
         </div>
