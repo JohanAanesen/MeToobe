@@ -5,6 +5,6 @@ require_once "$ROOT/classes/Urge.php";
 $db = Urge::requireDatabase();
 $userid = User::getLoggedInUserid();
 
-User::deleteUser($db);
+User::delete($db, $userid);
 
 header("Location: /php/userLogout.php");
