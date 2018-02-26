@@ -214,7 +214,7 @@ class Playlist {
     public static function getUserPlaylist($db, $userid){
         try{
             //SQL Injection SAFE query method:
-            $query = "SELECT id, title FROM playlist WHERE userid = (?) LIMIT 1";
+            $query = "SELECT id, title FROM playlist WHERE userid = (?)";
             $param = array($userid);
             $stmt = $db->prepare($query);
             $stmt->execute($param);

@@ -15,9 +15,28 @@
         </video>
 
         <div class="row col-md-12">
+            {% if loggedin == 'yes' %}
+            <div class="col-md-3">
+                <p class="other-title">{{ user['fullname'] }}</p>
+            </div>
+            <div class="col-md-3">
+                <div class="dropdown show">
+                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Add to playlist
+                    </a>
+
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        {% for playlist in userPlaylists %}
+                            <a class="dropdown-item" href="/php/playlistAdd.php?playlistid={{ playlist['id'] }}&videoid={{ videoData['id'] }}">{{ playlist['title'] }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
             <div class="col-md-6">
                 <p class="other-title">{{ user['fullname'] }}</p>
             </div>
+            {% endif %}
             <div class="row col-md-2">
                 <p class="other-title">Views:</p>
                 <p class="other-title text-dark">{{ videoData['views'] }}</p>
