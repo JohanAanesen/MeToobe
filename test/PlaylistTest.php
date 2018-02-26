@@ -1,25 +1,26 @@
 <?php
 
-require_once "./vendor/autoload.php";
-require_once "./classes/DB.php";
-require_once "./classes/Video.php";
-require_once "./classes/User.php";
-require_once "./classes/Playlist.php";
+require_once "./classes/Urge.php"
 
 use PHPUnit\Framework\TestCase;
 
 final class PlaylistTest extends TestCase {
 
+
+    private $fullname = "Test Testerson";
+    private $email    = "test@test.com";
+    private $password = "testpassword";
+
+    private $userid  = '';
     private $videoid = array('testvideo1', 'testvideo2', 'testvideo3');
-    private $userid = '1337TEST1337';
     private $playlistid = 'testplaylist1';
     private $db;
 
     /* @depends 
      */
-    public function setup() {
-        $this->db = DB::getDBConnection();
-
+    public function setUp() {
+        $this->db     = DB::getDBConnection();
+        $this->userid = User::create($db, , "test@test.com", "test", false);
         /*
         $user = new User($this->db);
 
@@ -35,6 +36,11 @@ INSERT INTO `VideoPlaylist`(`videoid`, `playlistid`, `rank`)VALUES('testvideo2',
 INSERT INTO `VideoPlaylist`(`videoid`, `playlistid`, `rank`)VALUES('testvideo3', 'testplaylist1', 2);
 */
     }
+
+    public function tearDown() {
+        User::delete($this->userid);
+    }
+
 
     public function testGetPlaylist() {
         
