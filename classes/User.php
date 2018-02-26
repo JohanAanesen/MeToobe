@@ -31,7 +31,7 @@ class User {
         }
         $query = "INSERT INTO user (id, fullname, email, password, usertype, wannabe) VALUES (?, ?, ?, ?, ?, ?)";
         $userid = uniqid();
-        $param = array($userid, $fullname, $email, hash('sha256', $password, false), "student", $wannebeTeacher);
+        $param = array($userid, $fullname, $email, password_hash($password, PASSWORD_BCRYPT), "student", $wannebeTeacher);
         $stmt = $db->prepare($query);
         $stmt->execute($param);
 
@@ -52,8 +52,8 @@ class User {
       */
     static function login($db, $email, $password) {
 
-        $query = "SELECT * FROM user WHERE email = (?) AND password = (?)";
-        $param = array($email, hash('sha256', $password, false));
+        $query = "SELECT * FROM user WHERE email = (?)";
+        $param = array($email);
         $stmt = $db->prepare($query);
         $stmt->execute($param);
 
@@ -61,11 +61,15 @@ class User {
             return 0;
         }
 
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if(!password_verify($password, $user['password'])){
+          return 0;
+        }
 
         User::requireSession();
-        $_SESSION[User::$KEY_SESSION_USERID] = $row['id'];
-        $_SESSION[User::$KEY_SESSION_USERTYPE] = $row['usertype'];
+        $_SESSION[User::$KEY_SESSION_USERID] = $user['id'];
+        $_SESSION[User::$KEY_SESSION_USERTYPE] = $user['usertype'];
 
         return $_SESSION[User::$KEY_SESSION_USERID];
     }

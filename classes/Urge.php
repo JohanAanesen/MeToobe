@@ -74,10 +74,17 @@ class Urge {
     }
 
     public static function requireTwig() {
-        $ROOT = $_SERVER['DOCUMENT_ROOT'];        
+        $ROOT = $_SERVER['DOCUMENT_ROOT'];
         $loader = new Twig_Loader_Filesystem("$ROOT/twig");
         return new Twig_Environment($loader, array(
         //    'cache' => './compilation_cache',
-        )); 
+        ));
+    }
+
+    public static function resetCookies(){
+      if(isset($_COOKIE['email'])){
+        unset($_COOKIE['email']);
+        setcookie('email', null, -1, '/');
+      }
     }
 }

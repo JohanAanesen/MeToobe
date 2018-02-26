@@ -9,4 +9,5 @@ if(isset($_COOKIE['email'])){
 }
 
 header('Location: /');
+
 exit;

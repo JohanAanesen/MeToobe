@@ -6,9 +6,9 @@ Husk å velge å beholde rettigheter fra det originale repositoriet når dere op
 # Prosjektdeltakere #
 | Navn                | Studie | Studentnr. |
 | --------------------|:------:|-----------:|
-| Johan Aanesen        | BPROG | 473182 |
-| Brede Fritjof Klausen | BPROG  | 000000 |
-| Jonas J. Solsvik      | BPROG | 000000 |
+| [Johan Aanesen](https://bitbucket.org/Aanesen/)        | BPROG | 473182 |
+| [Brede Fritjof Klausen](https://bitbucket.org/Brede_F_Klausen/) | BPROG  | 473211 |
+| [Jonas J. Solsvik](https://bitbucket.org/Arxcis/)      | BPROG | 473193 |
 
 
 # Oppgaveteksten # 
