@@ -6,7 +6,7 @@ list($email, $password) = Urge::requireParameterArray('email', 'password');
 $db = Urge::requireDatabase();
 
 $userid = User::login($db, $email, $password);
-$userRemember = (isset($_POST['rememberMe'])) ? true : false;
+$userRemember = isset($_POST['rememberMe']);
 if (!$userid) {
   Urge::gotoError(400, "Incorrect login credentials OR no connection.");
 }

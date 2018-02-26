@@ -4,7 +4,7 @@ require_once "$ROOT/classes/Urge.php";
 $db = Urge::requireDatabase();
 
 list($newname, $newemail, $newpassword) = Urge::requireParameterArray('newname','newemail', 'newpassword');
-$wannabeTeacher = (isset($_POST['isTeacher'])) ? true : false;
+$wannabeTeacher = isset($_POST['isTeacher']);
 
 $userid = User::create($db, $newname, $newemail, $newpassword, $wannabeTeacher);
 if (!$userid) {
