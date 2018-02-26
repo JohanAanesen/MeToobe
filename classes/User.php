@@ -185,4 +185,61 @@ class User {
             session_start();
         }
     }
+
+    static function deleteUser($db){
+        $userid = User::getLoggedInUserid();
+
+        $db->beginTransaction();
+
+        try {
+            $sql = 'SELECT id FROM playlist WHERE userid = ?';
+            $stmt = $db->prepare($sql);
+            $param = array($userid);
+            $stmt->execute($param);
+
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach($rows as $row) {
+                $sql = 'DELETE FROM videoplaylist WHERE playlistid = ?';
+                $stmt = $db->prepare($sql);
+                $param = array($row['id']);
+                $stmt->execute($param);
+            }
+
+            $sql = 'DELETE FROM usersubscribe WHERE userid = ?';
+            $stmt = $db->prepare($sql);
+            $param = array($userid);
+            $stmt->execute($param);
+
+            $sql = 'DELETE FROM userlike WHERE userid = ?';
+            $stmt = $db->prepare($sql);
+            $param = array($userid);
+            $stmt->execute($param);
+
+            $sql = 'DELETE FROM playlist WHERE userid = ?';
+            $stmt = $db->prepare($sql);
+            $param = array($userid);
+            $stmt->execute($param);
+
+            $sql = 'DELETE FROM comment WHERE userid = ?';
+            $stmt = $db->prepare($sql);
+            $param = array($userid);
+            $stmt->execute($param);
+
+            $sql = 'DELETE FROM video WHERE userid = ?';
+            $stmt = $db->prepare($sql);
+            $param = array($userid);
+            $stmt->execute($param);
+
+            $sql = 'DELETE FROM User WHERE id = ?';
+            $stmt = $db->prepare($sql);
+            $param = array($userid);
+            $stmt->execute($param);
+
+        } catch (PDOException $e) {
+            print_r($e->errorInfo);
+            $db->rollBack();
+            return;
+        }
+        $db->commit();
+    }
 }
