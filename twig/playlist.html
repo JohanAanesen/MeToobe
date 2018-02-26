@@ -8,7 +8,7 @@
     
     {% if createMode %}
     <form method="post" action="/php/playlistCreate.php"/>
-    {% elseif editmode %}
+    {% elseif editMode %}
     <form method="post"  action="/php/playlistUpdate.php" />
     {% endif %}
 
@@ -55,9 +55,9 @@
         <!-- need the playlist id when updating the site, thus hidden. -->
         <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
         {% if createMode %}
-        <input type="submit" class="btn btn-success" value="Update" />
-        {% elseif editMode %}
         <input type="submit" class="btn btn-success" value="Create" />
+        {% elseif editMode %}
+        <input type="submit" class="btn btn-success" value="Update" />
         {% endif %}
     </form>
 </div>
