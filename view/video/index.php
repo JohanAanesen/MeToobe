@@ -37,6 +37,8 @@ if(isset($videoLikes)){
 $videoData = Video::get($db, $videoid);
 $comments  = Comment::get($db, $videoid);
 
+$videoOwner = User::get($db, $videoData['userid']);
+$videoData['fullname'] = $videoOwner['fullname'];
 
 if ($userid) {
     $user = User::get($db, $userid);

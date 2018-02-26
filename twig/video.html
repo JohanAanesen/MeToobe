@@ -17,7 +17,7 @@
         <div class="row col-md-12">
             {% if loggedin == 'yes' %}
             <div class="col-md-3">
-                <p class="other-title">{{ user['fullname'] }}</p>
+                <p class="other-title">{{ videoData['fullname'] }}</p>
             </div>
             <div class="col-md-3">
                 <div class="dropdown show">
@@ -34,7 +34,7 @@
             </div>
             {% else %}
             <div class="col-md-6">
-                <p class="other-title">{{ user['fullname'] }}</p>
+                <p class="other-title">{{ videoData['fullname'] }}</p>
             </div>
             {% endif %}
             <div class="row col-md-2">
