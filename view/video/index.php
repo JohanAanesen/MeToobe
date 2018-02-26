@@ -37,8 +37,10 @@ if(isset($videoLikes)){
 $videoData = Video::get($db, $videoid);
 $comments  = Comment::get($db, $videoid);
 
+
 if ($userid) {
     $user = User::get($db, $userid);
+    $userPlaylists = Playlist::getUserPlaylist($db, $userid);
     echo $twig->render('video.html', array(
         'title' => 'home',
         'loggedin' => 'yes',
@@ -49,6 +51,7 @@ if ($userid) {
         'dislikes' => $dislikes,
         'hasLiked' => $hasLiked,
         'comments' => $comments,
+        'userPlaylists' => $userPlaylists,
     ));
 } else {
     echo $twig->render('video.html', array(

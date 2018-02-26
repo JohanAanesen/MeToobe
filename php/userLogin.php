@@ -18,10 +18,7 @@ else{
     $days = time() + (86400 * 30);          // days = 30 days (expires after 30 days)
     setcookie('email', $email, $days, "/"); // set cookie
   }
-  else if(isset($_COOKIE['email'])){  // if not checked and cokkie exists
-    unset($_COOKIE['email']);         // Delete
-    setcookie('email', null, -1, '/');// cookie
-  }
+  else {  Urge::resetCookies(); }
 }
 
 Urge::gotoHome();
