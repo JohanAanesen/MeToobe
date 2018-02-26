@@ -13,6 +13,8 @@ if (!$userid) {
 $loggedinUserid = User::login($db, $newemail, $newpassword);
 if (!$loggedinUserid) {
   Urge::gotoError(500, "The server encountered an error while logging in.");
-} 
+}
+
+Urge::resetCookies();
 
 Urge::gotoHome();

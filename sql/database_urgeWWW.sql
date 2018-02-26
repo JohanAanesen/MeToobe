@@ -99,4 +99,4 @@ ALTER TABLE `VideoPlaylist` ADD UNIQUE KEY `videoid_playlistid_rank_unique_index
 
 /*================================INSERT ADMIN TO USER=====================================*/;
 INSERT INTO `user` (`id`, `fullname`, `email`, `password`, `usertype`, `wannabe`)
-VALUES ('1337ADMIN1337', 'admin', 'admin@metoobe.com', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 'admin', 0);
+VALUES ('1337ADMIN1337', 'admin', 'admin@metoobe.com', '$2y$10$9rq9PYGjeLLgMvLeUw5GUOaDRThu8W6mgjtuTdhR3dNupjTrCJEa2', 'admin', 0);
