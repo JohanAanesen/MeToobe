@@ -32,6 +32,7 @@ CREATE TABLE `Video` (
   `mime` 				VARCHAR(64),
   `views` 			BIGINT NOT NULL DEFAULT '0',
   `time` 				TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `thumbnail`   BLOB,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`userid`) REFERENCES User(id)
 );
@@ -41,6 +42,7 @@ CREATE TABLE `Playlist` (
   `userid` 			VARCHAR(64) NOT NULL,
   `title` 			VARCHAR(64) NOT NULL,
   `description` VARCHAR(512),
+  `thumbnail`   BLOB,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`userid`) REFERENCES User(id)
 );
