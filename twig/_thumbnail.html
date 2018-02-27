@@ -1,0 +1,5 @@
+{% if thumbnail %}
+<img src="data:image/png;base64,{{ thumbnail }}" class="img-thumbnail border-success"/>
+{% else %}
+<img src="/thumbnail/test.jpg"                   class="img-thumbnail border-success">
+{% endif %}

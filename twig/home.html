@@ -102,7 +102,9 @@
         {% for video in newVideos %}
         <div class="col-md-4">
             <h2 class="lead text-limit">{{ video['name'] }}</h2>
-            <a href="/video?id={{ video['id'] }}"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+            <a href="/video?id={{ video['id'] }}">
+                {% include "_thumbnail.html" with { thumbnail: video['thumbnail'] } %}
+            </a>
         </div>
         {% endfor %}
         {% endif %}
