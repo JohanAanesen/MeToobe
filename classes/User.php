@@ -31,7 +31,7 @@ class User {
         }
         $query = "INSERT INTO user (id, fullname, email, password, usertype, wannabe) VALUES (?, ?, ?, ?, ?, ?)";
         $userid = uniqid();
-        $param = array($userid, $fullname, $email, password_hash($password, PASSWORD_BCRYPT), "student", $wannebeTeacher);
+        $param = array($userid, $fullname, $email, User::getHashedPassword($password), "student", $wannebeTeacher);
         $stmt = $db->prepare($query);
         $stmt->execute($param);
 
@@ -51,6 +51,12 @@ class User {
       *  @return userid | 0
       */
     static function login($db, $email, $password) {
+
+        // If logged in already
+        $userid = User::getLoggedInUserid();
+        if ($userid > 0) {
+            return 0; 
+        }
 
         $query = "SELECT * FROM user WHERE email = (?)";
         $param = array($email);
@@ -124,7 +130,7 @@ class User {
     static function updateUser($db, $userid, $password, $usertype, $wannabe) {
 
         $query = "UPDATE user SET password = (?), usertype = (?), wannabe = (?) WHERE id = (?)";
-        $param = array($password, $usertype, $wannabe, $userid);
+        $param = array(User::getHashedPassword($password), $usertype, $wannabe, $userid);
         $stmt = $db->prepare($query);
         $stmt->execute($param);
 
@@ -186,9 +192,15 @@ class User {
 
     static private function requireSession() {
         if (session_status() == PHP_SESSION_NONE) {
-            session_start();
+            @session_start();  // @NOTE Ignoring error messages from session_start() seems dangerous, but I had to do
+                               //        because there is an error in the PHPUnit-tests.  - JSolsvik 27.02.18
         }
     }
+
+    static private function getHashedPassword($password) {
+        return password_hash($password, PASSWORD_BCRYPT);
+    }
+
 
     static function delete($db, $userid){
 
@@ -260,8 +272,10 @@ class User {
         } catch (PDOException $e) {
             print_r($e->errorInfo);
             $db->rollBack();
-            return;
+            return false;
         }
         $db->commit();
+
+        return true;
     }
 }
