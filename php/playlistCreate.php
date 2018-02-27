@@ -12,16 +12,19 @@ list($playlistTitle, $playlistDesc, $playlistTopic, $playlistCourse) = Urge::req
     'playlist-topic',
     'playlist-course'
 );
-$fileThumbnail = Urge::requireFileParameter('file-thumbnail');
 
-// 1. Validate thumbnail mime type
-$mimetypeThumbnail = $fileThumbnail['type'];
-if ( $mimetypeThumbnail != 'image/png' &&  $mimetypeThumbnail != 'image/gif' && $mimetypeThumbnail != 'image/jpeg') {
-  Urge::gotoError(400, "Bad request, file format has to be [png|gif|jpeg]");
+$scaledThumbnail = '';
+
+$fileThumbnail = Urge::getFileParameterOrNull('file-thumbnail');
+if ($fileThumbnail) {
+        // 1. Validate thumbnail mime type
+        $mimetypeThumbnail = $fileThumbnail['type'];
+        if ( $mimetypeThumbnail != 'image/png' &&  $mimetypeThumbnail != 'image/gif' && $mimetypeThumbnail != 'image/jpeg') {
+          Urge::gotoError(400, "Bad request, file format has to be [png|gif|jpeg]");
+        }
+    // 2. Scale thumbnail to uniform size
+    $scaledThumbnail = Urge::scaleThumbnail(file_get_contents($fileThumbnail['tmp_name']));
 }
-
-// 2. Scale thumbnail to uniform size
-$scaledThumbnail = Urge::scaleThumbnail(file_get_contents($fileThumbnail['tmp_name']));
 
 // Add thumbnail
 $playlistID = Playlist::create($db, $userid, $playlistTitle, $playlistDesc, $playlistCourse, $playlistTopic, $scaledThumbnail);

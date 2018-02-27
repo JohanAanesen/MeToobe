@@ -103,6 +103,19 @@ class Urge {
       return $_FILES[$fileParam];
     }
 
+    public static function getFileParameterOrNull($fileParam) {
+      if ( !isset($_FILES[$fileParam]) ) {
+          return null;
+      }   
+      $tmp_filepath = $_FILES[$fileParam]['tmp_name'];
+
+      if (!is_uploaded_file($tmp_filepath)) {
+          return null;
+      }
+
+      return $_FILES[$fileParam];
+    }
+
      /**
       * @note stolen from okolloen examples
       */ 
