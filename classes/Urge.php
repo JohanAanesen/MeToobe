@@ -90,7 +90,7 @@ class Urge {
 
     public static function requireFileParameter($fileParam) {
       if ( !isset($_FILES[$fileParam]) ) {
-          Urge::gotoError(400, 'Bad request, missing parameter' . $fileParam);
+          Urge::gotoError(400, 'Bad request, missing parameter: ' . $fileParam);
       }   
       $tmp_filepath = $_FILES[$fileParam]['tmp_name'];
       $errorCode = $_FILES[$fileParam]['error'];
