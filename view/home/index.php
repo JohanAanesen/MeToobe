@@ -13,11 +13,17 @@ if ($userid) {
         Urge::gotoError('Server encountered an error. It should be possible to get user information from logged in user.');
 }
 
+
+$newVideos = Video::getNewVideos($db);
+$newVideos = Urge::encodeThumbnailsToBase64($newVideos);
+
 echo $twig->render('home.html', array(
     'title' => 'home',
     'userid' => $userid,
     'user' => $user,
     'wannabeUsers' => User::getWannabeTeachers($db),
     'admin' => User::isAdmin(),
-    'newVideos' => Video::getNewVideos($db),
+    'newVideos' => $newVideos,
 ));
+
+
