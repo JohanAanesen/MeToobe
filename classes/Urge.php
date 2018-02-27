@@ -151,8 +151,17 @@ class Urge {
         imagepng($dst_img, NULL,9);          // Write image to buffer
         $scaledImage = ob_get_contents();   // Get contents of buffer
         ob_end_clean();                     // Clear buffer
+
         return $scaledImage;
     }
+
+    public static function encodeThumbnailsToBase64($videos) {
+        foreach ($videos as &$v) {
+            $v['thumbnail'] = base64_encode($v['thumbnail']);
+        }
+        return $videos;
+    }
+
 
     // Function for upload errors
     public static function getFileuploadErrormessage($errorNumber){
