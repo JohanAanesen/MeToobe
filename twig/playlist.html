@@ -23,31 +23,42 @@
         <hr>
         <div class="col">
             <span> {{ video.rank + 1 }}</span>
-            <h2 class="lead text">{{ video.name }}</h2>
         </div>
         <div class="row">
             <div class="col-md-3">
                 <a href="/video?id={{ video.id }}"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
             </div>
-            <div class="col-md-8" style="word-break: break-all; word-wrap: break-word;">
-                <p>{{ video.description }}</p>
+            <div class="col-md-8">
+                <div class="col-md-8">
+                    <h2 class="lead text">{{ video.name }}</h2>
+                </div>
+                <hr>
+                <div class="col-md-8" style="word-break: break-all; word-wrap: break-word;">
+                    <p>{{ video.description }}</p>
+                </div>
             </div>
-
             {% if editMode %}
             <div class="col-md-1 text-center">
                 <div style="margin-bottom: 1px; margin-top: 10%;">
-                    <form action="/php/videoVote.php?videoid={{ videoData['id'] }}" method="POST">
-                        <button type="submit" name="upvote" value="upvote" class="btn btn-secondary btn-sm">
+                    <form action="" method="POST">
+                        <button type="submit" name="up" value="up" class="btn btn-secondary btn-sm">
                             <img src="/icon/arrow-up.png" aria-hidden="true">
                         </button>
                     </form>
                 </div>
-                <div>
-                    <i class="fas fa-circle" style="color: #6c757d"></i>
+                <div style="margin-bottom: 1px;">
+                    <form action="/php/playlistRemoveVideo.php" id="removeVideo" method="POST">
+                        <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
+                        <input type="hidden" name="video-id" value="{{ video.id }}"/>
+                        <input type="hidden" name="video-rank" value="{{ video.rank }}"/>
+                        <button size="100px" type="submit" name="up" value="up" class="btn btn-danger text-white" form="removeVideo">
+                            X
+                        </button>
+                    </form>
                 </div>
                 <div>
-                    <form action="/php/videoVote.php?videoid={{ videoData['id'] }}" method="POST">
-                        <button type="submit" name="downvote" value="downvote" class="button btn btn-secondary btn-sm">
+                    <form action="" method="POST">
+                        <button type="submit" name="down" value="down" class="button btn btn-secondary btn-sm">
                             <img src="/icon/arrow-down.png" aria-hidden="true">
                         </button>
                     </form>
@@ -60,7 +71,7 @@
         {% endfor %}
 
 
-
+    <!--
         {% if editMode %}
             <br>
             <div class="border border-danger">
@@ -71,7 +82,7 @@
                 <input type="text" class="form-control col-md-2" id="playlist-video-swap-2"/><br>
             </div>
         {% endif %}
-
+    -->
         <br>
         <!-- need the playlist id when updating the site, thus hidden. -->
         <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
