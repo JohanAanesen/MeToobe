@@ -20,12 +20,12 @@ final class PlaylistTest extends TestCase {
     private $playlistdescription = 'This is a test playlist';
 
     private $videoArray = array(
-        array('name'=> 'testvideo1', 'course' => 'TDD', 'topic'=> 'Testing', 'description'=> 'Be a better tester!'),
-        array('name'=> 'testvideo2', 'course' => 'TDD', 'topic'=> 'Testing', 'description'=> 'Be a better tester!'),
-        array('name'=> 'testvideo3', 'course' => 'TDD', 'topic'=> 'Testing', 'description'=> 'Be a better tester!')
+        array('name'=> 'testvideo1','description'=> 'Be a better tester!'),
+        array('name'=> 'testvideo2','description'=> 'Be a better tester!'),
+        array('name'=> 'testvideo3','description'=> 'Be a better tester!')
     );
 
-    private $videoidArray = array();
+    private $videoidArray = array(); 
     private $db;
 
     public function setUp() {
@@ -58,8 +58,6 @@ final class PlaylistTest extends TestCase {
                 $this->db,
                 $this->userid,
                 $video['name'],
-                $video['course'],
-                $video['topic'],
                 $video['description']);
 
             $this->assertNotEquals($vid, 0);
@@ -169,8 +167,6 @@ final class PlaylistTest extends TestCase {
             $this->db, 
             $this->userid, 
             "NewVideo", 
-            "TDD",
-            "Testing", 
             "Adding an extra video");
 
         $this->assertNotEquals(0, $newVideoid);

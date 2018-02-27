@@ -5,12 +5,12 @@
   */
 class Video {
 
-    public static function add($db, $uid, $name, $course, $topic, $descr="", $mime="") {
+    public static function add($db, $uid, $name, $descr="", $mime="") {
         $videoid = uniqid();
         $sql = "INSERT INTO"
-             ." video   (     id,userid, name,  course,  topic, description, mime)"
-             . "VALUES (      ?,    ?,     ?,       ?,      ?,      ?,    ?)";
-        $param = array($videoid, $uid, $name, $course, $topic, $descr, $mime);
+             ." video   (     id,userid, name, description, mime)"
+             . "VALUES (      ?,    ?,     ?,     ?,    ?)";
+        $param = array($videoid, $uid, $name, $descr, $mime);
         $sth = $db->prepare ($sql);
         $sth->execute($param);
 

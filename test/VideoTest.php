@@ -20,15 +20,11 @@ final class VideoTest extends TestCase {
     private $videoid = '';
     private $video = array(
         'name'       => 'testvideo1', 
-        'course'     => 'TDD', 
-        'topic'      => 'Testing', 
         'description'=> 'Be a better tester!');
 
     private $new_videoid = '';
     private $new_video = array(
         'name'       => 'testvideo1', 
-        'course'     => 'TDD', 
-        'topic'      => 'Testing', 
         'description'=> 'Be a better tester!');
 
 
@@ -46,8 +42,6 @@ final class VideoTest extends TestCase {
             $this->db,
             $this->userid,
             $this->video['name'],
-            $this->video['course'],
-            $this->video['topic'],
             $this->video['description']);
         $this->assertNotEquals(0, $this->videoid);
 
@@ -63,8 +57,6 @@ final class VideoTest extends TestCase {
         $this->assertArrayHasKey('id', $video);
         $this->assertArrayHasKey('userid', $video);
         $this->assertArrayHasKey('name', $video);
-        $this->assertArrayHasKey('course', $video);
-        $this->assertArrayHasKey('topic', $video);
         $this->assertArrayHasKey('description', $video);
         $this->assertArrayHasKey('mime', $video);
         $this->assertEquals($this->videoid, $video['id']);
@@ -75,8 +67,6 @@ final class VideoTest extends TestCase {
             $this->db,
             $this->userid,
             $this->new_video['name'],
-            $this->new_video['course'],
-            $this->new_video['topic'],
             $this->new_video['description']);
         
         $this->assertNotEquals(0, $this->new_videoid);        
@@ -90,8 +80,6 @@ final class VideoTest extends TestCase {
             $this->db,
             $this->userid,
             $this->new_video['name'],
-            $this->new_video['course'],
-            $this->new_video['topic'],
             $this->new_video['description']);
 
         $deleted = Video::delete($this->db, $this->new_videoid);

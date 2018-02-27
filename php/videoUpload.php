@@ -21,18 +21,14 @@ if (!is_uploaded_file($tmp_filepath)) {
 $mime    = $_FILES['fileToUpload']['type'];
 $name    = $_FILES['fileToUpload']['name'];
 //$size    = $_FILES['fileToUpload']['size'];
-list($descr, $title, $course, $topic) = Urge::requireParameterArray(
-    'descr', 
-    'videotitle', 
-    'videocourse', 
-    'videotopic');
+list($descr, $title) = Urge::requireParameterArray('descr', 'videotitle');
 
 // failsafe
 if ( $mime != 'video/mp4'  && mime != 'video/webm' && $mime != 'video/ogg') {
     Urge::gotoError(400, "Bad request, file format has to be [mp4|webm|ogg]");
 }
 
-$videoid = Video::add($db, $userid, $title, $course, $topic, $descr, $mime);
+$videoid = Video::add($db, $userid, $title, $descr, $mime);
 if (!$videoid) {
     Urge::gotoError(500, 'Server did not manage to upload video');
 }
