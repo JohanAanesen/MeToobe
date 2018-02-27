@@ -101,7 +101,7 @@ class User {
         User::requireSession();
 
         if( !isset($_SESSION[User::$KEY_SESSION_USERID]) ) {
-            return null;
+            return 0;
         }
         return $_SESSION[User::$KEY_SESSION_USERID];
     }
