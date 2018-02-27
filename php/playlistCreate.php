@@ -9,4 +9,9 @@ list($playlistTitle,$playlistDesc) = Urge::requireParameterArray('playlist-title
 
 $playlistID = Playlist::create($db, $userid, $playlistTitle, $playlistDesc);
 
-header("Location: /playlist?id=".$playlistID);
+
+if(isset($_GET['video-id'])){
+   header("Location: /php/playlistAdd.php?playlistid=".$playlistID."&videoid=".$_GET['video-id']);
+}else{
+    header("Location: /playlist?id=".$playlistID);
+}
