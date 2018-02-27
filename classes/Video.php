@@ -50,9 +50,10 @@ class Video {
         } catch (PDOException $e) {
             print_r($e->errorInfo);
             $db->rollBack();
-            return;
+            return false;
         }
         $db->commit();
+        return true;
     }
 
     /**
