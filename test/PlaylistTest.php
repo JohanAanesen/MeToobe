@@ -1,7 +1,6 @@
 <?php
 
 require_once "./vendor/autoload.php";
-require_once "./classes/Comment.php";
 require_once "./classes/DB.php";
 require_once "./classes/Video.php";
 require_once "./classes/User.php";
