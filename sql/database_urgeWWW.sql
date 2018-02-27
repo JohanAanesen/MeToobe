@@ -41,6 +41,8 @@ CREATE TABLE `Playlist` (
   `id` 					VARCHAR(64) NOT NULL,
   `userid` 			VARCHAR(64) NOT NULL,
   `title` 			VARCHAR(64) NOT NULL,
+  `course`      VARCHAR(64),
+  `topic`       VARCHAR(64),
   `description` VARCHAR(512),
   `thumbnail`   BLOB,
   PRIMARY KEY (`id`),
