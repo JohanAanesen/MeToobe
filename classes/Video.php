@@ -5,12 +5,12 @@
   */
 class Video {
 
-    public static function add($db, $uid, $name, $descr="", $mime="") {
+    public static function add($db, $uid, $name, $descr="", $mime="", $thumbnail="") {
         $videoid = uniqid();
         $sql = "INSERT INTO"
-             ." video   (     id,userid, name, description, mime)"
-             . "VALUES (      ?,    ?,     ?,     ?,    ?)";
-        $param = array($videoid, $uid, $name, $descr, $mime);
+             ." video   (     id,userid, name, description, mime, thumbnail)"
+             . "VALUES (       ?,     ?,    ?,         ?,           ?,    ?)";
+        $param = array($videoid,   $uid,$name,     $descr, $mime, $thumbnail);
         $sth = $db->prepare ($sql);
         $sth->execute($param);
 
@@ -19,6 +19,7 @@ class Video {
         }
         return $videoid;
     }
+
 
     /**
      * @param $db
@@ -80,6 +81,8 @@ class Video {
             $extension .= "webm";
         } else if($mime == "video/ogg") {
             $extension .= "ogg";
+        } else {
+            return 0;
         }
 
         // MOVE FILE FROM TEMP-DIRECTORY to UPLOAD-DIRECTORY
