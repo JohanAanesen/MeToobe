@@ -7,13 +7,28 @@
 
     
     {% if createMode %}
-    <form id="createPlaylist" method="post" action="/php/playlistCreate.php" />
+    <form id="createPlaylist" method="post" action="/php/playlistCreate.php" enctype="multipart/form-data"/>
     {% elseif editMode %}
-    <form id="updatePlaylist" method="post"  action="/php/playlistUpdate.php" />
+    <form id="updatePlaylist" method="post"  action="/php/playlistUpdate.php" enctype="multipart/form-data" />
     {% endif %}
 
         <p style="color: #aaaaaa;"> {{ playlist.id }} </p>
-        <input type="text" class="form-control" id="playlist-title" name="playlist-title" value="{{ playlist.title }}"  placeholder="{% if not createMode %}{{ playlist.title }}{% else %}Playlist Title{% endif %}" required {% if not createMode and not editMode %} readonly {% endif %}><br>
+        <input type="text" class="form-control" id="playlist-title" name="playlist-title" value="{{ playlist.title }}"  placeholder="{% if not createMode %}{{ playlist.title }}{% else %}Title{% endif %}" required {% if not createMode and not editMode %} readonly {% endif %}><br>
+
+        <input type="text" class="form-control" id="playlist-course" name="playlist-course" value="{{ playlist.course }}"  placeholder="{% if not createMode %}{{ playlist.course }}{% else %}Course{% endif %}" required {% if not createMode and not editMode %} readonly {% endif %}><br>
+
+        <input type="text" class="form-control" id="playlist-topic" name="playlist-topic" value="{{ playlist.topic }}"  placeholder="{% if not createMode %}{{ playlist.topic }}{% else %}Topic{% endif %}" required {% if not createMode and not editMode %} readonly {% endif %}><br>
+
+        {% if createMode %}
+        <label for="fileuploader"><h4 class="other-title">Upload <span class="text-success">Thumbnail</span></h4></label>
+        <div class="custom-file" id="fileuploader">
+            <input type="file" class="custom-file-input" id="customFileThumbnail" name="file-thumbnail" accept="image/*"  required>
+            <label class="custom-file-label" for="customFileThumbnail">
+                <span class="file-custom" data-content-value="Choose Thumbnail..."></span>
+            </label>
+        </div>
+        {% endif %}
+
         <textarea type="text" class="form-control" rows="4" id="playlist-description" placeholder="Playlist Description" name="playlist-description" {% if not createMode and not editMode %} readonly {% endif %}>{{ playlist.description }}</textarea>
 
             
