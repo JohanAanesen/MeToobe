@@ -56,9 +56,11 @@
                 <div class="col-1"></div>
                 <div>
                     {% if hasLiked %}
-                        <button type="submit" name="nothing" value="nothing" class="btn btn-success btn-sm">
+                    <form action="/php/videoVote.php?videoid={{ videoData['id'] }}" method="POST">
+                        <button type="submit" name="revote" value="up" class="btn btn-success btn-sm">
                             <img src="/icon/arrow-up.png" aria-hidden="true">
                         </button>
+                    </form>
                     {% else %} 
                     <form action="/php/videoVote.php?videoid={{ videoData['id'] }}" method="POST">
                         <button type="submit" name="upvote" value="upvote" class="btn btn-success btn-sm">
@@ -70,9 +72,11 @@
 
                 <div>
                     {% if hasLiked==true %}
-                        <button type="submit" name="nothing" value="nothing" class="button btn btn-danger btn-sm">
+                    <form action="/php/videoVote.php?videoid={{ videoData['id'] }}" method="POST">
+                        <button type="submit" name="revote" value="down" class="button btn btn-danger btn-sm">
                             <img src="/icon/arrow-down.png" aria-hidden="true">
                         </button>
+                    </form>
                     {% else %}
                     <form action="/php/videoVote.php?videoid={{ videoData['id'] }}" method="POST">
                         <button type="submit" name="downvote" value="downvote" class="button btn btn-danger btn-sm">
