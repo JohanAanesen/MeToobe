@@ -6,7 +6,7 @@ $db                  = Urge::requireDatabase();
 $userid              = Urge::requireLoggedInUser();
 list($descr, $title) = Urge::requireParameterArray('descr', 'videotitle');
 $fileVideo           = Urge::requireFileParameter('file-video');
-$fileThumbnail       = Urge::requireFileParameter('file-thumbnail');
+$fileThumbnail       = Urge::getFileParameterOrNull('file-thumbnail');
 
 
 // 1. File format validation of video and thumbnail
@@ -16,14 +16,18 @@ if ( $mimetypeVideo != 'video/mp4'  && $mimetypeVideo != 'video/webm' && $mimety
     Urge::gotoError(400, "Bad request, file format has to be [mp4|webm|ogg]");
 }
 
-$mimetypeThumbnail = $fileThumbnail['type'];
-if ( $mimetypeThumbnail != 'image/png' &&  $mimetypeThumbnail != 'image/gif' && $mimetypeThumbnail != 'image/jpeg') {
-  Urge::gotoError(400, "Bad request, file format has to be [png|gif|jpeg]");
-}
+$scaledThumbnail = '';
 
-// 2. Scale thumbnail to uniform size
-$thumbnail = file_get_contents($fileThumbnail['tmp_name']);
-$scaledThumbnail = Urge::scaleThumbnail($thumbnail);
+if ($fileThumbnail) {
+    $mimetypeThumbnail = $fileThumbnail['type'];
+    if ( $mimetypeThumbnail != 'image/png' &&  $mimetypeThumbnail != 'image/gif' && $mimetypeThumbnail != 'image/jpeg') {
+      Urge::gotoError(400, "Bad request, file format has to be [png|gif|jpeg]");
+    }
+
+    // 2. Scale thumbnail to uniform size
+    $thumbnail = file_get_contents($fileThumbnail['tmp_name']);
+    $scaledThumbnail = Urge::scaleThumbnail($thumbnail);
+}
 
 
 // 3. Add new video entry to the database4.
