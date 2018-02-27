@@ -44,13 +44,13 @@ class Playlist {
      * @param description - description of playlist
      * @return playlist id
      */
-    public static function create($db, $userid, $title, $description="") {
+    public static function create($db, $userid, $title, $description="", $course="", $topic="", $thumbnail="") {
 
         $id = uniqid();
         
-        $sql = "INSERT INTO Playlist (id, userid, title, description) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO Playlist (id, userid, title, description, course, topic, thumbnail) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $db->prepare($sql);        
-        $param = array($id, $userid, $title, $description);
+        $param = array($id, $userid, $title, $description, $course, $topic, $thumbnail);
         $stmt->execute($param);
 
         if ($stmt->rowCount() !== 1) {
