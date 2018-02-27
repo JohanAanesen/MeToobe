@@ -186,6 +186,76 @@ class Video {
         return null;
     }
 
+    public static function updateLike($db, $videoid, $userid, $vote){
+        $db->beginTransaction();
+
+        try{
+            //SQL Injection SAFE query method:
+            $query = "SELECT * FROM userlike WHERE videoid = (?) AND userid = (?)";
+            $param = array($videoid, $userid);
+            $stmt = $db->prepare($query);
+            $stmt->execute($param);
+
+            if($stmt->rowCount() == 1){
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if($vote == 'up'){
+                    if($row['vote'] == 1){
+                        self::deleteLike($db, $videoid, $userid);
+                    }else if($row['vote'] == 0){
+                        self::changeLike($db, $videoid, $userid, 1);
+                    }
+                }else if ($vote == 'down'){
+                    if($row['vote'] == 0){
+                        self::deleteLike($db, $videoid, $userid);
+                    }else if($row['vote'] == 1){
+                        self::changeLike($db, $videoid, $userid, 0);
+                    }
+                }else{
+                    $db->rollBack();
+                    return false;
+                }
+
+
+            }else{
+                $db->rollBack();
+                return false;
+            }
+
+        }catch(PDOException $ex){
+            echo "Something went wrong ".$ex; //Error message
+            $db->rollBack();
+            return false;
+        }
+
+        $db->commit();
+        return true;
+    }
+
+    public static function changeLike($db, $videoid, $userid, $vote){
+        try{
+            //SQL Injection SAFE query method:
+            $query = "UPDATE userlike SET vote = (?) WHERE videoid = (?) AND userid = (?)";
+            $param = array($vote, $videoid, $userid);
+            $stmt = $db->prepare($query);
+            $stmt->execute($param);
+        }catch(PDOException $ex){
+            echo "Something went wrong ".$ex; //Error message
+        }
+    }
+
+    public static function deleteLike($db, $videoid, $userid){
+        try{
+            //SQL Injection SAFE query method:
+            $query = "DELETE FROM userlike WHERE videoid = (?) AND userid = (?)";
+            $param = array($videoid, $userid);
+            $stmt = $db->prepare($query);
+            $stmt->execute($param);
+        }catch(PDOException $ex){
+            echo "Something went wrong ".$ex; //Error message
+        }
+    }
+
     /**
      * @param $db
      * @param $videoid

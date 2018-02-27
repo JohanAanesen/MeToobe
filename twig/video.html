@@ -29,7 +29,7 @@
                         {% for playlist in userPlaylists %}
                             <a class="dropdown-item" href="/php/playlistAdd.php?playlistid={{ playlist['id'] }}&videoid={{ videoData['id'] }}">{{ playlist['title'] }}</a>
                         {% endfor %}
-                            <a class="dropdown-item" href="/php/playlistCreate.php?playlist-title=Title&playlist-description=Description&video-id={{ videoData['id'] }}">Create new playlist</a>
+                            <a class="dropdown-item" style="background-color: #cccccc" href="/php/playlistCreate.php?playlist-title=Title&playlist-description=Description&video-id={{ videoData['id'] }}">Create new playlist</a>
                     </div>
                 </div>
                 <div style="margin-left: 1px;">
@@ -56,9 +56,11 @@
                 <div class="col-1"></div>
                 <div>
                     {% if hasLiked %}
-                        <button type="submit" name="nothing" value="nothing" class="btn btn-success btn-sm">
+                    <form action="/php/videoVote.php?videoid={{ videoData['id'] }}" method="POST">
+                        <button type="submit" name="revote" value="up" class="btn btn-success btn-sm">
                             <img src="/icon/arrow-up.png" aria-hidden="true">
                         </button>
+                    </form>
                     {% else %} 
                     <form action="/php/videoVote.php?videoid={{ videoData['id'] }}" method="POST">
                         <button type="submit" name="upvote" value="upvote" class="btn btn-success btn-sm">
@@ -70,9 +72,11 @@
 
                 <div>
                     {% if hasLiked==true %}
-                        <button type="submit" name="nothing" value="nothing" class="button btn btn-danger btn-sm">
+                    <form action="/php/videoVote.php?videoid={{ videoData['id'] }}" method="POST">
+                        <button type="submit" name="revote" value="down" class="button btn btn-danger btn-sm">
                             <img src="/icon/arrow-down.png" aria-hidden="true">
                         </button>
+                    </form>
                     {% else %}
                     <form action="/php/videoVote.php?videoid={{ videoData['id'] }}" method="POST">
                         <button type="submit" name="downvote" value="downvote" class="button btn btn-danger btn-sm">

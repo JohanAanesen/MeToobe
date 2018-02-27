@@ -70,7 +70,7 @@
 
         </div>
     </div>
-
+    {% if owner %}
     <div class="col-md-4">
         <form action="/php/userDelete.php" method="post">
             <div class="checkbox">
@@ -81,6 +81,7 @@
             <button type="submit" class="btn btn-danger btn-lg btn-block">DELETE</button>
         </form>
     </div>
+    {% endif %}
 
 </div>
 

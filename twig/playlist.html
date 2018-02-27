@@ -40,8 +40,9 @@
             {% if editMode %}
             <div class="col-md-1 text-center">
                 <div style="margin-bottom: 1px; margin-top: 10%;">
-                    <form action="" method="POST">
-                        <button type="submit" name="up" value="up" class="btn btn-secondary btn-sm">
+                    <form action="/php/playlistSwap.php" method="POST">
+                        <input type="hidden" name="video-rank" value="{{ video.rank }}"/>
+                        <button type="submit" name="up" value="video.id" class="btn btn-secondary btn-sm">
                             <img src="/icon/arrow-up.png" aria-hidden="true">
                         </button>
                     </form>
@@ -57,8 +58,9 @@
                     </form>
                 </div>
                 <div>
-                    <form action="" method="POST">
-                        <button type="submit" name="down" value="down" class="button btn btn-secondary btn-sm">
+                    <form action="/php/playlistSwap.php" method="POST">
+                        <input type="hidden" name="video-rank" value="{{ video.rank }}"/>
+                        <button type="submit" name="down" value="{{ video.id }}" class="button btn btn-secondary btn-sm">
                             <img src="/icon/arrow-down.png" aria-hidden="true">
                         </button>
                     </form>
@@ -70,19 +72,6 @@
 
         {% endfor %}
 
-
-    <!--
-        {% if editMode %}
-            <br>
-            <div class="border border-danger">
-                <h1>Does not work yet.</h1>
-                <label for="playlist-video-swap-1">Swap: </label>
-                <input type="text" class="form-control col-md-2" id="playlist-video-swap-1"/>
-                <label for="playlist-video-swap-2">To:</label>
-                <input type="text" class="form-control col-md-2" id="playlist-video-swap-2"/><br>
-            </div>
-        {% endif %}
-    -->
         <br>
         <!-- need the playlist id when updating the site, thus hidden. -->
         <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
