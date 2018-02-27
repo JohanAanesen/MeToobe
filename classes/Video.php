@@ -123,23 +123,20 @@ class Video {
     public static function getNewVideos($db){
         try{
             //SQL Injection SAFE query method:
-            $query = "SELECT id, name FROM video ORDER BY time DESC LIMIT 6";
+            $query = "SELECT id, name, thumbnail FROM video ORDER BY time DESC LIMIT 6";
             $param = array();
             $stmt = $db->prepare($query);
             $stmt->execute($param);
 
             if ($stmt->rowCount()>0) {
-                $videos = array();
-                while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    $videos[] = $row;
-                }
-                return $videos;
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         }catch(PDOException $ex){
             echo "Something went wrong".$ex; //Error message
         }
         return null;
     }
+
 
 
     /**
