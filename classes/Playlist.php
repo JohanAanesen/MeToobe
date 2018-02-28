@@ -34,7 +34,28 @@ class Playlist {
         $stmt->execute($param);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }  
+    }
+
+    /**
+     * @param $db
+     * @return array|null
+     */
+    public static function getNewPlaylists($db){
+        try{
+            //SQL Injection SAFE query method:
+            $query = "SELECT id, title, thumbnail FROM playlist LIMIT 6";
+            $param = array();
+            $stmt = $db->prepare($query);
+            $stmt->execute($param);
+
+            if ($stmt->rowCount()>0) {
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
+        }catch(PDOException $ex){
+            echo "Something went wrong".$ex; //Error message
+        }
+        return null;
+    }
 
     /* 
      * @requires login

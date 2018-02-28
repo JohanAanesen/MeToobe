@@ -20,6 +20,7 @@ if($userid){
     $subscribedPlaylists = Playlist::getUserPlaylist($db, $userid);
 }
 $newVideos = Video::getNewVideos($db);
+$newPlaylists = Playlist::getNewPlaylists($db);
 
 if (!empty($newVideos))
     $newVideos = Urge::encodeThumbnailsToBase64($newVideos);
@@ -37,6 +38,7 @@ echo $twig->render('home.html', array(
     'wannabeUsers' => User::getWannabeTeachers($db),
     'admin' => User::isAdmin(),
     'newVideos' => $newVideos,
+    'newPlaylists' => $newPlaylists,
     'subscribedVideos' => $subscribedVideos,
     'subscribedPlaylists' => $subscribedPlaylists,
 ));
