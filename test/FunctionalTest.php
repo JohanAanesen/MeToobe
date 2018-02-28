@@ -5,7 +5,6 @@ use PHPUnit\DbUnit\TestCaseTrait;
 use Behat\Mink\Element\DocumentElement;
 use Behat\Mink\Element\NodeElement;
 
-require_once "./classes/Playlist.php";
 require_once "./classes/Video.php";
 require_once "./classes/DB.php";
 
@@ -14,6 +13,7 @@ require_once "./classes/DB.php";
 */
 class FunctionalTests extends TestCase {
 
+  // URL
   protected $baseURL    = "http://localhost/view/playlist/index.php";
   protected $accountURL = "http://localhost/user?id=1337TEST1337";
   protected $signInURL  = "http://localhost/view/login/index.php";
@@ -22,9 +22,10 @@ class FunctionalTests extends TestCase {
   protected $session;
   protected $db;
 
+  // Number of videos to be added to playlist
   private $videos = 3;
 
-  // Playlist
+  // Playlist info
   private $title       = "Test testing tested";
   private $course      = "IMT2291";
   private $topic       = "Project1";
@@ -42,6 +43,7 @@ class FunctionalTests extends TestCase {
     $this->session->start();
   }
 
+  // Creates user in db
   public static function createUserOnce($this0){
     $db = DB::getDBConnection();
     $query = "INSERT INTO user (id, fullname, email, password, usertype, wannabe) VALUES (?, ?, ?, ?, ?, ?)";
@@ -50,6 +52,7 @@ class FunctionalTests extends TestCase {
     $stmt->execute($param);
   }
 
+  // Signs in to the newly created user
   public static function signInUser($this2){
     $this2->session->visit($this2->signInURL);
     $page = $this2->session->getPage();
@@ -73,9 +76,10 @@ class FunctionalTests extends TestCase {
     }
   }
 
+  // Creates and tests the playlist
   public static function createAndTestPlaylist($this3){
 
-    // Create playlist
+    // Create
     $this3->session->visit($this3->baseURL);
     $page = $this3->session->getPage();
     $form = $page->find('css', 'form[id="createPlaylist"]');
@@ -117,15 +121,16 @@ class FunctionalTests extends TestCase {
     }
   }
 
+  // Adds a number of '$videos' to the db
   public static function createThreeVideos($this4){
     $this4->db = DB::getDBConnection();
     for($i = 0; $i < $this4->videos; $i++){
       $arrayVideo[] = Video::add($this4->db, $this4->userID, 'Test-Video-' . ($i + 1), 'Description for Test-Video nr.: ' . ($i + 1));
     }
-
     return $arrayVideo;
   }
 
+  // Tear down the user from the account user-page
   public static function tearDownUser($this5){
     $this5->session->visit($this5->accountURL);
     $page = $this5->session->getPage();
@@ -144,6 +149,7 @@ class FunctionalTests extends TestCase {
     }
   }
 
+  // Adds a number of '$videos' to the playlist and tests if they are all there
   public static function addThreeVideosAndTest($this6, $idVideo){
 
     $this6->session->visit($this6->accountURL);
@@ -191,7 +197,8 @@ class FunctionalTests extends TestCase {
   }
 
   /*
-  * @depends testCreatePlaylist
+  * @depends createUserOnce
+  * @depends createAndTestPlaylist
   */
   public function testAddThreeVideosToPlaylist(){
     $videoID = FunctionalTests::createThreeVideos($this);
@@ -201,13 +208,13 @@ class FunctionalTests extends TestCase {
     FunctionalTests::tearDownUser($this);
   }
 
-
-
-/*
-* @depends testCreatePlaylist
-* @depends testAddThreeVideosToPlaylist
-*/
-/*  public function testChangeOrderOnVideosInPlaylist(){
+  /*
+  * @depends createUserOnce
+  * @depends createAndTestPlaylist
+  * @depends createThreeVideos
+  * @depends addThreeVideosAndTest
+  */
+/*public function testChangeOrderOnVideosInPlaylist(){
   }
 */
 
