@@ -66,10 +66,10 @@ class Playlist {
      * @param title - title of playlist
      * @param description - description of playlist
      */
-    public static function update($db, $id, $title, $description) {
-        $sql = "UPDATE Playlist SET title = ?, description = ? WHERE id = ?";
+    public static function update($db, $id, $title, $description, $course, $topic) {
+        $sql = "UPDATE Playlist SET title = ?, description = ?, course = ?, topic = ? WHERE id = ?";
         $stmt = $db->prepare($sql);
-        $param = array($title, $description, $id);
+        $param = array($title, $description, $course, $topic, $id);
         $stmt->execute($param);
 
         return ($stmt->rowCount() === 1);

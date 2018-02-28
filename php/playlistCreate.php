@@ -6,11 +6,19 @@ $db = Urge::requireDatabase();
 
 $userid = Urge::requireLoggedInUser();
 
-list($playlistTitle, $playlistDesc, $playlistTopic, $playlistCourse) = Urge::requireParameterArray(
+$playlistTopic = '';
+$playlistCourse = '';
+
+if(isset($_POST['playlist-topic'])){
+    $playlistTopic = $_POST['playlist-topic'];
+}
+if(isset($_POST['playlist-course'])){
+    $playlistTopic = $_POST['playlist-course'];
+}
+
+list($playlistTitle, $playlistDesc) = Urge::requireParameterArray(
     'playlist-title', 
-    'playlist-description',
-    'playlist-topic',
-    'playlist-course'
+    'playlist-description'
 );
 
 $scaledThumbnail = '';
