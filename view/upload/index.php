@@ -7,6 +7,11 @@ $twig = Urge::requireTwig();
 $db   = Urge::requireDatabase();
 $user = User::get($db, $userid);
 
+
+if(!User::isTeacher($userid) && !User::isAdmin($userid)){
+    Urge::gotoHome();
+}
+
 echo $twig->render('upload.html', array(
     'title' => 'home',
     'userid' => $userid,

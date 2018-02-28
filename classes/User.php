@@ -114,7 +114,19 @@ class User {
         User::requireSession();
 
         if ( !isset($_SESSION[User::$KEY_SESSION_USERTYPE]) || $_SESSION[User::$KEY_SESSION_USERTYPE] !== 'admin' )
-            return 0;
+            return false;
+        return true;
+    }
+
+    /**
+     * @global $_SESSION
+     * @return bool | 0
+     */
+    static function isTeacher() {
+        User::requireSession();
+
+        if ( !isset($_SESSION[User::$KEY_SESSION_USERTYPE]) || $_SESSION[User::$KEY_SESSION_USERTYPE] !== 'teacher' )
+            return false;
         return true;
     }
 
