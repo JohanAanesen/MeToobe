@@ -76,10 +76,10 @@
     </div>
     {% if owner %}
     <div class="col-md-4">
-        <form action="/php/userDelete.php" method="post">
+        <form id="deleteUser" action="/php/userDelete.php" method="post">
             <div class="checkbox">
                 <label class="text-dark">
-                    <input type="checkbox" name="isTeacher" value="yes" required > I am sure, I want to delete my account.
+                    <input id="areUsure" type="checkbox" name="isTeacher" value="yes" required > I am sure, I want to delete my account.
                 </label>
             </div>
             <button type="submit" class="btn btn-danger btn-lg btn-block">DELETE</button>
