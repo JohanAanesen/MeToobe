@@ -5,47 +5,73 @@
 <div class="container-fluid border-top" style="margin-bottom: 10px;"></div>
 <div class="container">
 
-
-    {% if createMode %}
-    <form id="createPlaylist" method="post" action="/php/playlistCreate.php" enctype="multipart/form-data">
-    {% elseif editMode %}
-    <form id="updatePlaylist" method="post" action="/php/playlistUpdate.php" enctype="multipart/form-data">
-    {% endif %}
-
-        <p style="color: #aaaaaa;"> {{ playlist.id }} </p>
-        <input type="text" class="form-control" id="playlist-title" name="playlist-title" value="{{ playlist.title }}"  placeholder="{% if not createMode %}{{ playlist.title }}{% else %}Title{% endif %}" required {% if not createMode and not editMode %} readonly {% endif %}><br>
-
-        <input type="text" class="form-control" id="playlist-course" name="playlist-course" value="{{ playlist.course }}"  placeholder="{% if not createMode %}{{ playlist.course }}{% else %}Course{% endif %}" {% if not createMode and not editMode %} readonly {% endif %}><br>
-
-        <input type="text" class="form-control" id="playlist-topic" name="playlist-topic" value="{{ playlist.topic }}"  placeholder="{% if not createMode %}{{ playlist.topic }}{% else %}Topic{% endif %}" {% if not createMode and not editMode %} readonly {% endif %}><br>
-
-        <!-- need the playlist id when updating the site, thus hidden. -->
-        <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
-
-        {% if createMode %}
-        <label for="fileuploader"><h4 class="other-title">Upload <span class="text-success">Thumbnail</span></h4></label>
-        <div class="custom-file" id="fileuploader">
-            <input type="file" class="custom-file-input" id="customFileThumbnail" name="file-thumbnail" accept="image/*">
-            <label class="custom-file-label" for="customFileThumbnail">
-                <span class="file-custom" data-content-value="Choose Thumbnail..."></span>
-            </label>
+    <div class="row col">
+        <div class="col-md-11">
+            <p style="color: #aaaaaa;"> {{ playlist.id }} </p>
         </div>
-        {% endif %}
+        <div class="col-md-1 float-right">
+            {% if userid %}
+            <form action="/php/playlistSubscribe.php" id="playlistSubscribe" method="post">
+                <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
+                {% if subscribed %}
+                <button type="submit" name="subscribe" class="btn btn-secondary" value="no" form="playlistSubscribe">
+                    Unsubscribe
+                </button>
+                {% else %}
+                <button type="submit" name="subscribe" class="btn btn-success" value="yes" form="playlistSubscribe">
+                    Subscribe!
+                </button>
+                {% endif %}
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {% if createMode %}
+            <form id="createPlaylist" method="post" action="/php/playlistCreate.php" enctype="multipart/form-data">
+            {% elseif editMode %}
+            <form id="updatePlaylist" method="post" action="/php/playlistUpdate.php" enctype="multipart/form-data">
+            {% endif %}
 
-        <textarea type="text" class="form-control" rows="4" id="playlist-description" placeholder="Playlist Description" name="playlist-description" {% if not createMode and not editMode %} readonly {% endif %}>{{ playlist.description }}</textarea>
+                <input type="text" class="form-control" id="playlist-title" name="playlist-title" value="{{ playlist.title }}"  placeholder="{% if not createMode %}{{ playlist.title }}{% else %}Title{% endif %}" required {% if not createMode and not editMode %} readonly {% endif %}><br>
 
-    </form>
+                <input type="text" class="form-control" id="playlist-course" name="playlist-course" value="{{ playlist.course }}"  placeholder="{% if not createMode %}{{ playlist.course }}{% else %}Course{% endif %}" {% if not createMode and not editMode %} readonly {% endif %}><br>
 
+                <input type="text" class="form-control" id="playlist-topic" name="playlist-topic" value="{{ playlist.topic }}"  placeholder="{% if not createMode %}{{ playlist.topic }}{% else %}Topic{% endif %}" {% if not createMode and not editMode %} readonly {% endif %}><br>
+
+                <!-- need the playlist id when updating the site, thus hidden. -->
+                <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
+
+                {% if createMode or editMode %}
+                <label for="fileuploader"><h4 class="other-title">Upload <span class="text-success">Thumbnail</span></h4></label>
+                <div class="custom-file" id="fileuploader">
+                    <input type="file" class="custom-file-input" id="customFileThumbnail" name="file-thumbnail" accept="image/*">
+                    <label class="custom-file-label" for="customFileThumbnail">
+                        <span class="file-custom" data-content-value="Choose Thumbnail..."></span>
+                    </label>
+                </div>
+                <br><br>
+                {% endif %}
+
+                <textarea type="text" class="form-control" rows="4" id="playlist-description" placeholder="Playlist Description" name="playlist-description" {% if not createMode and not editMode %} readonly {% endif %}>{{ playlist.description }}</textarea>
+
+            </form>
+        </div>
+        <div class="col-md-6">
+            {% include "_thumbnail.html" with { thumbnail: playlist['thumbnail'] } %}
+        </div>
+    </div>
         {% for video in videos %}
 
 
         <hr>
-        <div class="col">
-            <span> {{ video.rank + 1 }}</span>
-        </div>
+        <div class="col"><span style="color: #aaaaaa;"> {{ video.id }} Rank: {{ video.rank + 1 }} </span></div>
         <div class="row">
             <div class="col-md-3">
-                <a href="/video?id={{ video.id }}"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+                <a href="/video?id={{ video['id'] }}">
+                    {% include "_thumbnail.html" with { thumbnail: video['thumbnail'] } %}
+                </a>
             </div>
             <div class="col-md-8">
                 <div class="col-md-8">
@@ -59,29 +85,31 @@
             {% if editMode %}
             <div class="col-md-1 text-center">
                 <div style="margin-bottom: 1px; margin-top: 10%;">
-                    <form action="/php/playlistSwap.php" method="POST">
-                        <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
-                        <input type="hidden" name="video-rank" value="{{ video.rank }}"/>
-                        <button type="submit" name="up" value="video.id" class="btn btn-secondary btn-sm">
+                    <form action="/php/playlistSwap.php" id="swapUp{{ video.id }}" method="POST">
+                        <input type="hidden" name="playlist-id" form="swapUp{{ video.id }}" value="{{ playlist.id }}"/>
+                        <input type="hidden" name="video-id" form="swapUp{{ video.id }}" value="{{ video.id }}"/>
+                        <input type="hidden" name="video-rank" form="swapUp{{ video.id }}" value="{{ video.rank }}"/>
+                        <button type="submit" name="swap" form="swapUp{{ video.id }}" value="up" class="btn btn-secondary btn-sm">
                             <img src="/icon/arrow-up.png" aria-hidden="true">
                         </button>
                     </form>
                 </div>
                 <div style="margin-bottom: 1px;">
-                    <form action="/php/playlistRemoveVideo.php" id="removeVideo" method="POST">
-                        <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
-                        <input type="hidden" name="video-id" value="{{ video.id }}"/>
-                        <input type="hidden" name="video-rank" value="{{ video.rank }}"/>
-                        <button size="100px" type="submit" name="up" value="up" class="btn btn-danger text-white" form="removeVideo">
+                    <form action="/php/playlistRemoveVideo.php" id="removeVideo{{ video.rank }}" method="POST">
+                        <input type="hidden" name="playlist-id" form="removeVideo{{ video.rank }}" value="{{ playlist.id }}"/>
+                        <input type="hidden" name="video-id" form="removeVideo{{ video.rank }}" value="{{ video.id }}"/>
+                        <input type="hidden" name="video-rank" form="removeVideo{{ video.rank }}" value="{{ video.rank }}"/>
+                        <button size="100px" type="submit" form="removeVideo{{ video.rank }}" name="up" value="up" class="btn btn-danger text-white" >
                             X
                         </button>
                     </form>
                 </div>
                 <div>
-                    <form action="/php/playlistSwap.php" method="POST">
-                        <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
-                        <input type="hidden" name="video-rank" value="{{ video.rank }}"/>
-                        <button type="submit" name="down" value="{{ video.id }}" class="button btn btn-secondary btn-sm">
+                    <form action="/php/playlistSwap.php" id="swapDown{{ video.id }}" method="POST">
+                        <input type="hidden" name="playlist-id" form="swapDown{{ video.id }}" value="{{ playlist.id }}"/>
+                        <input type="hidden" name="video-id" form="swapDown{{ video.id }}" value="{{ video.id }}"/>
+                        <input type="hidden" name="video-rank" form="swapDown{{ video.id }}" value="{{ video.rank }}"/>
+                        <button type="submit" name="swap" form="swapDown{{ video.id }}" value="down" class="button btn btn-secondary btn-sm">
                             <img src="/icon/arrow-down.png" aria-hidden="true">
                         </button>
                     </form>

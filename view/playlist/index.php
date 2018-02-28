@@ -5,6 +5,7 @@ require_once "$ROOT/classes/Urge.php";
 $db     = Urge::requireDatabase();
 $twig   = Urge::requireTwig();
 $userid = User::getLoggedInUserid();
+$subscribed = false;
 
 if (!isset($_GET['id']) && !$userid) {
     Urge::gotoLogin();
@@ -25,6 +26,13 @@ $playlistID = $_GET['id'];
 $playlist   = Playlist::get($db, $playlistID);
 $videos     = Playlist::getVideos($db, $playlistID, true);
 
+if (!empty($playlist))
+    $playlist = Urge::encodeThumbnailsToBase64($playlist);
+
+if (!empty($videos))
+    $videos = Urge::encodeThumbnailsToBase64($videos);
+
+
 if (!$userid) {
     echo $twig->render('playlist.html', array(
         'title' => 'home',
@@ -39,6 +47,9 @@ if ($playlist['userid'] === $userid) {
     $editMode = true;
 }
 
+$subscribed = Playlist::checkIfSubscribed($db, $userid, $playlistID);
+
+
 $user = User::get($db, $userid);
 echo $twig->render('playlist.html', array(
     'title' => 'home',
@@ -47,5 +58,6 @@ echo $twig->render('playlist.html', array(
     'editMode' => $editMode,
     'playlist' => $playlist,
     'videos' => $videos,
+    'subscribed' => $subscribed,
 ));
 

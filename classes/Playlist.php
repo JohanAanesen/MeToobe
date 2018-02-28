@@ -132,11 +132,22 @@ class Playlist {
      * @param videoid - video 
      * @throws PDOException 
      */
-    public static function removeVideo($db, $id, $videoid, $rank) {
-        $sql = "DELETE FROM VideoPlaylist WHERE playlistid = ? AND videoid = ? AND rank = ? LIMIT 1";
-        $stmt = $db->prepare($sql);
-        $param = array($id, $videoid, $rank);
-        $stmt->execute($param);
+    public static function removeVideo($db, $playlistid, $videoid, $rank) {
+        $db->beginTransaction();
+
+        try{
+            $sql = "DELETE FROM VideoPlaylist WHERE playlistid = ? AND videoid = ? AND rank = ?";
+            $stmt = $db->prepare($sql);
+            $param = array($playlistid, $videoid, $rank);
+            $stmt->execute($param);
+        }catch (PDOException $e){
+            print_r($e);
+            $db->rollBack();
+            return;
+        }
+
+        $db->commit();
+        return;
     }
 
     /* 
@@ -149,53 +160,33 @@ class Playlist {
      * @doc https://stackoverflow.com/questions/2810606/sql-swap-primary-key-values - 11.02.18
      * @throws PDOException     
      */
-    public static function swapVideoRank($db, $id, $videoid, $otherVideoid) {
+    public static function swapVideoRank($db, $playlistid, $videoid, $otherVideoid, $rank, $otherRank) {
         
         $db->beginTransaction();
 
         try {
 
-        $sql = "SELECT * FROM VideoPlaylist WHERE videoid = ?";
-        $stmt = $db->prepare($sql);
-        $param = array($videoid);
-        $stmt->execute($param);
-        $videoPlaylist = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (empty($videoPlaylist)){
-            $db->rollBack();
-            return false;
-        }
-
-        $sql = "SELECT * FROM VideoPlaylist WHERE videoid = ?";
-        $stmt = $db->prepare($sql);
-        $param = array($otherVideoid);
-        $stmt->execute($param);
-        $otherVideoPlaylist = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (empty($otherVideoPlaylist)){
-            $db->rollBack();
-            return false;
-        }
-
-        $sql = "UPDATE VideoPlaylist SET rank = ? WHERE videoid = ?";
-        $stmt = $db->prepare($sql);
-        $param = array($videoPlaylist['rank'], $otherVideoid);
-        $stmt->execute($param);
-        if ($stmt->rowCount() !== 1) {
-            $db->rollBack();
-            return false;
-        }
-
-        $sql = "UPDATE VideoPlaylist SET rank = ? WHERE videoid = ?";
-        $stmt = $db->prepare($sql);
-        $param = array($otherVideoPlaylist['rank'], $videoid);
-        $stmt->execute($param);
-        if ($stmt->rowCount() !== 1) {
-            $db->rollBack();
-            return false;
-        }
+            $sql = "UPDATE VideoPlaylist SET rank = ? WHERE videoid = ? AND playlistid = ? AND rank = ?";
+            $stmt = $db->prepare($sql);
+            $param = array($rank, $otherVideoid, $playlistid, $otherRank);
+            $stmt->execute($param);
 
         } catch (PDOException $e) {
-            print_r($e->errorInfo); 
-            $db->rollBack(); 
+            print_r($e);
+            $db->rollBack();
+            return;
+        }
+
+        try{
+
+            $sql = "UPDATE VideoPlaylist SET rank = ? WHERE videoid = ? AND playlistid = ? AND rank = ?";
+            $stmt = $db->prepare($sql);
+            $param = array($otherRank, $videoid, $playlistid, $rank);
+            $stmt->execute($param);
+
+        } catch (PDOException $e) {
+            print_r($e);
+            $db->rollBack();
             return;
         }
 
@@ -212,7 +203,7 @@ class Playlist {
     public static function getUserPlaylist($db, $userid){
         try{
             //SQL Injection SAFE query method:
-            $query = "SELECT id, title FROM playlist WHERE userid = (?)";
+            $query = "SELECT id, title, thumbnail FROM playlist WHERE userid = (?)";
             $param = array($userid);
             $stmt = $db->prepare($query);
             $stmt->execute($param);
@@ -236,11 +227,40 @@ class Playlist {
      * @param $videoRank
      * @return int|null
      */
-    public static function updateVideoRanks($db, $playlistid, $videoRank){
-        $db->beginTransaction();
-
+    public static function updateVideoRanks($db, $playlistid, $videoid, $videoRank){
         $currentRank = null;
 
+        $playlistLength = self::getPlaylistLength($db, $playlistid);
+
+        //if video is the only one or is at the end of the 'array', no swap needed.
+        if($videoRank == $playlistLength-1){
+            return $videoRank;
+        }
+
+        $currentRank = $videoRank;
+        //iterates from the current rank towards the end of playlist and swaps ranks
+        if($videoRank < $playlistLength-1) {
+            for ($i = $videoRank; $i < $playlistLength; $i++) {
+                $nextVideoID = self::getVideoIdByRankPlaylist($db, $i+1, $playlistid);
+                echo $i."-";
+                if($videoid != $nextVideoID) {
+                    if(self::swapVideoRank($db, $playlistid, $videoid, $nextVideoID, $i, $i+1)){
+                        echo "success";
+                    }
+                }
+                $currentRank = $i+1;
+            }
+        }
+
+        return $currentRank;
+    }
+
+    /**
+     * @param $db
+     * @param $playlistid
+     * @return null
+     */
+    public static function getPlaylistLength($db, $playlistid){
         try{
             //retrieves the "length" of playlist
             $sql = "SELECT COUNT(videoid) AS antall FROM VideoPlaylist WHERE playlistid = ?";
@@ -249,36 +269,16 @@ class Playlist {
             $stmt->execute($param);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            $playlistLength = $row['antall'];
-            $playlistLength--; //remove 1 because we count from 0
-
-            //if video is the only one or is at the end of the 'array', no swap needed.
-            if($videoRank == $playlistLength){
-                $db->rollBack();
-                return $videoRank;
+            if(isset($row['antall'])){
+                return $row['antall'];
             }
 
-            //iterates from the current rank towards the end of playlist and swaps ranks
-            if($videoRank < $playlistLength) {
-                for ($i = $videoRank; $i < $playlistLength; $i++) {
-                    $currentVideoID = self::getVideoIdByRankPlaylist($db, $i, $playlistid);
-                    $nextVideoID = self::getVideoIdByRankPlaylist($db, $i+1, $playlistid);
-
-                    if($currentVideoID != $nextVideoID) {
-                        self::swapVideoRank($db, $playlistid, $currentVideoID, $nextVideoID);
-                    }
-                    $currentRank = $i+1;
-                }
-            }
 
         } catch (PDOException $e) {
-            print_r($e->errorInfo);
-            $db->rollBack();
+            print_r($e);
             return null;
         }
-
-        $db->commit();
-        return $currentRank;
+        return null;
     }
 
     /**
@@ -303,4 +303,80 @@ class Playlist {
         }
         return null;
     }
+
+    /**
+     * @param $db
+     * @param $q
+     * @return array|null
+     */
+    public static function searchPlaylist($db, $q){
+        try{
+            //SQL Injection SAFE query method:
+            $query = "SELECT playlist.id, playlist.title, playlist.description FROM playlist
+                  INNER JOIN user ON playlist.userid = user.id
+                  WHERE playlist.title LIKE (?)
+                  OR user.fullname LIKE (?)
+                  OR user.email LIKE (?)
+                  OR playlist.description LIKE (?)
+                  OR playlist.course LIKE (?)
+                  OR playlist.topic LIKE (?)
+                  LIMIT 10";
+
+            //adding the wildcard characters to query word
+            $qWild = "%".$q."%";
+
+            $param = array($qWild, $qWild, $qWild, $qWild, $qWild, $qWild);
+            $stmt = $db->prepare($query);
+            $stmt->execute($param);
+
+            if ($stmt->rowCount()>0) {
+                $videos = array();
+                while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $videos[] = $row;
+                }
+                return $videos;
+            }
+        }catch(PDOException $ex){
+            echo "Something went wrong".$ex; //Error message
+        }
+        return null;
+    }
+
+    public static function subscribePlaylist($db, $userid, $playlistid){
+        $sql = "INSERT INTO usersubscribe (userid, playlistid) VALUES (?, ?)";
+        $stmt = $db->prepare($sql);
+        $param = array($userid, $playlistid);
+        $stmt->execute($param);
+
+        if ($stmt->rowCount() !== 1) {
+            return false;
+        }
+        return true;
+    }
+
+    public static function unsubscribePlaylist($db, $userid, $playlistid){
+       try{
+        $sql = "DELETE FROM usersubscribe WHERE userid = ? AND playlistid = ? LIMIT 1";
+        $stmt = $db->prepare($sql);
+        $param = array($userid, $playlistid);
+        $stmt->execute($param);
+        }catch (PDOException $e){
+            print_r($e);
+            return false;
+        }
+        return true;
+    }
+
+    public static function checkIfSubscribed($db, $userid, $playlistid){
+        $sql = "SELECT * FROM usersubscribe WHERE userid = ? AND playlistid = ? LIMIT 1";
+        $stmt = $db->prepare($sql);
+        $param = array($userid, $playlistid);
+        $stmt->execute($param);
+
+        if ($stmt->rowCount() == 1) {
+            return true;
+        }
+        return false;
+    }
+
 }

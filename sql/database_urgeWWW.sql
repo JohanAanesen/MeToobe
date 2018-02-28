@@ -96,8 +96,6 @@ CREATE TABLE `VideoPlaylist` (
   FOREIGN KEY (`videoid`) REFERENCES Video(id),
   FOREIGN KEY (`playlistid`) REFERENCES Playlist(id)
 );
-ALTER TABLE `VideoPlaylist` ADD UNIQUE KEY `videoid_playlistid_rank_unique_index` (`videoid`,`playlistid`, `rank`);
-
 
 /*================================INSERT ADMIN TO USER=====================================*/;
 INSERT INTO `user` (`id`, `fullname`, `email`, `password`, `usertype`, `wannabe`)

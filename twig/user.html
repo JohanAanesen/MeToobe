@@ -36,7 +36,9 @@
             {% for video in userVideos %}
             <div class="col-md-8">
                 <h2 class="lead text-limit">{{ video['name'] }}</h2>
-                <a href="/video?id={{ video['id'] }}"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+                <a href="/video?id={{ video['id'] }}">
+                    {% include "_thumbnail.html" with { thumbnail: video['thumbnail'] } %}
+                </a>
             </div>
             <br>
             {% endfor %}
@@ -60,7 +62,9 @@
             {% for playlist in userPlaylists %}
             <div id="playlistInfo" class="col-md-8">
                 <h2 class="lead text-limit">{{ playlist['title'] }}</h2>
-                <a href="/playlist?id={{ playlist['id'] }}"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+                <a href="/playlist?id={{ playlist['id'] }}">
+                    {% include "_thumbnail.html" with { thumbnail: playlist['thumbnail'] } %}
+                </a>
             </div>
             <br>
             {% endfor %}

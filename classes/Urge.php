@@ -157,7 +157,8 @@ class Urge {
 
     public static function encodeThumbnailsToBase64($videos) {
         foreach ($videos as &$v) {
-            $v['thumbnail'] = base64_encode($v['thumbnail']);
+            if(isset($v['thumbnail']))
+                $v['thumbnail'] = base64_encode($v['thumbnail']);
         }
         return $videos;
     }

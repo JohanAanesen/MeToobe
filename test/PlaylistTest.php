@@ -120,7 +120,9 @@ final class PlaylistTest extends TestCase {
             $this->db,
             $this->playlistid,
             $this->playlisttitle,
-            $updateDescription
+            $updateDescription,
+            "",
+            ""
         ));
 
         $playlist = Playlist::get($this->db, $this->playlistid);
@@ -207,7 +209,9 @@ final class PlaylistTest extends TestCase {
             $this->db, 
             $this->playlistid,
             $videoID,
-            $otherVideoID
+            $otherVideoID,
+            $videoRankBefore,
+            $otherVideoRankBefore
         );
         //$this->assertEquals(2, $updateCount);
 
@@ -226,7 +230,9 @@ final class PlaylistTest extends TestCase {
             $this->db, 
             $this->playlistid,
             $videoID,
-            $otherVideoID
+            $otherVideoID,
+            $videoRankAfter,
+            $otherVideoRankAfter
         );
 
         $videos = Playlist::getVideos($this->db, $this->playlistid);     

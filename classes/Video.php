@@ -283,19 +283,18 @@ class Video {
     public static function searchVideos($db, $q){
         try{
             //SQL Injection SAFE query method:
-            $query = "SELECT video.id, video.name FROM video
+            $query = "SELECT video.id, video.name, video.description FROM video
                       INNER JOIN user ON video.userid = user.id
                       WHERE video.name LIKE (?)
+                      OR video.description LIKE (?)
                       OR user.fullname LIKE (?)
                       OR user.email LIKE (?)
-                      OR video.course LIKE (?)
-                      OR video.topic LIKE (?)
                       LIMIT 10";
 
             //adding the wildcard characters to query word
             $qWild = "%".$q."%";
 
-            $param = array($qWild, $qWild, $qWild, $qWild, $qWild);
+            $param = array($qWild, $qWild, $qWild, $qWild);
             $stmt = $db->prepare($query);
             $stmt->execute($param);
 
@@ -320,7 +319,7 @@ class Video {
     public static function getUsersVideos($db, $userid){
         try{
             //SQL Injection SAFE query method:
-            $query = "SELECT video.id, video.name FROM video
+            $query = "SELECT video.id, video.name, video.thumbnail FROM video
                       WHERE video.userid LIKE (?)
                       LIMIT 10";
 
@@ -335,6 +334,30 @@ class Video {
                     $videos[] = $row;
                 }
                 return $videos;
+            }
+        }catch(PDOException $ex){
+            echo "Something went wrong".$ex; //Error message
+        }
+        return null;
+    }
+
+    public static function getSubscribedVideos($db, $userid){
+        try{
+            //SQL Injection SAFE query method:
+            $query = "SELECT video.id, video.name, video.thumbnail FROM video
+                      INNER JOIN videoplaylist ON video.id = videoplaylist.videoid
+                      INNER JOIN playlist ON videoplaylist.playlistid = playlist.id
+                      INNER JOIN usersubscribe ON playlist.id = usersubscribe.playlistid
+                      INNER JOIN user ON usersubscribe.userid = user.id
+                      WHERE user.id LIKE (?)
+                      ORDER BY video.time DESC
+                      LIMIT 6";
+            $param = array($userid);
+            $stmt = $db->prepare($query);
+            $stmt->execute($param);
+
+            if ($stmt->rowCount()>0) {
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         }catch(PDOException $ex){
             echo "Something went wrong".$ex; //Error message
