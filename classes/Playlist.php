@@ -298,4 +298,37 @@ class Playlist {
         }
         return null;
     }
+
+    public static function searchPlaylist($db, $q){
+        try{
+            //SQL Injection SAFE query method:
+            $query = "SELECT playlist.id, playlist.title, playlist.description FROM playlist
+                  INNER JOIN user ON playlist.userid = user.id
+                  WHERE playlist.title LIKE (?)
+                  OR user.fullname LIKE (?)
+                  OR user.email LIKE (?)
+                  OR playlist.description LIKE (?)
+                  OR playlist.course LIKE (?)
+                  OR playlist.topic LIKE (?)
+                  LIMIT 10";
+
+            //adding the wildcard characters to query word
+            $qWild = "%".$q."%";
+
+            $param = array($qWild, $qWild, $qWild, $qWild, $qWild, $qWild);
+            $stmt = $db->prepare($query);
+            $stmt->execute($param);
+
+            if ($stmt->rowCount()>0) {
+                $videos = array();
+                while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $videos[] = $row;
+                }
+                return $videos;
+            }
+        }catch(PDOException $ex){
+            echo "Something went wrong".$ex; //Error message
+        }
+        return null;
+    }
 }

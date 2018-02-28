@@ -7,9 +7,14 @@ $db          = Urge::requireDatabase();
 $twig        = Urge::requireTwig();
 $userid      = User::getLoggedInUserid();
 
-$searchResults = Video::searchVideos($db, $searchQuery);
-if (!isset($searchResults)){
-    $searchResults = "no";
+$videoResults = Video::searchVideos($db, $searchQuery);
+if (!isset($videoResults)){
+    $videoResults = "no";
+}
+
+$playlistResults = Playlist::searchPlaylist($db, $searchQuery);
+if (!isset($playlistResults)){
+    $playlistResults = "no";
 }
 
 $user = null;
@@ -21,5 +26,6 @@ echo $twig->render('search.html', array(
     'title' => 'home',
     'userid' => $userid,
     'user' => $user,
-    'searchResults' => $searchResults,
+    'videoResults' => $videoResults,
+    'playlistResults' => $playlistResults,
 ));

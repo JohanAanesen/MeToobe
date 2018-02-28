@@ -283,19 +283,18 @@ class Video {
     public static function searchVideos($db, $q){
         try{
             //SQL Injection SAFE query method:
-            $query = "SELECT video.id, video.name FROM video
+            $query = "SELECT video.id, video.name, video.description FROM video
                       INNER JOIN user ON video.userid = user.id
                       WHERE video.name LIKE (?)
+                      OR video.description LIKE (?)
                       OR user.fullname LIKE (?)
                       OR user.email LIKE (?)
-                      OR video.course LIKE (?)
-                      OR video.topic LIKE (?)
                       LIMIT 10";
 
             //adding the wildcard characters to query word
             $qWild = "%".$q."%";
 
-            $param = array($qWild, $qWild, $qWild, $qWild, $qWild);
+            $param = array($qWild, $qWild, $qWild, $qWild);
             $stmt = $db->prepare($query);
             $stmt->execute($param);
 
