@@ -61,6 +61,7 @@
                 <div style="margin-bottom: 1px; margin-top: 10%;">
                     <form action="/php/playlistSwap.php" method="POST">
                         <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
+                        <input type="hidden" name="video-id" value="{{ video.id }}"/>
                         <input type="hidden" name="video-rank" value="{{ video.rank }}"/>
                         <button type="submit" name="up" value="video.id" class="btn btn-secondary btn-sm">
                             <img src="/icon/arrow-up.png" aria-hidden="true">
@@ -80,6 +81,7 @@
                 <div>
                     <form action="/php/playlistSwap.php" method="POST">
                         <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
+                        <input type="hidden" name="video-id" value="{{ video.id }}"/>
                         <input type="hidden" name="video-rank" value="{{ video.rank }}"/>
                         <button type="submit" name="down" value="{{ video.id }}" class="button btn btn-secondary btn-sm">
                             <img src="/icon/arrow-down.png" aria-hidden="true">

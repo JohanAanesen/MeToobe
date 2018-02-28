@@ -194,7 +194,7 @@ class Playlist {
         }
 
         } catch (PDOException $e) {
-            print_r($e->errorInfo); 
+            print_r($e);
             $db->rollBack(); 
             return;
         }
@@ -237,8 +237,6 @@ class Playlist {
      * @return int|null
      */
     public static function updateVideoRanks($db, $playlistid, $videoRank){
-        $db->beginTransaction();
-
         $currentRank = null;
 
         try{
@@ -254,7 +252,6 @@ class Playlist {
 
             //if video is the only one or is at the end of the 'array', no swap needed.
             if($videoRank == $playlistLength){
-                $db->rollBack();
                 return $videoRank;
             }
 
@@ -272,12 +269,10 @@ class Playlist {
             }
 
         } catch (PDOException $e) {
-            print_r($e->errorInfo);
-            $db->rollBack();
+            print_r($e);
             return null;
         }
 
-        $db->commit();
         return $currentRank;
     }
 
