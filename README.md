@@ -15,5 +15,5 @@ Husk å velge å beholde rettigheter fra det originale repositoriet når dere op
 Oppgaveteksten ligger i [Wikien til det originale repositoriet](https://bitbucket.org/okolloen/imt2291-project1-spring2018/wiki/).
 
 # Rapporten #
-Visning - https://hackmd.io/s/BJtlNiGdf - 28.02.18 <br>
-Edit mode - https://hackmd.io/KbBMDMGMHYGYEMC0A2ARgFnI9zzEfMtEgIwAcADGctWQJwWjRA==?both - 28.02.18 <br>
+* Visning - https://hackmd.io/s/BJtlNiGdf - 28.02.18 
+* Edit mode - https://hackmd.io/KbBMDMGMHYGYEMC0A2ARgFnI9zzEfMtEgIwAcADGctWQJwWjRA==?both - 28.02.18 
