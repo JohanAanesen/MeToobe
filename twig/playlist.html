@@ -5,6 +5,23 @@
 <div class="container-fluid border-top" style="margin-bottom: 10px;"></div>
 <div class="container">
 
+    <div class="row col">
+        <div class="col-md-11">
+            <p style="color: #aaaaaa;"> {{ playlist.id }} </p>
+        </div>
+        <div class="col-md-1 float-right">
+            {% if userid %}
+            <form action="/php/playlistSubscribe.php" id="playlistSubscribe" method="post">
+                <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
+                {% if subscribed %}
+                <input type="button" class="btn btn-secondary" disabled value="Subscribed!" form="playlistSubscribe"/>
+                {% else %}
+                <input type="submit" class="btn btn-success" value="Subscribe" form="playlistSubscribe"/>
+                {% endif %}
+            </form>
+            {% endif %}
+        </div>
+    </div>
 
     {% if createMode %}
     <form id="createPlaylist" method="post" action="/php/playlistCreate.php" enctype="multipart/form-data">
@@ -12,7 +29,6 @@
     <form id="updatePlaylist" method="post" action="/php/playlistUpdate.php" enctype="multipart/form-data">
     {% endif %}
 
-        <p style="color: #aaaaaa;"> {{ playlist.id }} </p>
         <input type="text" class="form-control" id="playlist-title" name="playlist-title" value="{{ playlist.title }}"  placeholder="{% if not createMode %}{{ playlist.title }}{% else %}Title{% endif %}" required {% if not createMode and not editMode %} readonly {% endif %}><br>
 
         <input type="text" class="form-control" id="playlist-course" name="playlist-course" value="{{ playlist.course }}"  placeholder="{% if not createMode %}{{ playlist.course }}{% else %}Course{% endif %}" {% if not createMode and not editMode %} readonly {% endif %}><br>
@@ -40,9 +56,7 @@
 
 
         <hr>
-        <div class="col">
-            <span> {{ video.rank }}</span>
-        </div>
+        <div class="col"><span> {{ video.rank }}</span></div>
         <div class="row">
             <div class="col-md-3">
                 <a href="/video?id={{ video.id }}"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>

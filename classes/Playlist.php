@@ -255,6 +255,11 @@ class Playlist {
         return $currentRank;
     }
 
+    /**
+     * @param $db
+     * @param $playlistid
+     * @return null
+     */
     public static function getPlaylistLength($db, $playlistid){
         try{
             //retrieves the "length" of playlist
@@ -299,6 +304,11 @@ class Playlist {
         return null;
     }
 
+    /**
+     * @param $db
+     * @param $q
+     * @return array|null
+     */
     public static function searchPlaylist($db, $q){
         try{
             //SQL Injection SAFE query method:
@@ -331,4 +341,29 @@ class Playlist {
         }
         return null;
     }
+
+    public static function subscribePlaylist($db, $userid, $playlistid){
+        $sql = "INSERT INTO usersubscribe (userid, playlistid) VALUES (?, ?)";
+        $stmt = $db->prepare($sql);
+        $param = array($userid, $playlistid);
+        $stmt->execute($param);
+
+        if ($stmt->rowCount() !== 1) {
+            return false;
+        }
+        return true;
+    }
+
+    public static function checkIfSubscribed($db, $userid, $playlistid){
+        $sql = "SELECT * FROM usersubscribe WHERE userid = ? AND playlistid = ? LIMIT 1";
+        $stmt = $db->prepare($sql);
+        $param = array($userid, $playlistid);
+        $stmt->execute($param);
+
+        if ($stmt->rowCount() == 1) {
+            return true;
+        }
+        return false;
+    }
+
 }
