@@ -340,4 +340,28 @@ class Video {
         }
         return null;
     }
+
+    public static function getSubscribedVideos($db, $userid){
+        try{
+            //SQL Injection SAFE query method:
+            $query = "SELECT video.id, video.name, video.thumbnail FROM video
+                      INNER JOIN videoplaylist ON video.id = videoplaylist.videoid
+                      INNER JOIN playlist ON videoplaylist.playlistid = playlist.id
+                      INNER JOIN usersubscribe ON playlist.id = usersubscribe.playlistid
+                      INNER JOIN user ON usersubscribe.userid = user.id
+                      WHERE user.id LIKE (?)
+                      ORDER BY video.time DESC
+                      LIMIT 6";
+            $param = array($userid);
+            $stmt = $db->prepare($query);
+            $stmt->execute($param);
+
+            if ($stmt->rowCount()>0) {
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
+        }catch(PDOException $ex){
+            echo "Something went wrong".$ex; //Error message
+        }
+        return null;
+    }
 };

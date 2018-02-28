@@ -14,9 +14,13 @@
             <form action="/php/playlistSubscribe.php" id="playlistSubscribe" method="post">
                 <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
                 {% if subscribed %}
-                <input type="button" class="btn btn-secondary" disabled value="Subscribed!" form="playlistSubscribe"/>
+                <button type="submit" name="subscribe" class="btn btn-secondary" value="no" form="playlistSubscribe">
+                    Unsubscribe
+                </button>
                 {% else %}
-                <input type="submit" class="btn btn-success" value="Subscribe" form="playlistSubscribe"/>
+                <button type="submit" name="subscribe" class="btn btn-success" value="yes" form="playlistSubscribe">
+                    Subscribe!
+                </button>
                 {% endif %}
             </form>
             {% endif %}

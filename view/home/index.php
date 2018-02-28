@@ -10,13 +10,20 @@ $user = null;
 if ($userid) {
     $user = User::get($db, $userid);
     if (!isset($user))
-        Urge::gotoError('Server encountered an error. It should be possible to get user information from logged in user.');
+        Urge::gotoError(500,'Server encountered an error. It should be possible to get user information from logged in user.');
 }
 
+$subscribedVideos = null;
+if($userid){
+    $subscribedVideos = Video::getSubscribedVideos($db, $userid);
+}
 $newVideos = Video::getNewVideos($db);
 
 if (!empty($newVideos))
     $newVideos = Urge::encodeThumbnailsToBase64($newVideos);
+
+if (!empty($subscribedVideos))
+    $subscribedVideos = Urge::encodeThumbnailsToBase64($subscribedVideos);
 
 echo $twig->render('home.html', array(
     'title' => 'home',
@@ -25,6 +32,7 @@ echo $twig->render('home.html', array(
     'wannabeUsers' => User::getWannabeTeachers($db),
     'admin' => User::isAdmin(),
     'newVideos' => $newVideos,
+    'subscribedVideos' => $subscribedVideos,
 ));
 
 

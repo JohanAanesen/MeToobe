@@ -55,32 +55,22 @@
         
         {% else %}
         
-        <h1>Your Subscriptions</h1>
+        <h1>New videoes from your subscriptions</h1>
         <div class="row my-md-1">
-            <div class="col-md-2">
-                <h2 class="lead text-limit">1234567890123456789012345678901234567890</h2>
-                <a href="/video"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+            {% if subscribedVideos is empty %}
+            <div class="col-md-12">
+                <h2 class="other-title">No videos available.</h2>
             </div>
+            {% else %}
+            {% for video in subscribedVideos %}
             <div class="col-md-2">
-                <h2 class="lead text-limit">Video 2</h2>
-                <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+                <h2 class="lead text-limit">{{ video['name'] }}</h2>
+                <a href="/video?id={{ video['id'] }}">
+                    {% include "_thumbnail.html" with { thumbnail: video['thumbnail'] } %}
+                </a>
             </div>
-            <div class="col-md-2">
-                <h2 class="lead text-limit">Video 3</h2>
-                <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
-            </div>
-            <div class="col-md-2">
-                <h2 class="lead text-limit">Video 4</h2>
-                <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
-            </div>
-            <div class="col-md-2">
-                <h2 class="lead text-limit">Video 5</h2>
-                <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
-            </div>
-            <div class="col-md-2">
-                <h2 class="lead text-limit">Video 6</h2>
-                <a href="/video"> <img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
-            </div>
+            {% endfor %}
+            {% endif %}
         </div>
         {% endif %}
     </div>

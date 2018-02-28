@@ -354,6 +354,19 @@ class Playlist {
         return true;
     }
 
+    public static function unsubscribePlaylist($db, $userid, $playlistid){
+       try{
+        $sql = "DELETE FROM usersubscribe WHERE userid = ? AND playlistid = ? LIMIT 1";
+        $stmt = $db->prepare($sql);
+        $param = array($userid, $playlistid);
+        $stmt->execute($param);
+        }catch (PDOException $e){
+            print_r($e);
+            return false;
+        }
+        return true;
+    }
+
     public static function checkIfSubscribed($db, $userid, $playlistid){
         $sql = "SELECT * FROM usersubscribe WHERE userid = ? AND playlistid = ? LIMIT 1";
         $stmt = $db->prepare($sql);
