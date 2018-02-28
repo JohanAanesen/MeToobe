@@ -16,7 +16,6 @@ class FunctionalTests extends TestCase {
   protected $baseURL = "http://localhost/view/playlist/index.php";
   protected $accountURL = "http://localhost/user?id=1337ADMIN1337";
   protected $signInURL = "http://localhost/view/login/index.php";
-  protected $rootURL = "http://localhost";
   protected $session;
   protected $db;
 
@@ -103,6 +102,8 @@ class FunctionalTests extends TestCase {
     }else{
       $this->assertTrue(false, 'No result data found');
     }
+
+  FunctionalTests::tearDownPlaylist($this);
   }
 /*
   public function testAddThreeVideosToPlaylist(){
@@ -113,18 +114,18 @@ class FunctionalTests extends TestCase {
   }
   */
 
-  // This should not be a test, but I don't know how else to do it and it's 03:10 now 
-  public function testTearDownPlaylist(){
-    $this->session->visit($this->accountURL);
-    $page = $this->session->getPage();
+  // This should not be a test, but I don't know how else to do it and it's 03:10 now
+  public static function tearDownPlaylist($this2){
+    $this2->session->visit($this2->accountURL);
+    $page = $this2->session->getPage();
 
     $idWithURL = $page->find('xpath', '//div[@id="playlistInfo"]/a/@href');
     if($idWithURL != null){
       $id = str_replace('/playlist?id=', '', $idWithURL->getText());
-      $this->db = DB::getDBConnection();
-      Playlist::delete($this->db, $id);
+      $this2->db = DB::getDBConnection();
+      Playlist::delete($this2->db, $id);
     }else{
-      $this->assertTrue(false, 'No result data found');
+      $this2->assertTrue(false, 'No result data found');
     }
   }
 
