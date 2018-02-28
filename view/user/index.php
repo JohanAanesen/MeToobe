@@ -22,6 +22,12 @@ if($userStats['id'] == $userid){
     $owner = true;
 }
 
+if (!empty($userVideos))
+    $userVideos = Urge::encodeThumbnailsToBase64($userVideos);
+
+if (!empty($userPlaylists))
+    $userPlaylists = Urge::encodeThumbnailsToBase64($userPlaylists);
+
 echo $twig->render('user.html', array(
     'title' => 'home',
     'userid' => $userid,

@@ -54,8 +54,7 @@
         <p><a class="btn btn-success btn-lg" href="/login" role="button">Register »</a></p> 
         
         {% else %}
-        
-        <h1>New videoes from your subscriptions</h1>
+        <h2>New videoes from your subscriptions</h2>
         <div class="row my-md-1">
             {% if subscribedVideos is empty %}
             <div class="col-md-12">
@@ -72,6 +71,27 @@
             {% endfor %}
             {% endif %}
         </div>
+
+        <hr>
+        <h2>Your subscriptions</h2>
+        <div class="row my-md-1">
+            {% if subscribedVideos is empty %}
+            <div class="col-md-12">
+                <h2 class="other-title">No videos available.</h2>
+            </div>
+            {% else %}
+            {% for playlist in subscribedPlaylists %}
+            <div class="col-md-3">
+                <h2 class="lead text-limit">{{ playlist['title'] }}</h2>
+                <a href="/playlist?id={{ playlist['id'] }}">
+                    {% include "_thumbnail.html" with { thumbnail: playlist['thumbnail'] } %}
+                </a>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+        
+
         {% endif %}
     </div>
 </div>

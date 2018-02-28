@@ -26,36 +26,42 @@
             {% endif %}
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-6">
+            {% if createMode %}
+            <form id="createPlaylist" method="post" action="/php/playlistCreate.php" enctype="multipart/form-data">
+            {% elseif editMode %}
+            <form id="updatePlaylist" method="post" action="/php/playlistUpdate.php" enctype="multipart/form-data">
+            {% endif %}
 
-    {% if createMode %}
-    <form id="createPlaylist" method="post" action="/php/playlistCreate.php" enctype="multipart/form-data">
-    {% elseif editMode %}
-    <form id="updatePlaylist" method="post" action="/php/playlistUpdate.php" enctype="multipart/form-data">
-    {% endif %}
+                <input type="text" class="form-control" id="playlist-title" name="playlist-title" value="{{ playlist.title }}"  placeholder="{% if not createMode %}{{ playlist.title }}{% else %}Title{% endif %}" required {% if not createMode and not editMode %} readonly {% endif %}><br>
 
-        <input type="text" class="form-control" id="playlist-title" name="playlist-title" value="{{ playlist.title }}"  placeholder="{% if not createMode %}{{ playlist.title }}{% else %}Title{% endif %}" required {% if not createMode and not editMode %} readonly {% endif %}><br>
+                <input type="text" class="form-control" id="playlist-course" name="playlist-course" value="{{ playlist.course }}"  placeholder="{% if not createMode %}{{ playlist.course }}{% else %}Course{% endif %}" {% if not createMode and not editMode %} readonly {% endif %}><br>
 
-        <input type="text" class="form-control" id="playlist-course" name="playlist-course" value="{{ playlist.course }}"  placeholder="{% if not createMode %}{{ playlist.course }}{% else %}Course{% endif %}" {% if not createMode and not editMode %} readonly {% endif %}><br>
+                <input type="text" class="form-control" id="playlist-topic" name="playlist-topic" value="{{ playlist.topic }}"  placeholder="{% if not createMode %}{{ playlist.topic }}{% else %}Topic{% endif %}" {% if not createMode and not editMode %} readonly {% endif %}><br>
 
-        <input type="text" class="form-control" id="playlist-topic" name="playlist-topic" value="{{ playlist.topic }}"  placeholder="{% if not createMode %}{{ playlist.topic }}{% else %}Topic{% endif %}" {% if not createMode and not editMode %} readonly {% endif %}><br>
+                <!-- need the playlist id when updating the site, thus hidden. -->
+                <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
 
-        <!-- need the playlist id when updating the site, thus hidden. -->
-        <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
+                {% if createMode or editMode %}
+                <label for="fileuploader"><h4 class="other-title">Upload <span class="text-success">Thumbnail</span></h4></label>
+                <div class="custom-file" id="fileuploader">
+                    <input type="file" class="custom-file-input" id="customFileThumbnail" name="file-thumbnail" accept="image/*">
+                    <label class="custom-file-label" for="customFileThumbnail">
+                        <span class="file-custom" data-content-value="Choose Thumbnail..."></span>
+                    </label>
+                </div>
+                <br><br>
+                {% endif %}
 
-        {% if createMode %}
-        <label for="fileuploader"><h4 class="other-title">Upload <span class="text-success">Thumbnail</span></h4></label>
-        <div class="custom-file" id="fileuploader">
-            <input type="file" class="custom-file-input" id="customFileThumbnail" name="file-thumbnail" accept="image/*">
-            <label class="custom-file-label" for="customFileThumbnail">
-                <span class="file-custom" data-content-value="Choose Thumbnail..."></span>
-            </label>
+                <textarea type="text" class="form-control" rows="4" id="playlist-description" placeholder="Playlist Description" name="playlist-description" {% if not createMode and not editMode %} readonly {% endif %}>{{ playlist.description }}</textarea>
+
+            </form>
         </div>
-        {% endif %}
-
-        <textarea type="text" class="form-control" rows="4" id="playlist-description" placeholder="Playlist Description" name="playlist-description" {% if not createMode and not editMode %} readonly {% endif %}>{{ playlist.description }}</textarea>
-
-    </form>
-
+        <div class="col-md-6">
+            {% include "_thumbnail.html" with { thumbnail: playlist['thumbnail'] } %}
+        </div>
+    </div>
         {% for video in videos %}
 
 
@@ -63,7 +69,9 @@
         <div class="col"><span> {{ video.rank }}</span></div>
         <div class="row">
             <div class="col-md-3">
-                <a href="/video?id={{ video.id }}"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+                <a href="/video?id={{ video['id'] }}">
+                    {% include "_thumbnail.html" with { thumbnail: video['thumbnail'] } %}
+                </a>
             </div>
             <div class="col-md-8">
                 <div class="col-md-8">

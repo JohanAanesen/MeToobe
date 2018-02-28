@@ -319,7 +319,7 @@ class Video {
     public static function getUsersVideos($db, $userid){
         try{
             //SQL Injection SAFE query method:
-            $query = "SELECT video.id, video.name FROM video
+            $query = "SELECT video.id, video.name, video.thumbnail FROM video
                       WHERE video.userid LIKE (?)
                       LIMIT 10";
 
