@@ -132,11 +132,22 @@ class Playlist {
      * @param videoid - video 
      * @throws PDOException 
      */
-    public static function removeVideo($db, $id, $videoid, $rank) {
-        $sql = "DELETE FROM VideoPlaylist WHERE playlistid = ? AND videoid = ? AND rank = ? LIMIT 1";
-        $stmt = $db->prepare($sql);
-        $param = array($id, $videoid, $rank);
-        $stmt->execute($param);
+    public static function removeVideo($db, $playlistid, $videoid, $rank) {
+        $db->beginTransaction();
+
+        try{
+            $sql = "DELETE FROM VideoPlaylist WHERE playlistid = ? AND videoid = ? AND rank = ?";
+            $stmt = $db->prepare($sql);
+            $param = array($playlistid, $videoid, $rank);
+            $stmt->execute($param);
+        }catch (PDOException $e){
+            print_r($e);
+            $db->rollBack();
+            return;
+        }
+
+        $db->commit();
+        return;
     }
 
     /* 
@@ -149,53 +160,33 @@ class Playlist {
      * @doc https://stackoverflow.com/questions/2810606/sql-swap-primary-key-values - 11.02.18
      * @throws PDOException     
      */
-    public static function swapVideoRank($db, $id, $videoid, $otherVideoid) {
+    public static function swapVideoRank($db, $playlistid, $videoid, $otherVideoid, $rank, $otherRank) {
         
         $db->beginTransaction();
 
         try {
 
-        $sql = "SELECT * FROM VideoPlaylist WHERE videoid = ?";
-        $stmt = $db->prepare($sql);
-        $param = array($videoid);
-        $stmt->execute($param);
-        $videoPlaylist = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (empty($videoPlaylist)){
-            $db->rollBack();
-            return false;
-        }
-
-        $sql = "SELECT * FROM VideoPlaylist WHERE videoid = ?";
-        $stmt = $db->prepare($sql);
-        $param = array($otherVideoid);
-        $stmt->execute($param);
-        $otherVideoPlaylist = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (empty($otherVideoPlaylist)){
-            $db->rollBack();
-            return false;
-        }
-
-        $sql = "UPDATE VideoPlaylist SET rank = ? WHERE videoid = ?";
-        $stmt = $db->prepare($sql);
-        $param = array($videoPlaylist['rank'], $otherVideoid);
-        $stmt->execute($param);
-        if ($stmt->rowCount() !== 1) {
-            $db->rollBack();
-            return false;
-        }
-
-        $sql = "UPDATE VideoPlaylist SET rank = ? WHERE videoid = ?";
-        $stmt = $db->prepare($sql);
-        $param = array($otherVideoPlaylist['rank'], $videoid);
-        $stmt->execute($param);
-        if ($stmt->rowCount() !== 1) {
-            $db->rollBack();
-            return false;
-        }
+            $sql = "UPDATE VideoPlaylist SET rank = ? WHERE videoid = ? AND playlistid = ? AND rank = ?";
+            $stmt = $db->prepare($sql);
+            $param = array($rank, $otherVideoid, $playlistid, $otherRank);
+            $stmt->execute($param);
 
         } catch (PDOException $e) {
             print_r($e);
-            $db->rollBack(); 
+            $db->rollBack();
+            return;
+        }
+
+        try{
+            
+            $sql = "UPDATE VideoPlaylist SET rank = ? WHERE videoid = ? AND playlistid = ? AND rank = ?";
+            $stmt = $db->prepare($sql);
+            $param = array($otherRank, $videoid, $playlistid, $rank);
+            $stmt->execute($param);
+
+        } catch (PDOException $e) {
+            print_r($e);
+            $db->rollBack();
             return;
         }
 
@@ -236,7 +227,7 @@ class Playlist {
      * @param $videoRank
      * @return int|null
      */
-    public static function updateVideoRanks($db, $playlistid, $videoRank){
+    public static function updateVideoRanks($db, $playlistid, $videoid, $videoRank){
         $currentRank = null;
 
         try{
@@ -248,29 +239,30 @@ class Playlist {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
             $playlistLength = $row['antall'];
-            $playlistLength--; //remove 1 because we count from 0
-
-            //if video is the only one or is at the end of the 'array', no swap needed.
-            if($videoRank == $playlistLength){
-                return $videoRank;
-            }
-
-            //iterates from the current rank towards the end of playlist and swaps ranks
-            if($videoRank < $playlistLength) {
-                for ($i = $videoRank; $i < $playlistLength; $i++) {
-                    $currentVideoID = self::getVideoIdByRankPlaylist($db, $i, $playlistid);
-                    $nextVideoID = self::getVideoIdByRankPlaylist($db, $i+1, $playlistid);
-
-                    if($currentVideoID != $nextVideoID) {
-                        self::swapVideoRank($db, $playlistid, $currentVideoID, $nextVideoID);
-                    }
-                    $currentRank = $i+1;
-                }
-            }
 
         } catch (PDOException $e) {
             print_r($e);
             return null;
+        }
+
+        //if video is the only one or is at the end of the 'array', no swap needed.
+        if($videoRank == $playlistLength-1){
+            return $videoRank;
+        }
+
+        $currentRank = $videoRank;
+        //iterates from the current rank towards the end of playlist and swaps ranks
+        if($videoRank < $playlistLength-1) {
+            for ($i = $videoRank; $i < $playlistLength; $i++) {
+                $nextVideoID = self::getVideoIdByRankPlaylist($db, $i+1, $playlistid);
+                echo $i."-";
+                if($videoid != $nextVideoID) {
+                    if(self::swapVideoRank($db, $playlistid, $videoid, $nextVideoID, $i, $i+1)){
+                        echo "success";
+                    }
+                }
+                $currentRank = $i+1;
+            }
         }
 
         return $currentRank;
