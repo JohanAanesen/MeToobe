@@ -59,11 +59,11 @@
             {% if editMode %}
             <div class="col-md-1 text-center">
                 <div style="margin-bottom: 1px; margin-top: 10%;">
-                    <form action="/php/playlistSwap.php" method="POST">
-                        <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
-                        <input type="hidden" name="video-id" value="{{ video.id }}"/>
-                        <input type="hidden" name="video-rank" value="{{ video.rank }}"/>
-                        <button type="submit" name="up" value="video.id" class="btn btn-secondary btn-sm">
+                    <form action="/php/playlistSwap.php" id="swapUp{{ video.id }}" method="POST">
+                        <input type="hidden" name="playlist-id" form="swapUp{{ video.id }}" value="{{ playlist.id }}"/>
+                        <input type="hidden" name="video-id" form="swapUp{{ video.id }}" value="{{ video.id }}"/>
+                        <input type="hidden" name="video-rank" form="swapUp{{ video.id }}" value="{{ video.rank }}"/>
+                        <button type="submit" name="swap" form="swapUp{{ video.id }}" value="up" class="btn btn-secondary btn-sm">
                             <img src="/icon/arrow-up.png" aria-hidden="true">
                         </button>
                     </form>
@@ -79,11 +79,11 @@
                     </form>
                 </div>
                 <div>
-                    <form action="/php/playlistSwap.php" id="swapDown" method="POST">
-                        <input type="hidden" form="swapDown" name="playlist-id" value="{{ playlist.id }}"/>
-                        <input type="hidden" form="swapDown" name="video-id" value="{{ video.id }}"/>
-                        <input type="hidden" form="swapDown" name="video-rank" value="{{ video.rank }}"/>
-                        <button type="submit" form="swapDown" name="down" value="{{ video.id }}" class="button btn btn-secondary btn-sm">
+                    <form action="/php/playlistSwap.php" id="swapDown{{ video.id }}" method="POST">
+                        <input type="hidden" name="playlist-id" form="swapDown{{ video.id }}" value="{{ playlist.id }}"/>
+                        <input type="hidden" name="video-id" form="swapDown{{ video.id }}" value="{{ video.id }}"/>
+                        <input type="hidden" name="video-rank" form="swapDown{{ video.id }}" value="{{ video.rank }}"/>
+                        <button type="submit" name="swap" form="swapDown{{ video.id }}" value="down" class="button btn btn-secondary btn-sm">
                             <img src="/icon/arrow-down.png" aria-hidden="true">
                         </button>
                     </form>

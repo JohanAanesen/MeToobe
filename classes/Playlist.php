@@ -178,7 +178,7 @@ class Playlist {
         }
 
         try{
-            
+
             $sql = "UPDATE VideoPlaylist SET rank = ? WHERE videoid = ? AND playlistid = ? AND rank = ?";
             $stmt = $db->prepare($sql);
             $param = array($otherRank, $videoid, $playlistid, $rank);
@@ -230,20 +230,7 @@ class Playlist {
     public static function updateVideoRanks($db, $playlistid, $videoid, $videoRank){
         $currentRank = null;
 
-        try{
-            //retrieves the "length" of playlist
-            $sql = "SELECT COUNT(videoid) AS antall FROM VideoPlaylist WHERE playlistid = ?";
-            $stmt = $db->prepare($sql);
-            $param = array($playlistid);
-            $stmt->execute($param);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            $playlistLength = $row['antall'];
-
-        } catch (PDOException $e) {
-            print_r($e);
-            return null;
-        }
+        $playlistLength = self::getPlaylistLength($db, $playlistid);
 
         //if video is the only one or is at the end of the 'array', no swap needed.
         if($videoRank == $playlistLength-1){
@@ -266,6 +253,27 @@ class Playlist {
         }
 
         return $currentRank;
+    }
+
+    public static function getPlaylistLength($db, $playlistid){
+        try{
+            //retrieves the "length" of playlist
+            $sql = "SELECT COUNT(videoid) AS antall FROM VideoPlaylist WHERE playlistid = ?";
+            $stmt = $db->prepare($sql);
+            $param = array($playlistid);
+            $stmt->execute($param);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if(isset($row['antall'])){
+                return $row['antall'];
+            }
+
+
+        } catch (PDOException $e) {
+            print_r($e);
+            return null;
+        }
+        return null;
     }
 
     /**
