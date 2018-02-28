@@ -15,9 +15,12 @@
         <p style="color: #aaaaaa;"> {{ playlist.id }} </p>
         <input type="text" class="form-control" id="playlist-title" name="playlist-title" value="{{ playlist.title }}"  placeholder="{% if not createMode %}{{ playlist.title }}{% else %}Title{% endif %}" required {% if not createMode and not editMode %} readonly {% endif %}><br>
 
-        <input type="text" class="form-control" id="playlist-course" name="playlist-course" value="{{ playlist.course }}"  placeholder="{% if not createMode %}{{ playlist.course }}{% else %}Course{% endif %}" required {% if not createMode and not editMode %} readonly {% endif %}><br>
+        <input type="text" class="form-control" id="playlist-course" name="playlist-course" value="{{ playlist.course }}"  placeholder="{% if not createMode %}{{ playlist.course }}{% else %}Course{% endif %}" {% if not createMode and not editMode %} readonly {% endif %}><br>
 
-        <input type="text" class="form-control" id="playlist-topic" name="playlist-topic" value="{{ playlist.topic }}"  placeholder="{% if not createMode %}{{ playlist.topic }}{% else %}Topic{% endif %}" required {% if not createMode and not editMode %} readonly {% endif %}><br>
+        <input type="text" class="form-control" id="playlist-topic" name="playlist-topic" value="{{ playlist.topic }}"  placeholder="{% if not createMode %}{{ playlist.topic }}{% else %}Topic{% endif %}" {% if not createMode and not editMode %} readonly {% endif %}><br>
+
+        <!-- need the playlist id when updating the site, thus hidden. -->
+        <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
 
         {% if createMode %}
         <label for="fileuploader"><h4 class="other-title">Upload <span class="text-success">Thumbnail</span></h4></label>
@@ -31,6 +34,7 @@
 
         <textarea type="text" class="form-control" rows="4" id="playlist-description" placeholder="Playlist Description" name="playlist-description" {% if not createMode and not editMode %} readonly {% endif %}>{{ playlist.description }}</textarea>
 
+    </form>
 
         {% for video in videos %}
 
@@ -56,6 +60,7 @@
             <div class="col-md-1 text-center">
                 <div style="margin-bottom: 1px; margin-top: 10%;">
                     <form action="/php/playlistSwap.php" method="POST">
+                        <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
                         <input type="hidden" name="video-rank" value="{{ video.rank }}"/>
                         <button type="submit" name="up" value="video.id" class="btn btn-secondary btn-sm">
                             <img src="/icon/arrow-up.png" aria-hidden="true">
@@ -74,6 +79,7 @@
                 </div>
                 <div>
                     <form action="/php/playlistSwap.php" method="POST">
+                        <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
                         <input type="hidden" name="video-rank" value="{{ video.rank }}"/>
                         <button type="submit" name="down" value="{{ video.id }}" class="button btn btn-secondary btn-sm">
                             <img src="/icon/arrow-down.png" aria-hidden="true">
@@ -88,8 +94,7 @@
         {% endfor %}
 
         <br>
-        <!-- need the playlist id when updating the site, thus hidden. -->
-        <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
+
         {% if createMode %}
         <input type="submit" class="btn btn-success" value="Create" form="createPlaylist" />
         {% elseif editMode %}
@@ -98,12 +103,15 @@
                 <input type="submit" class="btn btn-success" value="Update" form="updatePlaylist" />
             </div>
             <div class="col col-md-1">
-                <input type="submit" class="btn btn-danger" value="Delete" formaction="/php/playlistDelete.php"/>
+                <form action="/php/playlistDelete.php" method="post">
+                    <input type="hidden" name="playlist-id" value="{{ playlist.id }}"/>
+                    <input type="submit" class="btn btn-danger" value="Delete" formaction="/php/playlistDelete.php"/>
+                </form>
+
             </div>
         </div>
 
         {% endif %}
-      </form>
 
 </div>
 

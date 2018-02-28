@@ -30,7 +30,7 @@ if($newRank != null){
     Playlist::removeVideo($db, $playlistid, $videoid, $newRank);
     header('Location: /playlist?id='.$playlistid);
 }else{
-    Urge::gotoError(500, "Something went wrong removing the video.");
+   // Urge::gotoError(500, "Something went wrong removing the video.");
 }
 
 

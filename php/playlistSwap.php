@@ -6,3 +6,4 @@ $userid = Urge::requireLoggedInUser();
 $db     = Urge::requireDatabase();
 
 
+list($playlistid, $videoid, $videoRank) = Urge::requireParameterArray('playlist-id','video-id','video-rank');
