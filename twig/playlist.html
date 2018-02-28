@@ -5,11 +5,11 @@
 <div class="container-fluid border-top" style="margin-bottom: 10px;"></div>
 <div class="container">
 
-    
+
     {% if createMode %}
-    <form id="createPlaylist" method="post" action="/php/playlistCreate.php" enctype="multipart/form-data"/>
+    <form id="createPlaylist" method="post" action="/php/playlistCreate.php" enctype="multipart/form-data">
     {% elseif editMode %}
-    <form id="updatePlaylist" method="post"  action="/php/playlistUpdate.php" enctype="multipart/form-data" />
+    <form id="updatePlaylist" method="post" action="/php/playlistUpdate.php" enctype="multipart/form-data">
     {% endif %}
 
         <p style="color: #aaaaaa;"> {{ playlist.id }} </p>
@@ -31,7 +31,7 @@
 
         <textarea type="text" class="form-control" rows="4" id="playlist-description" placeholder="Playlist Description" name="playlist-description" {% if not createMode and not editMode %} readonly {% endif %}>{{ playlist.description }}</textarea>
 
-            
+
         {% for video in videos %}
 
 
@@ -103,6 +103,7 @@
         </div>
 
         {% endif %}
+      </form>
 
 </div>
 

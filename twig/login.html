@@ -16,7 +16,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6 col-sm-12 form-line">
-            <form action="/php/userLogin.php" method="post" class="form-signin form-group">
+            <form action="/php/userLogin.php" method="post" id="signInUser" class="form-signin form-group">
                 <h2 class="form-signin-heading text-white">Sign in</h2>
                 {% if  email %}
                 <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required value="{{ email }}"   >
@@ -40,7 +40,7 @@
         </div>
 
         <div class="col-md-6 col-sm-12">
-            <form action="/php/userRegister.php" method="post" class="form-signin form-group">
+            <form action="/php/userRegister.php" method="post" id="registerUser" class="form-signin form-group">
                 <h2 class="form-signin-heading text-white">Register</h2>
                 <input type="text" name="newname" id="registerUsername" class="form-control" placeholder="Full name" required="" autofocus=""><br>
                 <input type="email" name="newemail" id="registerEmail" class="form-control" placeholder="Email address" required="">

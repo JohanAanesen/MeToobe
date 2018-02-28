@@ -58,7 +58,7 @@
             </div>
             {% else %}
             {% for playlist in userPlaylists %}
-            <div class="col-md-8">
+            <div id="playlistInfo" class="col-md-8">
                 <h2 class="lead text-limit">{{ playlist['title'] }}</h2>
                 <a href="/playlist?id={{ playlist['id'] }}"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
             </div>
