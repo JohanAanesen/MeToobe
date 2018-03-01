@@ -399,7 +399,7 @@ class Video {
         return null;
     }
 
-    /**
+    /** Updates the Video title and description
      * @param $db
      * @param $videoid
      * @param $newName

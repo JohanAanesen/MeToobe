@@ -2,7 +2,7 @@
 
 class Playlist {
 
-    /* 
+    /**
      * @param db - PDO connection object
      * @param id - playlist id
      * @return playlist - single playlist
@@ -16,10 +16,10 @@ class Playlist {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-     /* 
+     /**
      * @param db - PDO connection object
      * @param id - playlist id
-     * @return videos - array of videos connected to the playlist id
+     * @return array videos - array of videos connected to the playlist id
      */
     public static function getVideos($db, $id, $orderByRank=false) {
         $sql = "SELECT * FROM VideoPlaylist
@@ -57,13 +57,15 @@ class Playlist {
         return null;
     }
 
-    /* 
-     * @requires login
-     * @param db - PDO connection object
-     * @param userid - user who creates the playlist
-     * @param title - title of playlist
-     * @param description - description of playlist
-     * @return playlist id
+    /**
+     * @param $db
+     * @param $userid
+     * @param $title
+     * @param string $description
+     * @param string $course
+     * @param string $topic
+     * @param string $thumbnail
+     * @return int|string
      */
     public static function create($db, $userid, $title, $description="", $course="", $topic="", $thumbnail="") {
 
@@ -80,12 +82,13 @@ class Playlist {
         return $id;
     }
 
-    /* 
+    /**
      * @requires login
      * @param db - PDO connection object
      * @param id - id of playlist
      * @param title - title of playlist
      * @param description - description of playlist
+     * @return int
      */
     public static function update($db, $id, $title, $description, $course, $topic) {
         $sql = "UPDATE Playlist SET title = ?, description = ?, course = ?, topic = ? WHERE id = ?";
@@ -95,7 +98,8 @@ class Playlist {
 
         return ($stmt->rowCount() === 1);
     }
-    /* 
+
+    /**
      * @requires login
      * @param db - PDO connection object
      * @param id - playlist id
@@ -127,12 +131,13 @@ class Playlist {
     }
     
 
-    /* 
+    /**
      * @requires login
      * @param db - PDO connection object
      * @param id - playlist id
      * @param videoid - id of video of which we want to append
-     * @throws PDOException 
+     * @throws PDOException
+     * @return string|0
      */
     public static function pushVideo($db, $id, $videoid) {
         $sql = "INSERT INTO VideoPlaylist (playlistid, videoid, rank) VALUES (?, ?, ?)";
@@ -146,7 +151,7 @@ class Playlist {
         return $db->lastInsertId();
     }
 
-    /* 
+    /**
      * @requires login
      * @param db - PDO connection object
      * @param id - playlist id
@@ -171,7 +176,7 @@ class Playlist {
         return;
     }
 
-    /* 
+    /**
      * @requires login
      * @param db - PDO connection object
      * @param id - playlist id
@@ -263,10 +268,9 @@ class Playlist {
         if($videoRank < $playlistLength-1) {
             for ($i = $videoRank; $i < $playlistLength; $i++) {
                 $nextVideoID = self::getVideoIdByRankPlaylist($db, $i+1, $playlistid);
-                echo $i."-";
                 if($videoid != $nextVideoID) {
-                    if(self::swapVideoRank($db, $playlistid, $videoid, $nextVideoID, $i, $i+1)){
-                        echo "success";
+                    if(!self::swapVideoRank($db, $playlistid, $videoid, $nextVideoID, $i, $i+1)){
+                        return null;
                     }
                 }
                 $currentRank = $i+1;
@@ -359,6 +363,12 @@ class Playlist {
         return null;
     }
 
+    /**
+     * @param $db
+     * @param $userid
+     * @param $playlistid
+     * @return bool
+     */
     public static function subscribePlaylist($db, $userid, $playlistid){
         $sql = "INSERT INTO usersubscribe (userid, playlistid) VALUES (?, ?)";
         $stmt = $db->prepare($sql);
@@ -371,6 +381,12 @@ class Playlist {
         return true;
     }
 
+    /**
+     * @param $db
+     * @param $userid
+     * @param $playlistid
+     * @return bool
+     */
     public static function unsubscribePlaylist($db, $userid, $playlistid){
        try{
         $sql = "DELETE FROM usersubscribe WHERE userid = ? AND playlistid = ? LIMIT 1";
@@ -384,6 +400,12 @@ class Playlist {
         return true;
     }
 
+    /**
+     * @param $db
+     * @param $userid
+     * @param $playlistid
+     * @return bool
+     */
     public static function checkIfSubscribed($db, $userid, $playlistid){
         $sql = "SELECT * FROM usersubscribe WHERE userid = ? AND playlistid = ? LIMIT 1";
         $stmt = $db->prepare($sql);
