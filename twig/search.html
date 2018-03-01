@@ -11,7 +11,7 @@
 
         <div class="col-md-6 border-right">
             <h2 class="other-title text-success text-center">Videos</h2>
-            {% if videoResults=='no' %}
+            {% if videoResults is empty %}
             <div class="col-md-12">
                 <h2 class="other-title">No videos found.</h2>
             </div>
@@ -20,7 +20,11 @@
             <div class="col-md-12" style="margin-bottom: 20px;">
                 <div class="row">
                     <div class="col-md-4">
-                        <a href="/video?id={{ video['id'] }}"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+                        <a href="/video?id={{ video['id'] }}">
+
+{% include "_thumbnail.html" with { thumbnail: video['thumbnail'] } %}
+
+                        </a>
                     </div>
                     <div class="col-md-8">
                         <div class="col-md-12 border-bottom">
@@ -40,7 +44,7 @@
         <!-- PLAYLISTS -->
         <div class="col-md-6">
             <h2 class="other-title text-info text-center">Playlists</h2>
-            {% if playlistResults=='no' %}
+            {% if playlistResults is empty %}
             <div class="col-md-12">
                 <h2 class="other-title">No playlists found.</h2>
             </div>
@@ -49,7 +53,11 @@
             <div class="col-md-12" style="margin-bottom: 20px;">
                 <div class="row">
                     <div class="col-md-4">
-                        <a href="/playlist?id={{ playlist['id'] }}"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
+                        <a href="/playlist?id={{ playlist['id'] }}">
+
+{% include "_thumbnail.html" with { thumbnail: playlist['thumbnail'] } %}
+
+                        </a>
                     </div>
                     <div class="col-md-8">
                         <div class="col-md-12 border-bottom">

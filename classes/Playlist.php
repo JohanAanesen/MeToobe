@@ -333,7 +333,7 @@ class Playlist {
     public static function searchPlaylist($db, $q){
         try{
             //SQL Injection SAFE query method:
-            $query = "SELECT playlist.id, playlist.title, playlist.description FROM playlist
+            $query = "SELECT playlist.id, playlist.title, playlist.description, playlist.thumbnail FROM playlist
                   INNER JOIN user ON playlist.userid = user.id
                   WHERE playlist.title LIKE (?)
                   OR user.fullname LIKE (?)
@@ -350,12 +350,8 @@ class Playlist {
             $stmt = $db->prepare($query);
             $stmt->execute($param);
 
-            if ($stmt->rowCount()>0) {
-                $videos = array();
-                while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    $videos[] = $row;
-                }
-                return $videos;
+            if ($stmt->rowCount() > 0) {
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         }catch(PDOException $ex){
             echo "Something went wrong".$ex; //Error message

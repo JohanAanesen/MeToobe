@@ -155,12 +155,27 @@ class Urge {
         return $scaledImage;
     }
 
-    public static function encodeThumbnailsToBase64($videos) {
-        foreach ($videos as &$v) {
-            if(isset($v['thumbnail']))
-                $v['thumbnail'] = base64_encode($v['thumbnail']);
+    public static function encodeThumbnailToBase64($thing) {
+
+        if (empty($thing)) {
+            return $thing;
         }
-        return $videos;
+        if(isset($thing['thumbnail']))
+            $thing['thumbnail'] = base64_encode($thing['thumbnail']);
+        return $thing;
+    }
+
+    public static function encodeThumbnailsToBase64($thingArray) {
+
+        if (empty($thingArray)) {
+            return $thingArray;
+        }
+
+        foreach ($thingArray as &$thing) {
+            if(isset($thing['thumbnail']))
+                $thing['thumbnail'] = base64_encode($thing['thumbnail']);
+        }
+        return $thingArray;
     }
 
 

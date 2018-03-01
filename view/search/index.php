@@ -8,14 +8,11 @@ $twig        = Urge::requireTwig();
 $userid      = User::getLoggedInUserid();
 
 $videoResults = Video::searchVideos($db, $searchQuery);
-if (!isset($videoResults)){
-    $videoResults = "no";
-}
+$videoResults = Urge::encodeThumbnailsToBase64($videoResults);
 
 $playlistResults = Playlist::searchPlaylist($db, $searchQuery);
-if (!isset($playlistResults)){
-    $playlistResults = "no";
-}
+$playlistResults = Urge::encodeThumbnailsToBase64($playlistResults);
+
 
 $user = null;
 if ($userid) {

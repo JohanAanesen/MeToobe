@@ -15,21 +15,19 @@ if ($userid) {
 
 $subscribedVideos = null;
 $subscribedPlaylists = null;
-if($userid){
+if($userid) {
     $subscribedVideos = Video::getSubscribedVideos($db, $userid);
     $subscribedPlaylists = Playlist::getUserPlaylist($db, $userid);
 }
 $newVideos = Video::getNewVideos($db);
 $newPlaylists = Playlist::getNewPlaylists($db);
 
-if (!empty($newVideos))
-    $newVideos = Urge::encodeThumbnailsToBase64($newVideos);
+// Encode thumbnails
+$subscribedVideos    = Urge::encodeThumbnailsToBase64($subscribedVideos);
+$subscribedPlaylists = Urge::encodeThumbnailsToBase64($subscribedPlaylists);
+$newVideos           = Urge::encodeThumbnailsToBase64($newVideos);
+$newPlaylists        = Urge::encodeThumbnailsToBase64($newPlaylists);
 
-if (!empty($subscribedVideos))
-    $subscribedVideos = Urge::encodeThumbnailsToBase64($subscribedVideos);
-
-if (!empty($subscribedPlaylists))
-    $subscribedPlaylists = Urge::encodeThumbnailsToBase64($subscribedPlaylists);
 
 echo $twig->render('home.html', array(
     'title' => 'home',

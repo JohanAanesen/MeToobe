@@ -26,11 +26,9 @@ $playlistID = $_GET['id'];
 $playlist   = Playlist::get($db, $playlistID);
 $videos     = Playlist::getVideos($db, $playlistID, true);
 
-if (!empty($playlist))
-    $playlist = Urge::encodeThumbnailsToBase64($playlist);
-
-if (!empty($videos))
-    $videos = Urge::encodeThumbnailsToBase64($videos);
+// Encode thumbnails
+$playlist = Urge::encodeThumbnailToBase64($playlist);
+$videos   = Urge::encodeThumbnailsToBase64($videos);
 
 
 if (!$userid) {

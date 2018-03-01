@@ -283,7 +283,7 @@ class Video {
     public static function searchVideos($db, $q){
         try{
             //SQL Injection SAFE query method:
-            $query = "SELECT video.id, video.name, video.description FROM video
+            $query = "SELECT video.id, video.name, video.description, video.thumbnail FROM video
                       INNER JOIN user ON video.userid = user.id
                       WHERE video.name LIKE (?)
                       OR video.description LIKE (?)
@@ -298,12 +298,8 @@ class Video {
             $stmt = $db->prepare($query);
             $stmt->execute($param);
 
-            if ($stmt->rowCount()>0) {
-                $videos = array();
-                while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    $videos[] = $row;
-                }
-                return $videos;
+            if ($stmt->rowCount() > 0) {
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         }catch(PDOException $ex){
             echo "Something went wrong".$ex; //Error message

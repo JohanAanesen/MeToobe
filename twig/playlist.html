@@ -59,18 +59,21 @@
             </form>
         </div>
         <div class="col-md-6">
-            {% include "_thumbnail.html" with { thumbnail: playlist['thumbnail'] } %}
+
+{% include "_thumbnail.html" with { thumbnail: playlist['thumbnail'] } %}
+
         </div>
     </div>
         {% for video in videos %}
-
 
         <hr>
         <div class="col"><span style="color: #aaaaaa;"> {{ video.id }} Rank: {{ video.rank + 1 }} </span></div>
         <div class="row">
             <div class="col-md-3">
                 <a href="/video?id={{ video['id'] }}">
-                    {% include "_thumbnail.html" with { thumbnail: video['thumbnail'] } %}
+
+{% include "_thumbnail.html" with { thumbnail: video['thumbnail'] } %}
+
                 </a>
             </div>
             <div class="col-md-8">
