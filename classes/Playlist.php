@@ -2,7 +2,9 @@
 
 class Playlist {
 
-    /** get playlist
+    /**
+     * @function get
+     * @brief get playlist
      * @param db - PDO connection object
      * @param id - playlist id
      * @return array playlist - single playlist
@@ -16,11 +18,13 @@ class Playlist {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-     /** get videos in playlist
-     * @param db - PDO connection object
-     * @param id - playlist id
-     * @return array videos - array of videos connected to the playlist id
-     */
+     /**
+      * @function getVideos
+      * @brief get videos from playlist
+      * @param db - PDO connection object
+      * @param id - playlist id
+      * @return array videos - array of videos connected to the playlist id
+      */
     public static function getVideos($db, $id, $orderByRank=false) {
         $sql = "SELECT * FROM VideoPlaylist
                 INNER JOIN video ON videoplaylist.videoid = video.id
@@ -37,6 +41,8 @@ class Playlist {
     }
 
     /**
+     * @function getNewPlaylists
+     * @brief gets 6 playlists from DB, but no time in db means not really 'new'
      * @param $db
      * @return array|null
      */
@@ -58,8 +64,10 @@ class Playlist {
     }
 
     /**
+     * @function create
+     * @brief Creates a new playlist with all the parameters
      * @param $db
-     * @param $userid
+     * @param string $userid
      * @param $title
      * @param string $description
      * @param string $course
@@ -83,6 +91,8 @@ class Playlist {
     }
 
     /**
+     * @function update
+     * @brief updates playlist
      * @requires login
      * @param db - PDO connection object
      * @param id - id of playlist
@@ -100,6 +110,8 @@ class Playlist {
     }
 
     /**
+     * @function delete
+     * @brief deletes playlist and all playlist-video 'links' from DB
      * @requires login
      * @param db - PDO connection object
      * @param id - playlist id
@@ -132,6 +144,8 @@ class Playlist {
     
 
     /**
+     * @function pushVideo
+     * @brief Inserts a video into a playlist by making the videoplaylist 'link'
      * @requires login
      * @param db - PDO connection object
      * @param id - playlist id
@@ -152,6 +166,8 @@ class Playlist {
     }
 
     /**
+     * @function removeVideo
+     * @brief   Deletes the videoplaylist 'link', so the video no longer is included in the playlist
      * @requires login
      * @param db - PDO connection object
      * @param id - playlist id
@@ -177,6 +193,8 @@ class Playlist {
     }
 
     /**
+     * @function swapVideoRank
+     * @brief   Swaps the ranks between two videos in a playlist
      * @requires login
      * @param db - PDO connection object
      * @param id - playlist id
@@ -222,6 +240,8 @@ class Playlist {
     }
 
     /**
+     * @function getUserPlaylist
+     * @brief   Grabs all the playlists owned by a specified user from DB
      * @param $db
      * @param $userid
      * @return array|null
@@ -248,6 +268,10 @@ class Playlist {
     }
 
     /**
+     * @function updateVideoRanks
+     * @brief  When removing a video from a playlist, the ranks need to be updated. Thus
+     * this function 'swaps' the specified video to the end of the playlist so it can be
+     * deleted
      * @param $db
      * @param $playlistid
      * @param $videoRank
@@ -281,6 +305,8 @@ class Playlist {
     }
 
     /**
+     * @function getPlaylistLength
+     * @brief  Returns the number of videos in specified playlist.
      * @param $db
      * @param $playlistid
      * @return null
@@ -307,9 +333,11 @@ class Playlist {
     }
 
     /**
+     * @function getVideoIdByRankPlaylist
+     * @brief Returns the video-ID of a video by searching DB with playlist-ID and video-rank
      * @param $db
-     * @param $rank
-     * @param $playlistid
+     * @param int $rank
+     * @param string $playlistid
      * @return null|string
      */
     public static function getVideoIdByRankPlaylist($db, $rank, $playlistid){
@@ -330,8 +358,10 @@ class Playlist {
     }
 
     /**
-     * @param $db
-     * @param $q
+     * @function searchPlaylist
+     * @brief   MySQL query to search the playlist part of DB for anything related to $q
+     * @param $db - Database
+     * @param $q - Question
      * @return array|null
      */
     public static function searchPlaylist($db, $q){
@@ -364,6 +394,8 @@ class Playlist {
     }
 
     /**
+     * @function subscribePlaylist
+     * @brief  Creates a user-playlist 'link' to 'subscribe' to it
      * @param $db
      * @param $userid
      * @param $playlistid
@@ -382,6 +414,8 @@ class Playlist {
     }
 
     /**
+     * @function unsubscribePlaylist
+     * @brief Deletes the user-playlist 'link'
      * @param $db
      * @param $userid
      * @param $playlistid
@@ -401,6 +435,8 @@ class Playlist {
     }
 
     /**
+     * @function checkIfSubscribed
+     * @brief Checks if specified $userid is subscribed to $playlistid in DB usersubscribe
      * @param $db
      * @param $userid
      * @param $playlistid
