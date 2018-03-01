@@ -63,12 +63,7 @@ final class VideoTest extends TestCase {
     } 
     
     public function testAdd()    {
-        $this->new_videoid = Video::add(
-            $this->db,
-            $this->userid,
-            $this->new_video['name'],
-            $this->new_video['description']);
-        
+        $this->new_videoid = $this->addNewVideo();
         $this->assertNotEquals(0, $this->new_videoid);        
     }
 
@@ -76,12 +71,7 @@ final class VideoTest extends TestCase {
      * @depends testAdd
      */
     public function testDelete() {
-        $this->new_videoid = Video::add(
-            $this->db,
-            $this->userid,
-            $this->new_video['name'],
-            $this->new_video['description']);
-
+        $this->new_videoid = $this->addNewVideo();
         $deleted = Video::delete($this->db, $this->new_videoid);
         $this->assertTrue($deleted);
     }
@@ -93,6 +83,15 @@ final class VideoTest extends TestCase {
         $this->assertFileIsReadable($pathToFolder);
         $this->assertFileIsWritable($pathToFolder);
     }   
+
+    // PRIVATE helper function
+    private function addNewVideo() {
+        return Video::add(
+            $this->db,
+            $this->userid,
+            $this->new_video['name'],
+            $this->new_video['description']);
+    }
 }
 
 ?>
