@@ -117,40 +117,51 @@ class Urge {
     }
 
      /**
-      * @note stolen from okolloen examples
+      * @note stolen from https://stackoverflow.com/a/23173626
       */ 
     public static function scaleThumbnail($_img) {
 
-        $new_width = 150;
-        $new_height = 150;
+        $max_width = 400;
+        $max_height = 225;
         $img = imagecreatefromstring($_img);
 
-        $old_x = imageSX($img);
-        $old_y = imageSY($img);
+        list($source_image_width, $source_image_height) = getimagesizefromstring($_img);
 
-        if($old_x > $old_y) {                     // Image is landscape mode
-            $thumb_w = $new_width;
-            $thumb_h = $old_y*($new_height/$old_x);
-        } else if($old_x < $old_y) {              // Image is portrait mode
-            $thumb_w = $old_x*($new_width/$old_y);
-            $thumb_h = $new_height;
-        } if($old_x == $old_y) {                  // Image is square
-            $thumb_w = $new_width;
-            $thumb_h = $new_height;
+        $source_gd_image = imagecreatefromstring($_img);
+
+        if ($source_gd_image === false) {
+            return false;
         }
-
-        if ($thumb_w>$old_x) {                    // Don't scale images up
-            $thumb_w = $old_x;
-            $thumb_h = $old_y;
+        $source_aspect_ratio = $source_image_width / $source_image_height;
+        $thumbnail_aspect_ratio = $max_width / $max_height;
+        if ($source_image_width <= $max_width && $source_image_height <= $max_height) {
+            $thumbnail_image_width = $source_image_width;
+            $thumbnail_image_height = $source_image_height;
+        } elseif ($thumbnail_aspect_ratio > $source_aspect_ratio) {
+            $thumbnail_image_width = (int) ($max_height * $source_aspect_ratio);
+            $thumbnail_image_height = $max_height;
+        } else {
+            $thumbnail_image_width = $max_width;
+            $thumbnail_image_height = (int) ($max_width / $source_aspect_ratio);
         }
+        $thumbnail_gd_image = imagecreatetruecolor($thumbnail_image_width, $thumbnail_image_height);
+        imagecopyresampled($thumbnail_gd_image, $source_gd_image, 0, 0, 0, 0, $thumbnail_image_width, $thumbnail_image_height, $source_image_width, $source_image_height);
 
-        $dst_img = ImageCreateTrueColor($thumb_w,$thumb_h);
-        imagecopyresampled($dst_img,$img,0,0,0,0,$thumb_w,$thumb_h,$old_x,$old_y);
+        $img_disp = imagecreatetruecolor($max_width, $max_height);
+        $backcolor = imagecolorallocate($img_disp,0,0,0);
+        imagefill($img_disp,0,0,$backcolor);
+
+        imagecopy($img_disp, $thumbnail_gd_image, (imagesx($img_disp)/2)-(imagesx($thumbnail_gd_image)/2), (imagesy($img_disp)/2)-(imagesy($thumbnail_gd_image)/2), 0, 0, imagesx($thumbnail_gd_image), imagesy($thumbnail_gd_image));
+
 
         ob_start();                         // flush/start buffer
-        imagepng($dst_img, NULL,9);          // Write image to buffer
+        imagepng($img_disp, NULL,9);          // Write image to buffer
         $scaledImage = ob_get_contents();   // Get contents of buffer
         ob_end_clean();                     // Clear buffer
+
+        imagedestroy($source_gd_image);
+        imagedestroy($thumbnail_gd_image);
+        imagedestroy($img_disp);
 
         return $scaledImage;
     }
