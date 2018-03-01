@@ -45,6 +45,7 @@ class FunctionalTests extends TestCase {
   private $password = 'test';
   private $userID   = "1337TEST1337";
 
+  // Videos
   private $arrayVideoID = array();
 
   protected function setup() {
@@ -66,16 +67,10 @@ class FunctionalTests extends TestCase {
     for($i = 0; $i < $this->videos; $i++){
       $this->arrayVideoID[] = Video::add($this->db, $this->userID, 'Test-Video-' . ($i + 1), 'Description for Test-Video nr.: ' . ($i + 1));
     }
-/*
-    $playlistVideoid = Playlist::pushVideo(
-        $this->db,
-        $this->playlistid,
-        $vid);
-        */
   }
 
   protected function tearDown() {
-      User::delete($this->db, $this->userID);
+    User::delete($this->db, $this->userID);
   }
 
   // Signs in to the newly created user
@@ -150,20 +145,16 @@ class FunctionalTests extends TestCase {
     $this2->session->visit($this2->accountURL);
     $page = $this2->session->getPage();
 
-    // Get playlist id
-    $this2->assertNotNull($href = $page->find('xpath', '//h2[text()="' . $this2->setupTitle . '"]/../a/@href'));
-    $idPlaylist = str_replace('/playlist?id=', '', $href->getText());
-
     for($i = 0; $i < $this2->videos; $i++){
       $videoURL = $this2->videoURL . $this2->arrayVideoID[$i];
-      $addVideoToPlaylist = 'http://localhost/php/playlistAdd.php?playlistid=' . $idPlaylist . '&videoid=' . $this2->arrayVideoID[$i];
+      $addVideoToPlaylist = 'http://localhost/php/playlistAdd.php?playlistid=' . $this2->setupPlaylistID . '&videoid=' . $this2->arrayVideoID[$i];
 
       $this2->session->visit($addVideoToPlaylist); // Add video to playlist
       $page = $this2->session->getPage();          //
     }
 
     // Go to playlist page
-    $URL = $this2->playlistURL . $idPlaylist;
+    $URL = $this2->playlistURL . $this2->setupPlaylistID;
     $this2->session->visit($URL);
     $page = $this2->session->getPage();
 
@@ -171,6 +162,29 @@ class FunctionalTests extends TestCase {
     foreach ($this2->arrayVideoID as $videoID) {
       $this2->assertNotNull($page->find('xpath', '//span[contains(text(), "' . $videoID[$i] .'")]'));
     }
+  }
+
+  public function addToPlaylistAndchangeOrder($this2){
+    $testVideoID = array();
+
+    // Create two videos
+    for($i = 0; $i < 2; $i++){
+      $testVideoID[] = Video::add($this2->db, $this2->userID, 'VideoTest' . ($i + 4), 'Description for VideoTest nr.: ' . ($i + 4));
+    }
+
+    // Add two videos to playlist
+    foreach ($testVideoID as $video) {
+      Playlist::pushVideo($this->db, $this->setupPlaylistID, $video);
+    }
+
+    // Go to playlist page
+    $URL = $this2->playlistURL . $this2->setupPlaylistID;
+    $this2->session->visit($URL);
+    $page = $this2->session->getPage();
+
+    $this2->assertNotNull($form = $page->find('css', 'form[id="swapDown' . $testVideoID[0] .'"]'));
+    $form->submit();
+
   }
 
 
@@ -183,10 +197,10 @@ class FunctionalTests extends TestCase {
     FunctionalTests::signInUser($this);
     FunctionalTests::addThreeVideosAndTest($this);
   }
-
-/* IN PROGRESS
+/*
   public function testChangeOrderOnVideosInPlaylist(){
-
+    FunctionalTests::signInUser($this);
+    FunctionalTests::addToPlaylistAndchangeOrder($this);
   }
 */
 
