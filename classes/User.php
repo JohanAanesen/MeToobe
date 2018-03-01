@@ -107,6 +107,7 @@ class User {
     }
 
     /**
+     * @function isAdmin
      * @global $_SESSION
      * @return bool | 0
      */
@@ -119,6 +120,7 @@ class User {
     }
 
     /**
+     * @function isTeacher
      * @global $_SESSION
      * @return bool | 0
      */
@@ -203,7 +205,7 @@ class User {
     }
 
     /**
-     *
+     * @function requireSession
      */
     static private function requireSession() {
         if (session_status() == PHP_SESSION_NONE) {
@@ -213,6 +215,8 @@ class User {
     }
 
     /**
+     * @function getHasshedPassword
+     * @brief returns hashed version of $password
      * @param $password
      * @return bool|string
      */
@@ -221,6 +225,9 @@ class User {
     }
 
     /**
+     * @function delete
+     * @brief deletes $userid and all the users playlists, videos in the playlists, subscriptions, likes, comments,
+     * videos, likes on users videos, comments on users videos
      * @param $db
      * @param $userid
      * @return bool
