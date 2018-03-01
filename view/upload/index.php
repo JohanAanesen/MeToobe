@@ -8,7 +8,7 @@ $db   = Urge::requireDatabase();
 $user = User::get($db, $userid);
 
 
-if(!User::isTeacher($userid) && !User::isAdmin($userid)){
+if(!User::isTeacher() && !User::isAdmin()){
     Urge::gotoHome();
 }
 

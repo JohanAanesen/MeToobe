@@ -5,6 +5,15 @@
   */
 class Video {
 
+    /**
+     * @param $db
+     * @param $uid
+     * @param $name
+     * @param string $descr
+     * @param string $mime
+     * @param string $thumbnail
+     * @return int|string
+     */
     public static function add($db, $uid, $name, $descr="", $mime="", $thumbnail="") {
         $videoid = uniqid();
         $sql = "INSERT INTO"
@@ -24,6 +33,7 @@ class Video {
     /**
      * @param $db
      * @param $videoid
+     * @return bool
      */
     public static function delete($db, $videoid) {
         $db->beginTransaction();
@@ -58,8 +68,13 @@ class Video {
     }
 
     /**
-      * Saves a video to the filesystem.
-      */
+     * Saves a video to the filesystem.
+     * @param $uid
+     * @param $videoid
+     * @param $tmp_filepath
+     * @param $mime
+     * @return int
+     */
     public static function saveToFile($uid, $videoid, $tmp_filepath, $mime) {
         $ROOT = $_SERVER['DOCUMENT_ROOT'];
 
@@ -186,6 +201,13 @@ class Video {
         return null;
     }
 
+    /**
+     * @param $db
+     * @param $videoid
+     * @param $userid
+     * @param $vote
+     * @return bool
+     */
     public static function updateLike($db, $videoid, $userid, $vote){
         $db->beginTransaction();
 
@@ -232,6 +254,12 @@ class Video {
         return true;
     }
 
+    /**
+     * @param $db
+     * @param $videoid
+     * @param $userid
+     * @param $vote
+     */
     public static function changeLike($db, $videoid, $userid, $vote){
         try{
             //SQL Injection SAFE query method:
@@ -244,6 +272,11 @@ class Video {
         }
     }
 
+    /**
+     * @param $db
+     * @param $videoid
+     * @param $userid
+     */
     public static function deleteLike($db, $videoid, $userid){
         try{
             //SQL Injection SAFE query method:
@@ -337,6 +370,11 @@ class Video {
         return null;
     }
 
+    /**
+     * @param $db
+     * @param $userid
+     * @return null
+     */
     public static function getSubscribedVideos($db, $userid){
         try{
             //SQL Injection SAFE query method:
@@ -360,4 +398,21 @@ class Video {
         }
         return null;
     }
+
+    /**
+     * @param $db
+     * @param $videoid
+     * @param $newName
+     * @param $newDesc
+     * @return bool
+     */
+    public static function updateVideoTitleDescription($db, $videoid, $newName, $newDesc){
+        $sql = "UPDATE video SET name = ?, description = ? WHERE id = ?";
+        $stmt = $db->prepare($sql);
+        $param = array($newName, $newDesc, $videoid);
+        $stmt->execute($param);
+
+        return ($stmt->rowCount() === 1);
+    }
+
 };
