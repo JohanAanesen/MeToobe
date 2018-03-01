@@ -5,9 +5,10 @@ use PHPUnit\DbUnit\TestCaseTrait;
 use Behat\Mink\Element\DocumentElement;
 use Behat\Mink\Element\NodeElement;
 
+require_once "./classes/DB.php";
 require_once "./classes/User.php";
 require_once "./classes/Video.php";
-require_once "./classes/DB.php";
+require_once "./classes/Playlist.php";
 
 /*
 * Contains all three functional tests
@@ -24,13 +25,19 @@ class FunctionalTests extends TestCase {
   protected $db;
 
   // Number of videos to be added to playlist
-  private $videos = 3;
+  private $videos = 3;   // Max number is 12
 
   // Playlist info
+  private $playlistID;
   private $title       = "Test testing tested";
   private $course      = "IMT2291";
   private $topic       = "Project1";
   private $description = "Programming [Games | Applications] (BPROG)";
+  ////////////////////////////////////////////////////////////////////
+  // setupPlaylist
+  private $setupPlaylistID;
+  private $setupTitle = 'Setup Playlist';
+  private $setupDescription = 'This is a description for a playlist';
 
   // User
   PRIVATE $fullname = "test";
@@ -38,23 +45,37 @@ class FunctionalTests extends TestCase {
   private $password = 'test';
   private $userID   = "1337TEST1337";
 
+  private $arrayVideoID = array();
+
   protected function setup() {
     $driver = new \Behat\Mink\Driver\GoutteDriver();
     $this->session = new \Behat\Mink\Session($driver);
     $this->session->start();
+
+    // Create test user with the rights of an teacher
+    $this->db = DB::getDBConnection();
+    $query = "INSERT INTO user (id, fullname, email, password, usertype, wannabe) VALUES (?, ?, ?, ?, ?, ?)";
+    $param = array($this->userID, $this->fullname, $this->email, password_hash($this->password, PASSWORD_BCRYPT), 'teacher', 0);
+    $stmt = $this->db->prepare($query);
+    $stmt->execute($param);
+
+    // Create test playlist
+    $this->setupPlaylistID = Playlist::create($this->db, $this->userID, $this->setupTitle, $this->setupDescription);
+
+    // Create test number of '$videos' videos
+    for($i = 0; $i < $this->videos; $i++){
+      $this->arrayVideoID[] = Video::add($this->db, $this->userID, 'Test-Video-' . ($i + 1), 'Description for Test-Video nr.: ' . ($i + 1));
+    }
+/*
+    $playlistVideoid = Playlist::pushVideo(
+        $this->db,
+        $this->playlistid,
+        $vid);
+        */
   }
 
   protected function tearDown() {
       User::delete($this->db, $this->userID);
-  }
-
-  // Creates user in db
-  public static function createUserOnce($this0){
-    $db = DB::getDBConnection();
-    $query = "INSERT INTO user (id, fullname, email, password, usertype, wannabe) VALUES (?, ?, ?, ?, ?, ?)";
-    $param = array($this0->userID, $this0->fullname, $this0->email, password_hash($this0->password, PASSWORD_BCRYPT), 'teacher', 0);
-    $stmt = $db->prepare($query);
-    $stmt->execute($param);
   }
 
   // Signs in to the newly created user
@@ -82,11 +103,11 @@ class FunctionalTests extends TestCase {
   }
 
   // Creates and tests the playlist
-  public static function createAndTestPlaylist($this3){
+  public static function createAndTestPlaylist($this2){
 
     // Create
-    $this3->session->visit($this3->baseURL);
-    $page = $this3->session->getPage();
+    $this2->session->visit($this2->baseURL);
+    $page = $this2->session->getPage();
     $form = $page->find('css', 'form[id="createPlaylist"]');
 
     if($form != null){
@@ -96,131 +117,77 @@ class FunctionalTests extends TestCase {
       $textareaDescr    = $form->find('css', 'textarea[id="playlist-description"]');
 
       if($inputTitle == null){
-        $this3->assertTrue(false, 'Input field: playlist-title not found');
+        $this2->assertTrue(false, 'Input field: playlist-title not found');
       }else if($inputCourse == null){
-        $this3->assertTrue(false, 'Input field: playlist-course not found');
+        $this2->assertTrue(false, 'Input field: playlist-course not found');
       }else if($inputTopic == null){
-        $this3->assertTrue(false, 'Input field: playlist-topic not found');
+        $this2->assertTrue(false, 'Input field: playlist-topic not found');
       }else if($textareaDescr == null){
-        $this3->assertTrue(false, 'Textarea: playlist-description not found');
+        $this2->assertTrue(false, 'Textarea: playlist-description not found');
       }else{
-        $inputTitle->setValue($this3->title);
-        $inputCourse->setValue($this3->course);
-        $inputTopic->setValue($this3->topic);
-        $textareaDescr->setValue($this3->description);
+        $inputTitle->setValue($this2->title);
+        $inputCourse->setValue($this2->course);
+        $inputTopic->setValue($this2->topic);
+        $textareaDescr->setValue($this2->description);
         $form->submit();
       }
     } else {
-      $this3->assertTrue(false, 'Form: createPlaylist not found');
+      $this2->assertTrue(false, 'Form: createPlaylist not found');
     }
 
     // Test if the outcome is right
-    $this3->session->visit($this3->accountURL);
-    $page = $this3->session->getPage();
+    $this2->session->visit($this2->accountURL);
+    $page = $this2->session->getPage();
 
-    $result = $page->find('xpath', '//div[@id="playlistInfo"]/h2');
-    if($result != null){
-      $this3->assertEquals($this3->title, $result->getText());
-    }else{
-      $this3->assertTrue(false, 'No result data found');
-    }
-  }
-
-  // Adds a number of '$videos' to the db
-  public static function createThreeVideos($this4){
-    $this4->db = DB::getDBConnection();
-    for($i = 0; $i < $this4->videos; $i++){
-      $arrayVideo[] = Video::add($this4->db, $this4->userID, 'Test-Video-' . ($i + 1), 'Description for Test-Video nr.: ' . ($i + 1));
-    }
-    return $arrayVideo;
-  }
-
-  // Tear down the user from the account user-page
-  public static function tearDownUser($this5){
-    $this5->session->visit($this5->accountURL);
-    $page = $this5->session->getPage();
-
-    $form = $page->find('css', 'form[id="deleteUser"]');
-    if($form!=null){
-      $inputCheckBox = $form->find('css', 'input[id="areUsure"]');
-      if($inputCheckBox != null){
-        $inputCheckBox->setValue('yes');
-        $form->submit();
-      } else{
-        $this5->assertTrue(false, 'Input field: areUsure not found');
-      }
-    } else{
-      $this5->assertTrue(false, 'Form: deleteUser not found');
-    }
+    // https://devhints.io/xpath#prefixes <- I wasted 3 hours looking for this kind of xpath line :)
+    $this2->assertNotNull($page->find('xpath', '//h2[text()="'. $this2->title . '"]'));
   }
 
   // Adds a number of '$videos' to the playlist and tests if they are all there
-  public static function addThreeVideosAndTest($this6, $idVideo){
+  public static function addThreeVideosAndTest($this2){
 
-    $this6->session->visit($this6->accountURL);
-    $page = $this6->session->getPage();
+    // go to user page
+    $this2->session->visit($this2->accountURL);
+    $page = $this2->session->getPage();
 
-    $href = $page->find('xpath', '//div[@id="playlistInfo"]/a/@href');
-    if($href != null){
-      $idPlaylist = str_replace('/playlist?id=', '', $href->getText());
-      for($i = 0; $i < $this6->videos; $i++){
-        $videoURL = $this6->videoURL . $idVideo[$i];
-        $addVideoToPlaylist = 'http://localhost/php/playlistAdd.php?playlistid=' . $idPlaylist . '&videoid=' . $idVideo[$i];
+    // Get playlist id
+    $this2->assertNotNull($href = $page->find('xpath', '//h2[text()="' . $this2->setupTitle . '"]/../a/@href'));
+    $idPlaylist = str_replace('/playlist?id=', '', $href->getText());
 
-        $this6->session->visit($addVideoToPlaylist); // Add video to playlist
-        $page = $this6->session->getPage();          //
-      }
-    }
-    else {
-      $this6->assertTrue(false, 'href not found');
+    for($i = 0; $i < $this2->videos; $i++){
+      $videoURL = $this2->videoURL . $this2->arrayVideoID[$i];
+      $addVideoToPlaylist = 'http://localhost/php/playlistAdd.php?playlistid=' . $idPlaylist . '&videoid=' . $this2->arrayVideoID[$i];
+
+      $this2->session->visit($addVideoToPlaylist); // Add video to playlist
+      $page = $this2->session->getPage();          //
     }
 
-    $URL = $this6->playlistURL . $idPlaylist;
+    // Go to playlist page
+    $URL = $this2->playlistURL . $idPlaylist;
+    $this2->session->visit($URL);
+    $page = $this2->session->getPage();
 
-    $this6->session->visit($URL);
-    $page = $this6->session->getPage();
-
-    $allH2s = $page->findAll('xpath', '//h2');
-    $i = 1;
-    foreach ($allH2s as $h2) {
-      if($h2 != null){
-        $videoName = 'Test-Video-' . $i++;
-        $this6->assertEquals($videoName, $h2->getText());
-      }
+    // Test that all the videos are added
+    foreach ($this2->arrayVideoID as $videoID) {
+      $this2->assertNotNull($page->find('xpath', '//span[contains(text(), "' . $videoID[$i] .'")]'));
     }
   }
 
- /*
- * @depends createUserOnce
- * @depends signInUser
- */
-  public function testCreatePlaylist(){
-    FunctionalTests::createUserOnce($this);
 
+  public function testCreatePlaylist(){
     FunctionalTests::signInUser($this);
     FunctionalTests::createAndTestPlaylist($this);
   }
 
-  /*
-  * @depends createUserOnce
-  * @depends createAndTestPlaylist
-  */
   public function testAddThreeVideosToPlaylist(){
-    $videoID = FunctionalTests::createThreeVideos($this);
     FunctionalTests::signInUser($this);
-    FunctionalTests::addThreeVideosAndTest($this, $videoID);
-
-    FunctionalTests::tearDownUser($this);
+    FunctionalTests::addThreeVideosAndTest($this);
   }
 
-  /*
-  * @depends createUserOnce
-  * @depends createAndTestPlaylist
-  * @depends createThreeVideos
-  * @depends addThreeVideosAndTest
-  */
-/*public function testChangeOrderOnVideosInPlaylist(){
+/* IN PROGRESS
+  public function testChangeOrderOnVideosInPlaylist(){
+
   }
 */
 
-};
+  };
