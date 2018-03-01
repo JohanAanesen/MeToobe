@@ -17,7 +17,7 @@ $subscribedVideos = null;
 $subscribedPlaylists = null;
 if($userid) {
     $subscribedVideos = Video::getSubscribedVideos($db, $userid);
-    $subscribedPlaylists = Playlist::getUserPlaylist($db, $userid);
+    $subscribedPlaylists = Playlist::getSubscribedPlaylists($db, $userid);
 }
 $newVideos = Video::getNewVideos($db);
 $newPlaylists = Playlist::getNewPlaylists($db);

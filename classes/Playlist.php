@@ -455,6 +455,24 @@ class Playlist {
     }
 
     /**
+     * @param $db
+     * @param $userid
+     * @return mixed
+     */
+    public static function getSubscribedPlaylists($db, $userid){
+        $query = "SELECT playlist.id, playlist.title, playlist.thumbnail FROM playlist
+                  INNER JOIN usersubscribe ON playlist.id = usersubscribe.playlistid
+                  WHERE usersubscribe.userid = ?
+                  LIMIT 6";
+        $param = array($userid);
+        $stmt = $db->prepare($query);
+        $stmt->execute($param);
+        if ($stmt->rowCount()>0) {
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+    }
+
+    /**
      * @function uploadThumbnailPlaylist
      * @brief uploads thumbnail to $playlistid, used for updating a playlist :)
      * @param $db
