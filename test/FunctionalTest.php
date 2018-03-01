@@ -5,6 +5,7 @@ use PHPUnit\DbUnit\TestCaseTrait;
 use Behat\Mink\Element\DocumentElement;
 use Behat\Mink\Element\NodeElement;
 
+require_once "./classes/User.php";
 require_once "./classes/Video.php";
 require_once "./classes/DB.php";
 
@@ -41,6 +42,10 @@ class FunctionalTests extends TestCase {
     $driver = new \Behat\Mink\Driver\GoutteDriver();
     $this->session = new \Behat\Mink\Session($driver);
     $this->session->start();
+  }
+
+  protected function tearDown() {
+      User::delete($this->db, $this->userID);
   }
 
   // Creates user in db
