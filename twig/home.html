@@ -139,7 +139,7 @@
         {% else %}
         {% for playlist in newPlaylists %}
         <div class="col-md-4">
-            <h2 class="lead text-limit">{{ playlist['name'] }}</h2>
+            <h2 class="lead text-limit">{{ playlist['title'] }}</h2>
             <a href="/playlist?id={{ playlist['id'] }}">
 
 {% include "_thumbnail.html" with { thumbnail: playlist['thumbnail'] } %}
