@@ -454,4 +454,25 @@ class Playlist {
         return false;
     }
 
+    /**
+     * @function uploadThumbnailPlaylist
+     * @brief uploads thumbnail to $playlistid, used for updating a playlist :)
+     * @param $db
+     * @param $playlistid
+     * @param $thumbnail
+     * @return bool
+     */
+    public static function uploadThumbnailPlaylist($db, $playlistid, $thumbnail){
+        try{
+            $sql = "UPDATE playlist SET thumbnail = ? WHERE id = ?";
+            $stmt = $db->prepare($sql);
+            $param = array($thumbnail, $playlistid);
+            $stmt->execute($param);
+        } catch (PDOException $e) {
+            print_r($e);
+            return false;
+        }
+        return true;
+    }
+
 }
