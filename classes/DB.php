@@ -21,6 +21,10 @@ class DB {
         }
     }
 
+    /**
+     * @function getDBConnection
+     * @return mixed
+     */
     public static function getDBConnection() {
         if (DB::$db==null) {
             DB::$db = new self();

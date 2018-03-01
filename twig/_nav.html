@@ -20,9 +20,11 @@
                 <a href="/playlist"><i class="my-1 fas fa-list-ol fa-2x" style="color: #28a745;"></i></a>
             </li>
             <li><div style="width: 20px;"></div> </li>
+            {% if user.usertype != 'student' %}
             <li class="nav-item">
                 <a href="/upload"><i class="my-1 fas fa-upload fa-2x" style="color: #28a745;"></i></a>
             </li>
+            {% endif %}
             <li class="nav-item">
 
                 {% if not userid %}
