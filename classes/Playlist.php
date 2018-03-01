@@ -455,6 +455,8 @@ class Playlist {
     }
 
     /**
+     * @function getSubscribedPlaylists
+     * @brief Grabs all(LIMIT 6) playlists $userid is 'subscribed' to via the usersubscribe table
      * @param $db
      * @param $userid
      * @return mixed
