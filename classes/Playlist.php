@@ -2,10 +2,12 @@
 
 class Playlist {
 
-    /* 
+    /**
+     * @function get
+     * @brief get playlist
      * @param db - PDO connection object
      * @param id - playlist id
-     * @return playlist - single playlist
+     * @return array playlist - single playlist
      */
     public static function get($db, $id) {
         $sql = "SELECT * FROM Playlist WHERE id=?";  
@@ -16,11 +18,13 @@ class Playlist {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-     /* 
-     * @param db - PDO connection object
-     * @param id - playlist id
-     * @return videos - array of videos connected to the playlist id
-     */
+     /**
+      * @function getVideos
+      * @brief get videos from playlist
+      * @param db - PDO connection object
+      * @param id - playlist id
+      * @return array videos - array of videos connected to the playlist id
+      */
     public static function getVideos($db, $id, $orderByRank=false) {
         $sql = "SELECT * FROM VideoPlaylist
                 INNER JOIN video ON videoplaylist.videoid = video.id
@@ -37,6 +41,8 @@ class Playlist {
     }
 
     /**
+     * @function getNewPlaylists
+     * @brief gets 6 playlists from DB, but no time in db means not really 'new'
      * @param $db
      * @return array|null
      */
@@ -57,13 +63,17 @@ class Playlist {
         return null;
     }
 
-    /* 
-     * @requires login
-     * @param db - PDO connection object
-     * @param userid - user who creates the playlist
-     * @param title - title of playlist
-     * @param description - description of playlist
-     * @return playlist id
+    /**
+     * @function create
+     * @brief Creates a new playlist with all the parameters
+     * @param $db
+     * @param string $userid
+     * @param $title
+     * @param string $description
+     * @param string $course
+     * @param string $topic
+     * @param string $thumbnail
+     * @return int|string
      */
     public static function create($db, $userid, $title, $description="", $course="", $topic="", $thumbnail="") {
 
@@ -80,12 +90,15 @@ class Playlist {
         return $id;
     }
 
-    /* 
+    /**
+     * @function update
+     * @brief updates playlist
      * @requires login
      * @param db - PDO connection object
      * @param id - id of playlist
      * @param title - title of playlist
      * @param description - description of playlist
+     * @return int
      */
     public static function update($db, $id, $title, $description, $course, $topic) {
         $sql = "UPDATE Playlist SET title = ?, description = ?, course = ?, topic = ? WHERE id = ?";
@@ -95,7 +108,10 @@ class Playlist {
 
         return ($stmt->rowCount() === 1);
     }
-    /* 
+
+    /**
+     * @function delete
+     * @brief deletes playlist and all playlist-video 'links' from DB
      * @requires login
      * @param db - PDO connection object
      * @param id - playlist id
@@ -127,12 +143,15 @@ class Playlist {
     }
     
 
-    /* 
+    /**
+     * @function pushVideo
+     * @brief Inserts a video into a playlist by making the videoplaylist 'link'
      * @requires login
      * @param db - PDO connection object
      * @param id - playlist id
      * @param videoid - id of video of which we want to append
-     * @throws PDOException 
+     * @throws PDOException
+     * @return string|0
      */
     public static function pushVideo($db, $id, $videoid) {
         $sql = "INSERT INTO VideoPlaylist (playlistid, videoid, rank) VALUES (?, ?, ?)";
@@ -146,7 +165,9 @@ class Playlist {
         return $db->lastInsertId();
     }
 
-    /* 
+    /**
+     * @function removeVideo
+     * @brief   Deletes the videoplaylist 'link', so the video no longer is included in the playlist
      * @requires login
      * @param db - PDO connection object
      * @param id - playlist id
@@ -171,7 +192,9 @@ class Playlist {
         return;
     }
 
-    /* 
+    /**
+     * @function swapVideoRank
+     * @brief   Swaps the ranks between two videos in a playlist
      * @requires login
      * @param db - PDO connection object
      * @param id - playlist id
@@ -217,6 +240,8 @@ class Playlist {
     }
 
     /**
+     * @function getUserPlaylist
+     * @brief   Grabs all the playlists owned by a specified user from DB
      * @param $db
      * @param $userid
      * @return array|null
@@ -243,6 +268,10 @@ class Playlist {
     }
 
     /**
+     * @function updateVideoRanks
+     * @brief  When removing a video from a playlist, the ranks need to be updated. Thus
+     * this function 'swaps' the specified video to the end of the playlist so it can be
+     * deleted
      * @param $db
      * @param $playlistid
      * @param $videoRank
@@ -263,10 +292,9 @@ class Playlist {
         if($videoRank < $playlistLength-1) {
             for ($i = $videoRank; $i < $playlistLength; $i++) {
                 $nextVideoID = self::getVideoIdByRankPlaylist($db, $i+1, $playlistid);
-                echo $i."-";
                 if($videoid != $nextVideoID) {
-                    if(self::swapVideoRank($db, $playlistid, $videoid, $nextVideoID, $i, $i+1)){
-                        echo "success";
+                    if(!self::swapVideoRank($db, $playlistid, $videoid, $nextVideoID, $i, $i+1)){
+                        return null;
                     }
                 }
                 $currentRank = $i+1;
@@ -277,6 +305,8 @@ class Playlist {
     }
 
     /**
+     * @function getPlaylistLength
+     * @brief  Returns the number of videos in specified playlist.
      * @param $db
      * @param $playlistid
      * @return null
@@ -303,9 +333,11 @@ class Playlist {
     }
 
     /**
+     * @function getVideoIdByRankPlaylist
+     * @brief Returns the video-ID of a video by searching DB with playlist-ID and video-rank
      * @param $db
-     * @param $rank
-     * @param $playlistid
+     * @param int $rank
+     * @param string $playlistid
      * @return null|string
      */
     public static function getVideoIdByRankPlaylist($db, $rank, $playlistid){
@@ -326,8 +358,10 @@ class Playlist {
     }
 
     /**
-     * @param $db
-     * @param $q
+     * @function searchPlaylist
+     * @brief   MySQL query to search the playlist part of DB for anything related to $q
+     * @param $db - Database
+     * @param $q - Question
      * @return array|null
      */
     public static function searchPlaylist($db, $q){
@@ -359,6 +393,14 @@ class Playlist {
         return null;
     }
 
+    /**
+     * @function subscribePlaylist
+     * @brief  Creates a user-playlist 'link' to 'subscribe' to it
+     * @param $db
+     * @param $userid
+     * @param $playlistid
+     * @return bool
+     */
     public static function subscribePlaylist($db, $userid, $playlistid){
         $sql = "INSERT INTO usersubscribe (userid, playlistid) VALUES (?, ?)";
         $stmt = $db->prepare($sql);
@@ -371,6 +413,14 @@ class Playlist {
         return true;
     }
 
+    /**
+     * @function unsubscribePlaylist
+     * @brief Deletes the user-playlist 'link'
+     * @param $db
+     * @param $userid
+     * @param $playlistid
+     * @return bool
+     */
     public static function unsubscribePlaylist($db, $userid, $playlistid){
        try{
         $sql = "DELETE FROM usersubscribe WHERE userid = ? AND playlistid = ? LIMIT 1";
@@ -384,6 +434,14 @@ class Playlist {
         return true;
     }
 
+    /**
+     * @function checkIfSubscribed
+     * @brief Checks if specified $userid is subscribed to $playlistid in DB usersubscribe
+     * @param $db
+     * @param $userid
+     * @param $playlistid
+     * @return bool
+     */
     public static function checkIfSubscribed($db, $userid, $playlistid){
         $sql = "SELECT * FROM usersubscribe WHERE userid = ? AND playlistid = ? LIMIT 1";
         $stmt = $db->prepare($sql);
@@ -394,6 +452,47 @@ class Playlist {
             return true;
         }
         return false;
+    }
+
+    /**
+     * @function getSubscribedPlaylists
+     * @brief Grabs all(LIMIT 6) playlists $userid is 'subscribed' to via the usersubscribe table
+     * @param $db
+     * @param $userid
+     * @return mixed
+     */
+    public static function getSubscribedPlaylists($db, $userid){
+        $query = "SELECT playlist.id, playlist.title, playlist.thumbnail FROM playlist
+                  INNER JOIN usersubscribe ON playlist.id = usersubscribe.playlistid
+                  WHERE usersubscribe.userid = ?
+                  LIMIT 6";
+        $param = array($userid);
+        $stmt = $db->prepare($query);
+        $stmt->execute($param);
+        if ($stmt->rowCount()>0) {
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+    }
+
+    /**
+     * @function uploadThumbnailPlaylist
+     * @brief uploads thumbnail to $playlistid, used for updating a playlist :)
+     * @param $db
+     * @param $playlistid
+     * @param $thumbnail
+     * @return bool
+     */
+    public static function uploadThumbnailPlaylist($db, $playlistid, $thumbnail){
+        try{
+            $sql = "UPDATE playlist SET thumbnail = ? WHERE id = ?";
+            $stmt = $db->prepare($sql);
+            $param = array($thumbnail, $playlistid);
+            $stmt->execute($param);
+        } catch (PDOException $e) {
+            print_r($e);
+            return false;
+        }
+        return true;
     }
 
 }

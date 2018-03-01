@@ -2,11 +2,21 @@
 {% block title %} Video {% endblock %}
 {% block content %}
 
+{% if editMode %}
+    <form id="videoUpdate" method="post" action="/php/videoUpdate.php" enctype="multipart/form-data" />
+    <input  type="hidden" name="video-id" form="videoUpdate" value="{{ videoData.id }}">
+    <input  type="hidden" name="video-owner" form="videoUpdate" value="{{ videoData.userid }}">
+{% endif %}
 <!-- Main jumbotron -->
 <div class="jumbotron" id="jumbo">
     <div class="container">
         <div class="col-12 ml-lg-0">
+            {% if editMode %}
+            <input type="text" style="margin-bottom: 10px;" class="form-control" id="video-title" name="video-title" form="videoUpdate" value="{{ videoData.name }}" >
+
+            {% else %}
             <h2 class="other-title">{{ videoData['name'] }}</h2>
+            {% endif %}
         </div>
 
         <!-- VIDEO CONTAINER -->
@@ -97,10 +107,14 @@
             </div>
         </div>
         <hr>
-        <div class="col-md-12 ">
+        <div class="col-md-12">
             <h2 class="other-title">Description</h2>
-
+            {% if editMode %}
+            <textarea type="text" class="form-control" id="video-description" name="video-description" form="videoUpdate" >{{ videoData.description }}</textarea>
+            <input type="submit" form="videoUpdate" class="btn btn-success" value="Update video" />
+            {% else %}
             <p>{{ videoData['description'] }}</p>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -153,11 +167,11 @@
 
 
         </div>
+        <!--
         <div class="col-md-3 col-xs-12">
             <div class="col-12 ml-lg-0">
                 <h2 class="other-title">Other videos</h2>
             </div>
-            <!-- Example row of columns -->
             <div class="row my-md-1">
                 <div class="col-md-12">
                     <h2 class="lead text-limit">1234567890123456789012345678901234567890</h2>
@@ -172,7 +186,7 @@
                     <a href="/video"><img src="/thumbnail/test.jpg" class="img-thumbnail border-success"></a>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 
 </div> <!-- /container -->

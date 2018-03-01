@@ -2,13 +2,15 @@
 
 class Comment {
 
-    /* 
+    /**
+     * @function add
+     * @brief Inserts new comment into DB
      * @requires login
      * @param db - PDO connection object
      * @param userid - user who add's a new comment
      * @param videoid - video which the comment is attached to
      * @param comment - actual comment text
-     * @return commentid - id of newly created comment
+     * @return string commentid - id of newly created comment
      */
     public static function add($db, $userid, $videoid, $comment) {
         $commentid = uniqid(rand(10000,99999), true);
@@ -25,10 +27,13 @@ class Comment {
         return $commentid;
     }
 
-    /* 
+    /**
+     * @function delete
+     * @brief deletes $commentid from DB
      * @requires login
      * @param db - PDO connection object
      * @param commentid - comment we want to delete
+     * @return bool
      */
     public static function delete($db, $commentid) {
         $sql = "DELETE FROM Comment WHERE id=?";
@@ -40,7 +45,9 @@ class Comment {
     }
 
 
-    /* 
+    /**
+     * @function get
+     * @brief retrieves comments for $videoid from DB
      * @param db - PDO connection object
      * @param videoid - video we want comments from
      * @return array of comments

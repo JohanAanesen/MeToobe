@@ -40,6 +40,11 @@ $comments  = Comment::get($db, $videoid);
 $videoOwner = User::get($db, $videoData['userid']);
 $videoData['fullname'] = $videoOwner['fullname'];
 
+$editMode = false;
+if ($videoData['userid'] === $userid) {
+    $editMode = true;
+}
+
 if ($userid) {
     $user = User::get($db, $userid);
     $userPlaylists = Playlist::getUserPlaylist($db, $userid);
@@ -54,6 +59,7 @@ if ($userid) {
         'hasLiked' => $hasLiked,
         'comments' => $comments,
         'userPlaylists' => $userPlaylists,
+        'editMode' => $editMode,
     ));
 } else {
     echo $twig->render('video.html', array(

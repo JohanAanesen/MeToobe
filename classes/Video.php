@@ -5,6 +5,17 @@
   */
 class Video {
 
+    /**
+     * @function add
+     * @brief adds video to DB
+     * @param $db
+     * @param $uid
+     * @param $name
+     * @param string $descr
+     * @param string $mime
+     * @param string $thumbnail
+     * @return int|string
+     */
     public static function add($db, $uid, $name, $descr="", $mime="", $thumbnail="") {
         $videoid = uniqid();
         $sql = "INSERT INTO"
@@ -22,8 +33,11 @@ class Video {
 
 
     /**
+     * @function delete
+     * @brief deletes video and the videos comments, likes and entries in playlists from DB
      * @param $db
      * @param $videoid
+     * @return bool
      */
     public static function delete($db, $videoid) {
         $db->beginTransaction();
@@ -58,8 +72,14 @@ class Video {
     }
 
     /**
-      * Saves a video to the filesystem.
-      */
+     * @function saveToFile
+     * @brief Saves a video to the filesystem.
+     * @param $uid
+     * @param $videoid
+     * @param $tmp_filepath
+     * @param $mime
+     * @return int
+     */
     public static function saveToFile($uid, $videoid, $tmp_filepath, $mime) {
         $ROOT = $_SERVER['DOCUMENT_ROOT'];
 
@@ -93,6 +113,8 @@ class Video {
     }
 
     /**
+     * @function get
+     * @brief retrieves everything about $videoid from DB
      * @param $videoid
      * @return array|null
      */
@@ -117,6 +139,8 @@ class Video {
     }
 
     /**
+     * @function getNewVideos
+     * @brief Retrieves the newest videos from DB, ordered by time
      * @param $db
      * @return array|null
      */
@@ -140,6 +164,8 @@ class Video {
 
 
     /**
+     * @function viewCountPlus
+     * @brief Increases $videoid's count by 1 in DB
      * @param $videoid
      * @return bool
      */
@@ -161,6 +187,8 @@ class Video {
     }
 
     /**
+     * @function findLikes
+     * @retrieves all likes on $videoid from DB
      * @param $db
      * @param $videoid
      * @return null
@@ -174,11 +202,11 @@ class Video {
             $stmt->execute($param);
 
             if ($stmt->rowCount()>0) {
-                $users = array();
+                $likes = array();
                 while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    $users[] = $row;
+                    $likes[] = $row;
                 }
-                return $users;
+                return $likes;
             }
         }catch(PDOException $ex){
             echo "Something went wrong".$ex; //Error message
@@ -186,6 +214,15 @@ class Video {
         return null;
     }
 
+    /**
+     * @function updateLike
+     * @brief Changes the user's like to opposite or deletes it in DB
+     * @param $db
+     * @param $videoid
+     * @param $userid
+     * @param $vote
+     * @return bool
+     */
     public static function updateLike($db, $videoid, $userid, $vote){
         $db->beginTransaction();
 
@@ -232,6 +269,14 @@ class Video {
         return true;
     }
 
+    /**
+     * @function changeLike
+     * @brief Changes like to $vote (1 or 0) in DB
+     * @param $db
+     * @param $videoid
+     * @param $userid
+     * @param $vote
+     */
     public static function changeLike($db, $videoid, $userid, $vote){
         try{
             //SQL Injection SAFE query method:
@@ -244,6 +289,13 @@ class Video {
         }
     }
 
+    /**
+     * @function deleteLike
+     * @brief deletes like from DB
+     * @param $db
+     * @param $videoid
+     * @param $userid
+     */
     public static function deleteLike($db, $videoid, $userid){
         try{
             //SQL Injection SAFE query method:
@@ -257,6 +309,8 @@ class Video {
     }
 
     /**
+     * @function videoVote
+     * @brief Inserts new like to DB
      * @param $db
      * @param $videoid
      * @param $userid
@@ -276,6 +330,8 @@ class Video {
     }
 
     /**
+     * @function searchVideos
+     * @brief MySQL query to search the video part of DB for anything related to $q
      * @param $db
      * @param $q
      * @return array|null
@@ -308,6 +364,8 @@ class Video {
     }
 
     /**
+     * @function getUsersVideos
+     * @brief Retrieves $userid's videos from DB
      * @param $db
      * @param $userid
      * @return array|null
@@ -337,6 +395,13 @@ class Video {
         return null;
     }
 
+    /**
+     * @function getSubscribedVideos
+     * @brief Retrieves all videos that are part of a playlist $userid subscribes to, from DB
+     * @param $db
+     * @param $userid
+     * @return null
+     */
     public static function getSubscribedVideos($db, $userid){
         try{
             //SQL Injection SAFE query method:
@@ -360,4 +425,23 @@ class Video {
         }
         return null;
     }
+
+    /**
+     * @function updateVideoTitleDescription
+     * @brief Updates the Video title and description
+     * @param $db
+     * @param $videoid
+     * @param $newName
+     * @param $newDesc
+     * @return bool
+     */
+    public static function updateVideoTitleDescription($db, $videoid, $newName, $newDesc){
+        $sql = "UPDATE video SET name = ?, description = ? WHERE id = ?";
+        $stmt = $db->prepare($sql);
+        $param = array($newName, $newDesc, $videoid);
+        $stmt->execute($param);
+
+        return ($stmt->rowCount() === 1);
+    }
+
 };
