@@ -2,10 +2,10 @@
 
 class Playlist {
 
-    /**
+    /** get playlist
      * @param db - PDO connection object
      * @param id - playlist id
-     * @return playlist - single playlist
+     * @return array playlist - single playlist
      */
     public static function get($db, $id) {
         $sql = "SELECT * FROM Playlist WHERE id=?";  
@@ -16,7 +16,7 @@ class Playlist {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-     /**
+     /** get videos in playlist
      * @param db - PDO connection object
      * @param id - playlist id
      * @return array videos - array of videos connected to the playlist id
