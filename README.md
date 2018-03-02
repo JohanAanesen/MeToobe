@@ -11,6 +11,19 @@ Husk å velge å beholde rettigheter fra det originale repositoriet når dere op
 | [Jonas J. Solsvik](https://bitbucket.org/Arxcis/)      | BPROG | 473193 |
 
 
+# Install & Requirements #
+* XAMPP v3.2.2
+* PHP 7.2 (xampp)
+* MySQL (xampp)
+* Apache (xampp)
+* Composer - kjør composer install i repoet
+* Bootstrap 4 (composer)
+* PHPUnit (composer)
+* Prosjektet må ligge i DocumentRoot, dvs endre apache sin httpd.conf DocumentRoot til repoet
+* Det må opprettes en tom folder i repoet: uploadedFiles
+* Endre php.ini sin post_max_size= til ønsket max filstørrelse. (xampp3.2.2 har default 8MB)
+
+
 # Oppgaveteksten # 
 Oppgaveteksten ligger i [Wikien til det originale repositoriet](https://bitbucket.org/okolloen/imt2291-project1-spring2018/wiki/).
 
