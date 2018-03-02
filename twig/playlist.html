@@ -92,7 +92,8 @@
                         <input type="hidden" name="playlist-id" form="swapUp{{ video.id }}" value="{{ playlist.id }}"/>
                         <input type="hidden" name="video-id" form="swapUp{{ video.id }}" value="{{ video.id }}"/>
                         <input type="hidden" name="video-rank" form="swapUp{{ video.id }}" value="{{ video.rank }}"/>
-                        <button type="submit" name="swap" form="swapUp{{ video.id }}" value="up" class="btn btn-secondary btn-sm">
+                        <input type="hidden" name="swap" form="swapUp{{ video.id }}" value="up"/>
+                        <button type="submit" form="swapUp{{ video.id }}" class="btn btn-secondary btn-sm">
                             <img src="/icon/arrow-up.png" aria-hidden="true">
                         </button>
                     </form>
@@ -112,7 +113,8 @@
                         <input type="hidden" name="playlist-id" form="swapDown{{ video.id }}" value="{{ playlist.id }}"/>
                         <input type="hidden" name="video-id" form="swapDown{{ video.id }}" value="{{ video.id }}"/>
                         <input type="hidden" name="video-rank" form="swapDown{{ video.id }}" value="{{ video.rank }}"/>
-                        <button type="submit" name="swap" form="swapDown{{ video.id }}" value="down" class="button btn btn-secondary btn-sm">
+                        <input type="hidden" name="swap" form="swapDown{{ video.id }}" value="down"/>
+                        <button type="submit" form="swapDown{{ video.id }}" class="button btn btn-secondary btn-sm">
                             <img src="/icon/arrow-down.png" aria-hidden="true">
                         </button>
                     </form>
