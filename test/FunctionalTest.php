@@ -160,7 +160,7 @@ class FunctionalTests extends TestCase {
 
     // Test that all the videos are added
     foreach ($this2->arrayVideoID as $videoID) {
-      $this2->assertNotNull($page->find('xpath', '//span[contains(text(), "' . $videoID[$i] .'")]'));
+      $this2->assertNotNull($page->find('xpath', '//span[contains(text(), "' . $videoID .'")]'));
     }
   }
 
@@ -182,11 +182,20 @@ class FunctionalTests extends TestCase {
     $this2->session->visit($URL);
     $page = $this2->session->getPage();
 
+    // Check that the videos are in predicted order
+    // It's checking the code below, taken from playlist.html line: 70
+    // <span style="color: #aaaaaa;"> {{ video.id }} Rank: {{ video.rank + 1 }} </span>
+    $this2->assertNotNull($page->find('xpath', '//span[text()=" ' . $testVideoID[0] . ' Rank: 1 "]'));
+    $this2->assertNotNull($page->find('xpath', '//span[text()=" ' . $testVideoID[1] . ' Rank: 2 "]'));
+
+    // Change order
     $this2->assertNotNull($form = $page->find('css', 'form[id="swapDown' . $testVideoID[0] .'"]'));
     $form->submit();
 
+    // Test if the switch has been made
+    $this2->assertNotNull($page->find('xpath', '//span[text()=" ' . $testVideoID[0] . ' Rank: 2 "]'));
+    $this2->assertNotNull($page->find('xpath', '//span[text()=" ' . $testVideoID[1] . ' Rank: 1 "]'));
   }
-
 
   public function testCreatePlaylist(){
     FunctionalTests::signInUser($this);
@@ -197,11 +206,10 @@ class FunctionalTests extends TestCase {
     FunctionalTests::signInUser($this);
     FunctionalTests::addThreeVideosAndTest($this);
   }
-/*
+
   public function testChangeOrderOnVideosInPlaylist(){
     FunctionalTests::signInUser($this);
     FunctionalTests::addToPlaylistAndchangeOrder($this);
   }
-*/
 
   };
